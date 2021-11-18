@@ -4,25 +4,25 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 public class Parser {
 
-//    public Properties getPathToExcel() throws IOException {
-//        Properties properties = new Properties();
-//        try (InputStream in = Application.class.getClassLoader().getResourceAsStream("excel.properties")) {
-//            properties.load(in);
-//        }
-//        return properties;
-//    }
+    public Properties getPathToExcel() throws IOException {
+        Properties props = new Properties();
+        try (InputStream in = this.getClass().getResourceAsStream("excel.properties")) {
+            props.load(in);
+        }
+        return props;
+    }
 
     public SpecialtyToSubject doParse() throws IOException {
         SpecialtyToSubject specialtyToSubject = new SpecialtyToSubject();
-        XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("Book1.xlsx"));
-        XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
+        XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(getPathToExcel().getProperty("pathToExcel")));
+        XSSFSheet excelSheet = excelBook.getSheet(getPathToExcel().getProperty("sheetName"));
         XSSFRow row = null;
         String domainName = "";
         String domainId = "";
@@ -63,7 +63,7 @@ public class Parser {
         sts.getDomainIdToSpecialtyId().put(trueDomainId, specialId);
     }
 
-    protected String setTrueIdFormat(XSSFRow row, int cellPosition){
+    protected String setTrueIdFormat(XSSFRow row, int cellPosition) {
         if (row.getCell(cellPosition).toString().length() > 5) {
             return (row.getCell(cellPosition).toString());
         } else {
@@ -75,7 +75,7 @@ public class Parser {
         }
     }
 
-    protected String setTrueDomainIdFormat(XSSFRow row, int cellPosition){
+    protected String setTrueDomainIdFormat(XSSFRow row, int cellPosition) {
         if (row.getCell(cellPosition).toString().length() > 4) {
             return (row.getCell(cellPosition).toString());
         } else {
@@ -112,7 +112,7 @@ public class Parser {
         SpecialtyToSubject sts = new Parser().doParse();
 
 //        sts.printFirst();
-        sts.printSecond();
-//        sts.printThird();
+//        sts.printSecond();
+        sts.printThird();
     }
 }
