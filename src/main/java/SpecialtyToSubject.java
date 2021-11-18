@@ -1,22 +1,22 @@
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Multimap;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpecialtyToSubject {
     private BiMap<String, String> domainIdToName;
-    private Multimap<String, Collection<String>> domainIdToSpecialtyId;
+    private Map<String, Collection<String>> domainIdToSpecialtyId;
     private BiMap<String, Specialty> specialtyIdToName;
 
     public SpecialtyToSubject() {
         domainIdToName = HashBiMap.create();
-        domainIdToSpecialtyId = ArrayListMultimap.create();
+        domainIdToSpecialtyId = new HashMap<>();
         specialtyIdToName = HashBiMap.create();
     }
 
-    public SpecialtyToSubject(BiMap<String, String> domainIdToName, Multimap<String, Collection<String>> domainIdToSpecialtyId,
+    public SpecialtyToSubject(BiMap<String, String> domainIdToName, Map<String, Collection<String>> domainIdToSpecialtyId,
                               BiMap<String, Specialty> specialtyIdToName) {
         this.domainIdToName = domainIdToName;
         this.domainIdToSpecialtyId = domainIdToSpecialtyId;
@@ -31,11 +31,11 @@ public class SpecialtyToSubject {
         this.domainIdToName = domainIdToName;
     }
 
-    public Multimap<String, Collection<String>> getDomainIdToSpecialtyId() {
+    public Map<String, Collection<String>> getDomainIdToSpecialtyId() {
         return domainIdToSpecialtyId;
     }
 
-    public void setDomainIdToSpecialtyId(Multimap<String, Collection<String>> domainIdToSpecialtyId) {
+    public void setDomainIdToSpecialtyId(Map<String, Collection<String>> domainIdToSpecialtyId) {
         this.domainIdToSpecialtyId = domainIdToSpecialtyId;
     }
 
