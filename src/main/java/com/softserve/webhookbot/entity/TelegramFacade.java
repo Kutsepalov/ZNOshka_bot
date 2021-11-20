@@ -1,44 +1,49 @@
 package com.softserve.webhookbot.entity;
 
-import com.softserve.webhookbot.config.ButtonRegister;
 import com.softserve.webhookbot.enumeration.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.io.Serializable;
 import java.util.EnumSet;
 
 @Component
 public class TelegramFacade {
-    private ButtonRegister buttonRegister;
-    private Message message;
-    private SendMessage sendMessage;
-    private EditMessageReplyMarkup editMessageReplyMarkup;
+    private AlertSender alertSender;
+    private QueryProcessor queryProcessor;
     private EnumSet<Subject> enamSet = EnumSet.noneOf(Subject.class);
+
+    TelegramFacade(QueryProcessor queryProcessor,AlertSender alertSender) {
+        this.queryProcessor = queryProcessor;
+        this.alertSender = alertSender;
+    }
 
     BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
-            for (Subject value : Subject.values()) {
+            if (Subject.contains(update.getCallbackQuery().getData())) {
                 Subject element = Subject.valueOf(update.getCallbackQuery().getData());
-                if (setAndRemoveTick(update, value, element))
-                    return (BotApiMethod<?>) editMessageReplyMarkup;
+                return (BotApiMethod<?>) setAndRemoveTick(update, element);
+            } else if (update.getCallbackQuery().getData().equals("Delete")) {
+                return (BotApiMethod<?>) deleteSelectedSubject(update);
             }
             return null;// Выдать сообщение, я тебя не понимаю
         } else if (update.hasMessage()) {
+            queryProcessor.cleanRequests();
             switch (update.getMessage().getText()) {
                 case "/subjects":
-                    return processingRequestSubject(update);
+                    return queryProcessor.processingRequestSubject(update, enamSet);
                 case "/specialties":
-                    return processingRequestSpecialties(update);
+                    return queryProcessor.processingRequestSpecialties(update);
                 case "/help":
-                    return processingRequestHelp(update);
+                    return queryProcessor.processingRequestHelp(update);
                 case "/start":
-                    return processingRequestStart(update);
+                    return queryProcessor.processingRequestStart(update);
                 case "/contacts":
-                    return processingRequestContacts(update);
+                    return queryProcessor.processingRequestContacts(update);
                 default:
                     //TODO
             }
@@ -46,17 +51,23 @@ public class TelegramFacade {
         return null;
     }
 
-    private boolean setAndRemoveTick(Update update, Subject value, Subject element) {
-        if (element.equals(value)) {
-            if (enamSet.contains(element)) {
-                enamSet.remove(element);
-            } else {
-                radioButtonImpl(element);
-            }
-            processingSelectionSubject(update);
-            return true;
+    private EditMessageReplyMarkup deleteSelectedSubject(Update update) {
+        enamSet.clear();
+        return queryProcessor.processingSelectionSubject(update, enamSet);
+    }
+
+    private BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element) {
+        if (enamSet.contains(element)) {
+            enamSet.remove(element);
+        } else {
+            radioButtonImpl(element);
         }
-        return false;
+        if (enamSet.size() <= 5) {
+            return queryProcessor.processingSelectionSubject(update, enamSet);
+        } else {
+            return alertSender.sendAlert(update);
+        }
+
     }
 
     private void radioButtonImpl(Subject element) {
@@ -105,61 +116,4 @@ public class TelegramFacade {
                 enamSet.add(element);
         }
     }
-
-    private void processingSelectionSubject(Update update) {
-        buttonRegister = new ButtonRegister();
-        editMessageReplyMarkup = new EditMessageReplyMarkup();
-        editMessageReplyMarkup.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-        editMessageReplyMarkup.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
-        editMessageReplyMarkup.setReplyMarkup(buttonRegister.getInlineSubjectButtons(enamSet));
-    }
-
-    private SendMessage processingRequestContacts(Update update) {
-        buttonRegister = new ButtonRegister();
-        message = update.getMessage();
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setText("Контакти:");
-        return sendMessage;
-    }
-
-    private SendMessage processingRequestStart(Update update) {
-        buttonRegister = new ButtonRegister();
-        message = update.getMessage();
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setText("Стартовий месседж:");
-        return sendMessage;
-    }
-
-    private SendMessage processingRequestSubject(Update update) {
-        buttonRegister = new ButtonRegister();
-        message = update.getMessage();
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setReplyMarkup(buttonRegister.getInlineSubjectButtons(enamSet));
-        sendMessage.setText("Усі предмети:");
-        return sendMessage;
-    }
-
-    private SendMessage processingRequestSpecialties(Update update) {
-        buttonRegister = new ButtonRegister();
-        message = update.getMessage();
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        // прикрепть кнопки выбора специальности
-        sendMessage.setText("Cпеціальності:");
-        return sendMessage;
-    }
-
-    private SendMessage processingRequestHelp(Update update) {
-        buttonRegister = new ButtonRegister();
-        message = update.getMessage();
-        sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        // вытащить из файла правила пользования
-        sendMessage.setText("Правила користування:");
-        return sendMessage;
-    }
-
 }

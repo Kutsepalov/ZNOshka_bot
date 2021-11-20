@@ -26,4 +26,12 @@ public enum Subject {
         return name;
     }
 
+    public static boolean contains(String element) {
+        for (Subject subject : Subject.values()) {
+            if (subject.name().equals(element))
+                return true;
+        }
+        return false;
+    }
+
 }

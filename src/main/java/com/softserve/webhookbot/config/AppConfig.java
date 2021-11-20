@@ -5,7 +5,14 @@ import com.softserve.webhookbot.entity.TelegramFacade;
 import com.softserve.webhookbot.entity.WebhookBot;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.List;
 
 @Configuration
 public class AppConfig {
@@ -28,5 +35,25 @@ public class AppConfig {
         bot.setWebHookPath(botConfig.getWebHookPath());
 
         return bot;
+    }
+
+    @Bean
+    EditMessageReplyMarkup editMessageReplyMarkup() {
+        return new EditMessageReplyMarkup();
+    }
+
+    @Bean
+    Message message() {
+        return new Message();
+    }
+
+    @Bean
+    SendMessage sendMessage() {
+        return new SendMessage();
+    }
+
+    @Bean
+    InlineKeyboardMarkup inlineKeyboardMarkup() {
+        return new InlineKeyboardMarkup();
     }
 }
