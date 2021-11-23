@@ -70,7 +70,7 @@ public class SpecialtyToSubject {
 
     @Override
     public String toString() {
-        return "com.softserve.znoshka.parser.SpecialtyToSubject{" +
+        return "SpecialtyToSubject{" +
                 "domainIdToName=" + domainIdToName +
                 ", domainIdToSpecialtyId=" + domainIdToSpecialtyId +
                 ", specialtyIdToName=" + specialtyIdToName +
