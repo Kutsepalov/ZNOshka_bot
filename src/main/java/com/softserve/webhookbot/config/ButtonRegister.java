@@ -1,5 +1,6 @@
 package com.softserve.webhookbot.config;
 
+import com.softserve.webhookbot.entity.VersionHendler;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
@@ -18,15 +19,18 @@ public class ButtonRegister {
     private List<InlineKeyboardButton> ukraineRow;
     private List<InlineKeyboardButton> mathRow;
     private List<InlineKeyboardButton> languageRow;
-    private List<InlineKeyboardButton> utilRow;
+    private List<InlineKeyboardButton> deleteRow;
+    private List<InlineKeyboardButton> findRow;
     private InlineKeyboardMarkup inlineKeyboardMarkup;
+    private VersionHendler versionHendler;
 
     private void clearAllRow() {
         rowList.clear();
         ukraineRow.clear();
         mathRow.clear();
         languageRow.clear();
-        utilRow.clear();
+        deleteRow.clear();
+        findRow.clear();
     }
 
 
@@ -43,17 +47,26 @@ public class ButtonRegister {
         rowList.add(ukraineRow);
         rowList.add(mathRow);
         rowList.add(languageRow);
+        addFindButton();
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         return inlineKeyboardMarkup;
     }
 
+    private void addFindButton() {
+        InlineKeyboardButton currentButton = new InlineKeyboardButton();
+        currentButton.setText("Знайти спеціальності"+" "+EmojiParser.parseToUnicode(":mag:"));
+        currentButton.setCallbackData("Search"+"/"+versionHendler.getVersion());
+        findRow.add(currentButton);
+        rowList.add(findRow);
+    }
+
     private void addDeleteButton(int counter) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Видалити всі"+" "+counter+"/"+" "+"5"+EmojiParser.parseToUnicode(":white_check_mark:"));
-        currentButton.setCallbackData("Delete");
-        utilRow.add(currentButton);
-        rowList.add(utilRow);
+        currentButton.setCallbackData("Delete"+"/"+versionHendler.getVersion());
+        deleteRow.add(currentButton);
+        rowList.add(deleteRow);
     }
 
     private void subjectChoice(List<InlineKeyboardButton> keyboardButtonsRow,
@@ -92,7 +105,7 @@ public class ButtonRegister {
         } else {
             subjectButton.setText(text);
         }
-        subjectButton.setCallbackData(data);
+        subjectButton.setCallbackData(data+"/"+versionHendler.getVersion());
     }
 
 }

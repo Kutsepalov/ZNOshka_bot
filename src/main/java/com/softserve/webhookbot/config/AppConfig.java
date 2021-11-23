@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
@@ -55,5 +56,9 @@ public class AppConfig {
     @Bean
     InlineKeyboardMarkup inlineKeyboardMarkup() {
         return new InlineKeyboardMarkup();
+    }
+    @Bean
+    ReplyKeyboardMarkup replyKeyboardMarkup(){
+        return new ReplyKeyboardMarkup();
     }
 }
