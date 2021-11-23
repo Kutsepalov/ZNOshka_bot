@@ -57,7 +57,7 @@ public class Specialty {
 
         @Override
     public String toString() {
-        return "com.softserve.znoshka.repository.Specialty{" +
+        return "Specialty{" +
                 "name='"+ code + "-" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +
