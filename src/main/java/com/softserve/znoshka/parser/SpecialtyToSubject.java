@@ -1,5 +1,8 @@
+package com.softserve.znoshka.parser;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.softserve.znoshka.repository.Specialty;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,7 +70,7 @@ public class SpecialtyToSubject {
 
     @Override
     public String toString() {
-        return "SpecialtyToSubject{" +
+        return "com.softserve.znoshka.parser.SpecialtyToSubject{" +
                 "domainIdToName=" + domainIdToName +
                 ", domainIdToSpecialtyId=" + domainIdToSpecialtyId +
                 ", specialtyIdToName=" + specialtyIdToName +

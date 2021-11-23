@@ -1,3 +1,5 @@
+package com.softserve.znoshka.repository;
+
 import java.util.List;
 
 public class BranchOfKnowledge {

@@ -1,3 +1,5 @@
+package com.softserve.znoshka.repository;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class Specialty {
 
         @Override
     public String toString() {
-        return "Specialty{" +
+        return "com.softserve.znoshka.repository.Specialty{" +
                 "name='"+ code + "-" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +

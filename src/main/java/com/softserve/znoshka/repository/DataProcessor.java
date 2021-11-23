@@ -1,5 +1,13 @@
+package com.softserve.znoshka.repository;
+
+import com.softserve.znoshka.parser.Parser;
+import com.softserve.znoshka.parser.SpecialtyToSubject;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DataProcessor {
@@ -70,16 +78,4 @@ public class DataProcessor {
                 ));
     }
 
-
-    public static void main(String[] args) throws IOException {
-        createBranches().forEach(System.out::println);
-
-//        getSpecialtiesByBranchTitle("Природничі науки").forEach(System.out::println);
-//
-//        getSpecialtiesByBranchCode("02").forEach(System.out::println);
-//
-        //getSpecialtyNames().forEach(System.out::println);
-        getBranchesWithSpec().entrySet().forEach(System.out::println);
-        //createSpecialties().forEach(System.out::println);
-    }
 }

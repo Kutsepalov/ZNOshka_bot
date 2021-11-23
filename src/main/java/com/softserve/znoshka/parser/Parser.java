@@ -1,3 +1,6 @@
+package com.softserve.znoshka.parser;
+
+import com.softserve.znoshka.repository.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,7 +16,7 @@ public class Parser {
 
     public Properties getPathToExcel() throws IOException {
         Properties props = new Properties();
-        try (InputStream in = this.getClass().getResourceAsStream("excel.properties")) {
+        try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("excel.properties")) {
             props.load(in);
         }
         return props;
