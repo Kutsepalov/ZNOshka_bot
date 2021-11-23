@@ -90,6 +90,7 @@ public class Parser {
     protected void setSpecialty(SpecialtyToSubject sts, XSSFRow row) {
         String[] res = row.getCell(7).toString().split("або ");
         Specialty specialty = new Specialty();
+        specialty.setCode(row.getCell(2).toString());
         specialty.setName(row.getCell(3).toString());
         specialty.setFirst(row.getCell(4).toString());
 
@@ -111,8 +112,8 @@ public class Parser {
     public static void main(String[] args) throws IOException {
         SpecialtyToSubject sts = new Parser().doParse();
 
-//        sts.printFirst();
-//        sts.printSecond();
+        //sts.printFirst();
+        //sts.printSecond();
         sts.printThird();
     }
 }

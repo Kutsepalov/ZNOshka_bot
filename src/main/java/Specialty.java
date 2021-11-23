@@ -3,13 +3,14 @@ import java.util.List;
 
 public class Specialty {
     private String name;
+    private String code;
     private String first;
     private List<String> second;
     private List<String> third;
 
     public Specialty() {
-         second = new ArrayList<>();
-         third = new ArrayList<>();
+        second = new ArrayList<>();
+        third = new ArrayList<>();
     }
 
     public String getName() {
@@ -44,13 +45,23 @@ public class Specialty {
         this.third = third;
     }
 
-    @Override
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+        @Override
     public String toString() {
         return "Specialty{" +
-                "name='" + name + '\'' +
+                "name='"+ code + "-" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
                 '}';
     }
+
+
 }
