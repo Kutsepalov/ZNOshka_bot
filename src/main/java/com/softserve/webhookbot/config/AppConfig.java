@@ -3,6 +3,7 @@ package com.softserve.webhookbot.config;
 
 import com.softserve.webhookbot.entity.TelegramFacade;
 import com.softserve.webhookbot.entity.WebhookBot;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,14 +15,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.List;
-
+@AllArgsConstructor
 @Configuration
 public class AppConfig {
     private final BotConfig botConfig;
-
-    public AppConfig(BotConfig botConfig) {
-        this.botConfig = botConfig;
-    }
 
     @Bean
     public SetWebhook setWebhookInstance() {

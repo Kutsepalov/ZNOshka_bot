@@ -1,0 +1,73 @@
+package com.softserve.webhookbot.enumeration;
+
+import org.springframework.stereotype.Component;
+
+import java.util.EnumSet;
+
+@Component
+public class EnumSetUtil {
+    public static <T extends Enum<T>> int code(EnumSet<T> set) {
+        int res = 0;
+        for (var e : set) {
+            res += 1 << e.ordinal();
+        }
+        return res;
+    }
+
+    public static <T extends Enum<T>> EnumSet<T> decode(int code, Class<T> tClass) {
+        EnumSet<T> result = EnumSet.allOf(tClass);
+        for (var e : result) {
+            if (((1 << e.ordinal()) & code) == 0) {
+                result.remove(e);
+            }
+        }
+        return result;
+    }
+
+    public static void radioButtonImpl(Subject element, EnumSet<Subject> enumSet) {
+        switch (element) {
+            case UKRAINIAN:
+                enumSet.remove(Subject.LITERATURE);
+                enumSet.add(element);
+                break;
+            case LITERATURE:
+                enumSet.remove(Subject.UKRAINIAN);
+                enumSet.add(element);
+                break;
+            case MATH_PROFILE:
+                enumSet.remove(Subject.MATH_STANDARD);
+                enumSet.add(element);
+                break;
+            case MATH_STANDARD:
+                enumSet.remove(Subject.MATH_PROFILE);
+                enumSet.add(element);
+                break;
+            case FRENCH:
+                enumSet.remove(Subject.ENGLISH);
+                enumSet.remove(Subject.GERMANY);
+                enumSet.remove(Subject.SPANISH);
+                enumSet.add(element);
+                break;
+            case ENGLISH:
+                enumSet.remove(Subject.FRENCH);
+                enumSet.remove(Subject.GERMANY);
+                enumSet.remove(Subject.SPANISH);
+                enumSet.add(element);
+                break;
+            case GERMANY:
+                enumSet.remove(Subject.FRENCH);
+                enumSet.remove(Subject.ENGLISH);
+                enumSet.remove(Subject.SPANISH);
+                enumSet.add(element);
+                break;
+            case SPANISH:
+                enumSet.remove(Subject.GERMANY);
+                enumSet.remove(Subject.FRENCH);
+                enumSet.remove(Subject.ENGLISH);
+                enumSet.add(element);
+                break;
+            default:
+                enumSet.add(element);
+        }
+    }
+}

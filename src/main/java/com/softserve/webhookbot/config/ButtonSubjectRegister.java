@@ -1,6 +1,7 @@
 package com.softserve.webhookbot.config;
 
-import com.softserve.webhookbot.entity.VersionHendler;
+import com.softserve.webhookbot.entity.VersionChanger;
+import com.softserve.webhookbot.enumeration.EnumSetUtil;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Component
-public class ButtonRegister {
+public class ButtonSubjectRegister {
+    private EnumSetUtil enumSetUtil;
     private List<List<InlineKeyboardButton>> rowList;
     private List<InlineKeyboardButton> ukraineRow;
     private List<InlineKeyboardButton> mathRow;
@@ -22,7 +24,7 @@ public class ButtonRegister {
     private List<InlineKeyboardButton> deleteRow;
     private List<InlineKeyboardButton> findRow;
     private InlineKeyboardMarkup inlineKeyboardMarkup;
-    private VersionHendler versionHendler;
+    private VersionChanger versionChanger;
 
     private void clearAllRow() {
         rowList.clear();
@@ -34,9 +36,10 @@ public class ButtonRegister {
     }
 
 
+
     public InlineKeyboardMarkup getInlineSubjectButtons(EnumSet<Subject> enumSet, int counter) {
         clearAllRow();
-        addDeleteButton(counter);
+        addDeleteButton(counter,enumSet);
         for (Subject subject : Subject.values()) {
             List<InlineKeyboardButton> singleButtonRow = new ArrayList<>();
             InlineKeyboardButton currentButton = new InlineKeyboardButton();
@@ -47,24 +50,24 @@ public class ButtonRegister {
         rowList.add(ukraineRow);
         rowList.add(mathRow);
         rowList.add(languageRow);
-        addFindButton();
+        addFindButton(enumSet);
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         return inlineKeyboardMarkup;
     }
 
-    private void addFindButton() {
+    private void addFindButton(EnumSet<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Знайти спеціальності"+" "+EmojiParser.parseToUnicode(":mag:"));
-        currentButton.setCallbackData("Search"+"/"+versionHendler.getVersion());
+        currentButton.setCallbackData("Search"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
     }
 
-    private void addDeleteButton(int counter) {
+    private void addDeleteButton(int counter,EnumSet<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Видалити всі"+" "+counter+"/"+" "+"5"+EmojiParser.parseToUnicode(":white_check_mark:"));
-        currentButton.setCallbackData("Delete"+"/"+versionHendler.getVersion());
+        currentButton.setCallbackData("Delete"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);
     }
@@ -105,7 +108,8 @@ public class ButtonRegister {
         } else {
             subjectButton.setText(text);
         }
-        subjectButton.setCallbackData(data+"/"+versionHendler.getVersion());
+        int f = EnumSetUtil.code(enumSet);
+        subjectButton.setCallbackData(data+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
     }
 
 }

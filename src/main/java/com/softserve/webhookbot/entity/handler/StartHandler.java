@@ -13,11 +13,12 @@ public class StartHandler{
     private Message message;
     private SendMessage sendMessage;
 
-    public void cleanRequests() {
+    private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
     }
 
     public SendMessage handler(Update update) {
+        cleanRequests();
         message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setText("Стартовий месседж:");
