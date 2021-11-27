@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 public class BotConfig {
     @Value("#{environment.APP_WEBHOOK_LINK}")
     private String webhookLink;
-    @Value("#{environment.APP_TELEGRAM_LINK}")
-    private String telegramLink;
     @Value("#{environment.APP_BOT_USERNAME}")
     private String username;
     @Value("#{environment.APP_BOT_TOKEN}")
@@ -26,7 +24,4 @@ public class BotConfig {
         return token;
     }
 
-    public String getTelegramLink() {
-        return telegramLink;
-    }
 }

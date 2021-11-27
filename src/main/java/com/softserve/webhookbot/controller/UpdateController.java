@@ -1,6 +1,5 @@
 package com.softserve.webhookbot.controller;
 
-import com.softserve.webhookbot.config.BotConfig;
 import com.softserve.webhookbot.entity.WebhookBot;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +20,15 @@ import java.net.URL;
 @RestController
 public class UpdateController {
     private final WebhookBot telegramBot;
-    private final BotConfig botConfig;
 
     @PostConstruct
     public void botRegistration() {
         try {
-            URL obj = new URL("https://api.telegram.org/bot" + botConfig.getToken() + "/setWebhook?url=" + botConfig.getTelegramLink());
-            log.info("Opening a connection upon request \"" + obj + "\"");
+            URL obj = new URL("https://api.telegram.org/bot"
+                    + telegramBot.getBotToken()
+                    + "/setWebhook?url="
+                    + telegramBot.getBotPath());
+            log.info("Opening connection upon request \"" + obj + "\"");
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
@@ -40,7 +41,8 @@ public class UpdateController {
                     response.append(inputLine);
                 }
                 in.close();
-                if(response.toString().contains("Webhook was set")) {
+                String res = response.toString();
+                if(res.contains("Webhook was set") || res.contains("Webhook is already set")) {
                     log.info("Bot registration success");
                 } else {
                     log.error("Bot registration isn't success");
