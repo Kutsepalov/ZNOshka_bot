@@ -1,21 +1,21 @@
 package com.softserve.webhookbot.config;
 
-
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BotConfig {
-    @Value("${telegrambot.webHookPath}")
-    private String webHookPath;
-    @Value("${telegrambot.username}")
+    @Value("#{environment.APP_WEBHOOK_LINK}")
+    private String webhookLink;
+    @Value("#{environment.APP_TELEGRAM_LINK}")
+    private String telegramLink;
+    @Value("#{environment.APP_BOT_USERNAME}")
     private String username;
-    @Value("${telegrambot.token}")
+    @Value("#{environment.APP_BOT_TOKEN}")
     private String token;
 
-    public String getWebHookPath() {
-        return webHookPath;
+    public String getWebhookLink() {
+        return webhookLink;
     }
 
     public String getUsername() {
@@ -24,5 +24,9 @@ public class BotConfig {
 
     public String getToken() {
         return token;
+    }
+
+    public String getTelegramLink() {
+        return telegramLink;
     }
 }
