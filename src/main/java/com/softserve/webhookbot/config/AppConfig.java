@@ -12,9 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.List;
 @AllArgsConstructor
 @Configuration
 public class AppConfig {
@@ -22,7 +20,7 @@ public class AppConfig {
 
     @Bean
     public SetWebhook setWebhookInstance() {
-        return SetWebhook.builder().url(botConfig.getWebHookPath()).build();
+        return SetWebhook.builder().url(botConfig.getWebhookLink()).build();
     }
 
     @Bean
@@ -30,7 +28,7 @@ public class AppConfig {
         WebhookBot bot = new WebhookBot(telegramFacade, setWebhook);
         bot.setBotToken(botConfig.getToken());
         bot.setBotUserName(botConfig.getUsername());
-        bot.setWebHookPath(botConfig.getWebHookPath());
+        bot.setWebHookPath(botConfig.getWebhookLink());
 
         return bot;
     }
