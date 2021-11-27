@@ -37,11 +37,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.telegram</groupId>
-			<artifactId>telegrambots</artifactId>
-			<version>5.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>com.vdurmont</groupId>
 			<artifactId>emoji-java</artifactId>
 			<version>5.1.1</version>
@@ -51,9 +46,6 @@
 			<artifactId>telegrambots-spring-boot-starter</artifactId>
 			<version>5.2.0</version>
 		</dependency>
-
-
-
 	</dependencies>
 
 	<build>
@@ -70,7 +62,18 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.softserve.webhookbot.WebhookBotStarter</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

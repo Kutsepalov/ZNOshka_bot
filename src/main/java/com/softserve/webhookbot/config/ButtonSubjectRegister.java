@@ -12,19 +12,20 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Component
 public class ButtonSubjectRegister {
-    private EnumSetUtil enumSetUtil;
-    private List<List<InlineKeyboardButton>> rowList;
-    private List<InlineKeyboardButton> ukraineRow;
-    private List<InlineKeyboardButton> mathRow;
-    private List<InlineKeyboardButton> languageRow;
-    private List<InlineKeyboardButton> deleteRow;
-    private List<InlineKeyboardButton> findRow;
-    private InlineKeyboardMarkup inlineKeyboardMarkup;
-    private VersionChanger versionChanger;
+    private final EnumSetUtil enumSetUtil;
+    private final List<List<InlineKeyboardButton>> rowList;
+    private final List<InlineKeyboardButton> ukraineRow;
+    private final List<InlineKeyboardButton> mathRow;
+    private final List<InlineKeyboardButton> languageRow;
+    private final List<InlineKeyboardButton> deleteRow;
+    private final List<InlineKeyboardButton> findRow;
+    private final InlineKeyboardMarkup inlineKeyboardMarkup;
+    private final VersionChanger versionChanger;
 
     private void clearAllRow() {
         rowList.clear();
@@ -37,7 +38,7 @@ public class ButtonSubjectRegister {
 
 
 
-    public InlineKeyboardMarkup getInlineSubjectButtons(EnumSet<Subject> enumSet, int counter) {
+    public InlineKeyboardMarkup getInlineSubjectButtons(Set<Subject> enumSet, int counter) {
         clearAllRow();
         addDeleteButton(counter,enumSet);
         for (Subject subject : Subject.values()) {
@@ -45,7 +46,7 @@ public class ButtonSubjectRegister {
             InlineKeyboardButton currentButton = new InlineKeyboardButton();
             String text = subject.getName();
             String data = subject.name();
-            subjectChoice(singleButtonRow, currentButton, enumSet, text, data);
+            subjectChoice(singleButtonRow, currentButton, (EnumSet<Subject>) enumSet, text, data);
         }
         rowList.add(ukraineRow);
         rowList.add(mathRow);
@@ -56,18 +57,18 @@ public class ButtonSubjectRegister {
         return inlineKeyboardMarkup;
     }
 
-    private void addFindButton(EnumSet<Subject> enumSet) {
+    private void addFindButton(Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Знайти спеціальності"+" "+EmojiParser.parseToUnicode(":mag:"));
-        currentButton.setCallbackData("Search"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
+        currentButton.setCallbackData("Search"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
     }
 
-    private void addDeleteButton(int counter,EnumSet<Subject> enumSet) {
+    private void addDeleteButton(int counter, Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Видалити всі"+" "+counter+"/"+" "+"5"+EmojiParser.parseToUnicode(":white_check_mark:"));
-        currentButton.setCallbackData("Delete"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
+        currentButton.setCallbackData("Delete"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code((EnumSet<Subject>) enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);
     }
