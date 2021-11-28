@@ -3,8 +3,8 @@ package com.softserve.webhookbot.enumeration;
 public enum Subject {
     UKRAINIAN("Українська мова"),
     LITERATURE("Українська мова і література"),
-    MATH_STANDARD("Математика (рівня стандарту)"),
-    MATH_PROFILE("Математика (рівня профільний)"),
+    MATH_STANDARD("Математика (стандартна)"),
+    MATH_PROFILE("Математика (профільна)"),
     HISTORY("Історія України"),
     ENGLISH("Англійська мова"),
     SPANISH("Іспанська мова"),

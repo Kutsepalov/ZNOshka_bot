@@ -1,7 +1,6 @@
-package com.softserve.webhookbot.config;
+package com.softserve.webhookbot.util;
 
 import com.softserve.webhookbot.entity.VersionChanger;
-import com.softserve.webhookbot.enumeration.EnumSetUtil;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,7 @@ import java.util.Set;
 public class ButtonSubjectRegister {
     private final EnumSetUtil enumSetUtil;
     private final List<List<InlineKeyboardButton>> rowList;
+    private final List<List<InlineKeyboardButton>> additionalSubjectRow;
     private final List<InlineKeyboardButton> ukraineRow;
     private final List<InlineKeyboardButton> mathRow;
     private final List<InlineKeyboardButton> languageRow;
@@ -28,6 +28,7 @@ public class ButtonSubjectRegister {
     private final VersionChanger versionChanger;
 
     private void clearAllRow() {
+        additionalSubjectRow.clear();
         rowList.clear();
         ukraineRow.clear();
         mathRow.clear();
@@ -37,10 +38,9 @@ public class ButtonSubjectRegister {
     }
 
 
-
     public InlineKeyboardMarkup getInlineSubjectButtons(Set<Subject> enumSet, int counter) {
         clearAllRow();
-        addDeleteButton(counter,enumSet);
+        addDeleteButton(counter, enumSet);
         for (Subject subject : Subject.values()) {
             List<InlineKeyboardButton> singleButtonRow = new ArrayList<>();
             InlineKeyboardButton currentButton = new InlineKeyboardButton();
@@ -50,6 +50,7 @@ public class ButtonSubjectRegister {
         }
         rowList.add(ukraineRow);
         rowList.add(mathRow);
+        rowList.addAll(additionalSubjectRow);
         rowList.add(languageRow);
         addFindButton(enumSet);
         inlineKeyboardMarkup.setKeyboard(rowList);
@@ -59,16 +60,22 @@ public class ButtonSubjectRegister {
 
     private void addFindButton(Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
-        currentButton.setText("Знайти спеціальності"+" "+EmojiParser.parseToUnicode(":mag:"));
-        currentButton.setCallbackData("Search"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        currentButton.setText("Знайти спеціальності" + " " + EmojiParser.parseToUnicode(":mag:"));
+        currentButton.setCallbackData("Search" + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
     }
 
     private void addDeleteButton(int counter, Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
-        currentButton.setText("Видалити всі"+" "+counter+"/"+" "+"5"+EmojiParser.parseToUnicode(":white_check_mark:"));
-        currentButton.setCallbackData("Delete"+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        if (enumSet.contains(Subject.CREATIVE_COMPETITION)) {
+            counter--;
+        }
+        if (enumSet.contains(Subject.MATH_STANDARD)) {
+            counter--;
+        }
+        currentButton.setText("Видалити всі" + " " + counter + "/" + " " + "5" + EmojiParser.parseToUnicode(":white_check_mark:"));
+        currentButton.setCallbackData("Delete" + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);
     }
@@ -84,8 +91,8 @@ public class ButtonSubjectRegister {
                 setTextAndData(subjectButton, enumSet, text, data);
                 ukraineRow.add(subjectButton);
                 break;
-            case "Математика (рівня стандарту)":
-            case "Математика (рівня профільний)":
+            case "Математика (стандартна)":
+            case "Математика (профільна)":
                 setTextAndData(subjectButton, enumSet, text, data);
                 mathRow.add(subjectButton);
                 break;
@@ -99,7 +106,7 @@ public class ButtonSubjectRegister {
             default:
                 setTextAndData(subjectButton, enumSet, text, data);
                 keyboardButtonsRow.add(subjectButton);
-                rowList.add(keyboardButtonsRow);
+                additionalSubjectRow.add(keyboardButtonsRow);
         }
     }
 
@@ -109,8 +116,7 @@ public class ButtonSubjectRegister {
         } else {
             subjectButton.setText(text);
         }
-        int f = EnumSetUtil.code(enumSet);
-        subjectButton.setCallbackData(data+"/"+ versionChanger.getVersion()+"/"+EnumSetUtil.code(enumSet));
+        subjectButton.setCallbackData(data + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code(enumSet));
     }
 
 }

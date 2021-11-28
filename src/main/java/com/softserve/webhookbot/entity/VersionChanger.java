@@ -1,6 +1,6 @@
 package com.softserve.webhookbot.entity;
 
-import com.softserve.webhookbot.enumeration.EnumSetUtil;
+import com.softserve.webhookbot.util.EnumSetUtil;
 import com.softserve.webhookbot.enumeration.Subject;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
