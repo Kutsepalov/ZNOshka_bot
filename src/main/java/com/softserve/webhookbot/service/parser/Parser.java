@@ -80,33 +80,29 @@ public class Parser {
         return subj;
     }
 
-    private XSSFWorkbook getWorkbook() throws IOException {
-        return new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"));
-    }
-
     public SpecialtyToSubject doParse() throws IOException {
-        XSSFWorkbook excelBook = getWorkbook();
-        XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
-        XSSFRow row;
-        String domainName;
-        String domainId = "";
+        try(XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
+            XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
+            XSSFRow row;
+            String domainName;
+            String domainId = "";
 
-        for (int i = 2; i <= excelSheet.getLastRowNum() + 1; i++) {
-            if (excelSheet.getRow(i) != null) {
-                row = excelSheet.getRow(i);
-                if (domainId.equals(specialtyToSubject.getDomainIdToName().get(domainId)) || !row.getCell(0).toString().equals("")) {
-                    domainId = row.getCell(0).toString();
-                    domainName = row.getCell(1).toString();
-                    specialtyToSubject.getDomainIdToName().put(setTrueDomainIdFormat(row, 0), domainName);
-                    setDomainToSpecialty(specialtyToSubject, excelSheet, domainId, i);
+            for (int i = 2; i <= excelSheet.getLastRowNum() + 1; i++) {
+                if (excelSheet.getRow(i) != null) {
+                    row = excelSheet.getRow(i);
+                    if (domainId.equals(specialtyToSubject.getDomainIdToName().get(domainId)) || !row.getCell(0).toString().equals("")) {
+                        domainId = row.getCell(0).toString();
+                        domainName = row.getCell(1).toString();
+                        specialtyToSubject.getDomainIdToName().put(setTrueDomainIdFormat(row, 0), domainName);
+                        setDomainToSpecialty(specialtyToSubject, excelSheet, domainId, i);
+                    }
+
+                    setSpecialty(specialtyToSubject, row);
                 }
 
-                setSpecialty(specialtyToSubject, row);
             }
-
+            return specialtyToSubject;
         }
-
-        return specialtyToSubject;
     }
 
     protected void setDomainToSpecialty(SpecialtyToSubject sts, XSSFSheet sheet, String curDomainId, int curRow) {
@@ -172,5 +168,6 @@ public class Parser {
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
     }
+
 }
 
