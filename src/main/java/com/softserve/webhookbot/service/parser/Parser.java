@@ -1,6 +1,6 @@
-package com.softserve.znoshka.parser;
+package com.softserve.webhookbot.service.parser;
 
-import com.softserve.znoshka.repository.Specialty;
+import com.softserve.webhookbot.service.repository.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -26,7 +26,7 @@ public class Parser {
         SpecialtyToSubject specialtyToSubject = new SpecialtyToSubject();
         XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(getPathToExcel().getProperty("pathToExcel")));
         XSSFSheet excelSheet = excelBook.getSheet(getPathToExcel().getProperty("sheetName"));
-        XSSFRow row = null;
+        XSSFRow row;
         String domainName = "";
         String domainId = "";
 
@@ -71,7 +71,7 @@ public class Parser {
             return (row.getCell(cellPosition).toString());
         } else {
             if (row.getCell(cellPosition).toString().split("\\.")[0].length() <= 2) {
-                return ("0" + String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
+                return ("0" + (int) Double.parseDouble(row.getCell(cellPosition).toString()));
             } else {
                 return (String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
             }
@@ -83,7 +83,7 @@ public class Parser {
             return (row.getCell(cellPosition).toString());
         } else {
             if (row.getCell(cellPosition).toString().split("\\.")[0].length() == 1) {
-                return ("0" + String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
+                return ("0" + (int) Double.parseDouble(row.getCell(cellPosition).toString()));
             } else {
                 return (String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
             }

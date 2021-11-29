@@ -1,7 +1,7 @@
-package com.softserve.znoshka.repository;
+package com.softserve.webhookbot.service.repository;
 
-import com.softserve.znoshka.parser.Parser;
-import com.softserve.znoshka.parser.SpecialtyToSubject;
+import com.softserve.webhookbot.service.parser.Parser;
+import com.softserve.webhookbot.service.parser.SpecialtyToSubject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DataProcessor {
+public final class DataProcessor {
 
     public static List<BranchOfKnowledge> createBranches() throws IOException {
         SpecialtyToSubject sts = new Parser().doParse();

@@ -1,8 +1,8 @@
-package com.softserve.znoshka.parser;
+package com.softserve.webhookbot.service.parser;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.softserve.znoshka.repository.Specialty;
+import com.softserve.webhookbot.service.repository.Specialty;
 
 import java.util.Collection;
 import java.util.HashMap;

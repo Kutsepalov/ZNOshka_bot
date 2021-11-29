@@ -1,4 +1,4 @@
-package com.softserve.znoshka.repository;
+package com.softserve.webhookbot.service.repository;
 
 import java.util.List;
 
