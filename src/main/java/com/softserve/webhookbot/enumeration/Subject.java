@@ -6,6 +6,7 @@ public enum Subject {
     MATH_STANDARD("Математика (стандартна)"),
     MATH_PROFILE("Математика (профільна)"),
     HISTORY("Історія України"),
+    FOREIGN_LANGUAGE("Іноземна мова"),
     ENGLISH("Англійська мова"),
     SPANISH("Іспанська мова"),
     GERMANY("Німецька мова"),

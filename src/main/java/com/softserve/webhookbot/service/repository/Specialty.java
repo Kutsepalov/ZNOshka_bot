@@ -1,14 +1,16 @@
 package com.softserve.webhookbot.service.repository;
 
+import com.softserve.webhookbot.enumeration.Subject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Specialty {
     private String name;
     private String code;
-    private String first;
-    private List<String> second;
-    private List<String> third;
+    private Subject first;
+    private List<Subject> second;
+    private List<Subject> third;
 
     public Specialty() {
         second = new ArrayList<>();
@@ -23,27 +25,27 @@ public class Specialty {
         this.name = name;
     }
 
-    public String getFirst() {
+    public Subject getFirst() {
         return first;
     }
 
-    public void setFirst(String first) {
+    public void setFirst(Subject first) {
         this.first = first;
     }
 
-    public List<String> getSecond() {
+    public List<Subject> getSecond() {
         return second;
     }
 
-    public void setSecond(List<String> second) {
+    public void setSecond(List<Subject> second) {
         this.second = second;
     }
 
-    public List<String> getThird() {
+    public List<Subject> getThird() {
         return third;
     }
 
-    public void setThird(List<String> third) {
+    public void setThird(List<Subject> third) {
         this.third = third;
     }
 
@@ -55,15 +57,13 @@ public class Specialty {
         this.code = code;
     }
 
-        @Override
+    @Override
     public String toString() {
         return "Specialty{" +
-                "name='"+ code + "-" + name + '\'' +
+                "name='" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
                 '}';
     }
-
-
 }
