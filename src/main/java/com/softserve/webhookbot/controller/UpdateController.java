@@ -3,17 +3,17 @@ package com.softserve.webhookbot.controller;
 import com.softserve.webhookbot.entity.WebhookBot;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class UpdateController {
     private final WebhookBot telegramBot;
 
     @PostConstruct
-    public void botRegistration() {
+    private void botRegistration() {
         try {
             URL obj = new URL("https://api.telegram.org/bot"
                     + telegramBot.getBotToken()
@@ -33,15 +33,7 @@ public class UpdateController {
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        con.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                String res = response.toString();
+                String res = IOUtils.toString(con.getInputStream(), StandardCharsets.UTF_8);
                 if(res.contains("Webhook was set") || res.contains("Webhook is already set")) {
                     log.info("Bot registration success");
                 } else {

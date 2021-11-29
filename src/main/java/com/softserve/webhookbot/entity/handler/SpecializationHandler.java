@@ -27,8 +27,12 @@ public class SpecializationHandler {
 
     public SendMessage handle(Update update) {
         cleanRequests();
-        sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-        // прикрепть кнопки выбора специальности
+        if(update.getCallbackQuery() != null) {
+            sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+            // прикрепть кнопки выбора специальности
+        } else {
+            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
+        }
         sendMessage.setText("Cпеціальності:1");
         return sendMessage;
     }

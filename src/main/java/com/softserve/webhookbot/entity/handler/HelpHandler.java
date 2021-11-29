@@ -1,5 +1,6 @@
 package com.softserve.webhookbot.entity.handler;
 
+import com.softserve.webhookbot.entity.BotMessages;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,13 +10,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class HelpHandler{
     private Message message;
-    private SendMessage sendMessage;
+    private final SendMessage sendMessage;
+    private final BotMessages botMessages;
 
     public SendMessage handle(Update update) {
         message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        //TODO вытащить из файла правила пользования
-        sendMessage.setText("Правила користування:");
+        sendMessage.setText(botMessages.getRules());
         return sendMessage;
     }
 }
