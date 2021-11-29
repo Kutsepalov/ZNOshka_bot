@@ -8,19 +8,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
-    private final XSSFSheet excelSheet;
 
-    public Parser() throws IOException {
+    public Parser(){
         specialtyToSubject = new SpecialtyToSubject();
-        XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"));
-        excelSheet = excelBook.getSheet("Sheet1");
     }
 
 //    private Properties getPathToExcel() {
@@ -34,7 +29,7 @@ public class Parser {
 //    }
 
     private Subject checkSubject(String subjectName) {
-        Subject subj = null;
+        Subject subj;
 
         switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
             case "українська мова":
@@ -46,20 +41,21 @@ public class Parser {
             case "математика":
                 subj = Subject.MATH_STANDARD;
                 break;
-//            case "англійська мова":
-//                subj = Subject.ENGLISH;
-//                break;
-//            case "іспанська мова":
-//                subj = Subject.SPANISH;
-//                break;
-//            case "німецька мова":
-//                subj = Subject.GERMAN;
-//                break;
-//            case "французька мова":
-//                subj = Subject.FRENCH;
-//                break;
+            case "англійська мова":
+                subj = Subject.ENGLISH;
+                break;
+            case "іспанська мова":
+                subj = Subject.SPANISH;
+                break;
+            case "німецька мова":
+                subj = Subject.GERMANY;
+                break;
+            case "французька мова":
+                subj = Subject.FRENCH;
+                break;
             case "іноземна мова":
                 subj = Subject.FOREIGN_LANGUAGE;
+                break;
             case "біологія":
                 subj = Subject.BIOLOGY;
                 break;
@@ -78,11 +74,19 @@ public class Parser {
             case "історія україни":
                 subj = Subject.HISTORY;
                 break;
+            default:
+                subj = null;
         }
         return subj;
     }
 
-    public SpecialtyToSubject doParse() {
+    private XSSFWorkbook getWorkbook() throws IOException {
+        return new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"));
+    }
+
+    public SpecialtyToSubject doParse() throws IOException {
+        XSSFWorkbook excelBook = getWorkbook();
+        XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
         XSSFRow row;
         String domainName;
         String domainId = "";
@@ -113,6 +117,7 @@ public class Parser {
             if (sheet.getRow(i) != null) {
                 row = sheet.getRow(i);
             }
+            if(row == null) throw new NullPointerException();
             if (row.getCell(0).toString().isEmpty() || curDomainId.equals(row.getCell(0).toString())) {
                 specialId.add(setTrueIdFormat(row, 2));
             } else {
@@ -128,7 +133,7 @@ public class Parser {
             return (row.getCell(cellPosition).toString());
         } else {
             if (row.getCell(cellPosition).toString().split("\\.")[0].length() <= 2) {
-                return ("0" + String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
+                return ("0" + (int) Double.parseDouble(row.getCell(cellPosition).toString()));
             } else {
                 return (String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
             }
@@ -140,7 +145,7 @@ public class Parser {
             return (row.getCell(cellPosition).toString());
         } else {
             if (row.getCell(cellPosition).toString().split("\\.")[0].length() == 1) {
-                return ("0" + String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
+                return ("0" + (int) Double.parseDouble(row.getCell(cellPosition).toString()));
             } else {
                 return (String.valueOf((int) Double.parseDouble(row.getCell(cellPosition).toString())));
             }
@@ -148,7 +153,7 @@ public class Parser {
     }
 
     protected void setSpecialty(SpecialtyToSubject sts, XSSFRow row) {
-        String[] res = row.getCell(7).toString().split("або ");
+        String[] res = row.getCell(7).toString().split("або");
         Specialty specialty = new Specialty();
         specialty.setName(row.getCell(3).toString());
         specialty.setFirst(checkSubject(row.getCell(4).toString()));
@@ -159,22 +164,13 @@ public class Parser {
             }
         }
 
-        res = row.getCell(5).toString().split(" або ");
+        res = row.getCell(5).toString().split("або");
 
         for (int i = 0; i < res.length; i++) {
             specialty.getSecond().add(checkSubject(res[i]));
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
-    }
-
-    public static void main(String[] args) throws IOException {
-        SpecialtyToSubject sts = new Parser().doParse();
-
-//        sts.printFirst();
-//        sts.printSecond();
-        sts.printThird();
-        System.out.println("математика ".trim());
     }
 }
 
