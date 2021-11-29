@@ -2,7 +2,6 @@ package com.softserve.webhookbot.entity.handler;
 
 import com.softserve.webhookbot.util.ButtonSubjectRegister;
 import com.softserve.webhookbot.entity.sender.AlertSender;
-import com.softserve.webhookbot.util.EnumSetUtil;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.softserve.webhookbot.util.RadioButton;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.EnumSet;
 @AllArgsConstructor
 @Component
 public class SubjectHandler {
-    private RadioButton radioButton;
     private ButtonSubjectRegister buttonSubjectRegister;
     private EditMessageReplyMarkup editMessageReplyMarkup;
     private Message message;
@@ -53,8 +51,12 @@ public class SubjectHandler {
 
     public BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element, EnumSet<Subject> enumSet) {
         if (enumSet.contains(element)) {
-            RadioButton.removeMandatoryTick(element, enumSet);
-            return processingSelectionSubject(update, enumSet);
+            if (RadioButton.notOutOfLimit(enumSet)) {
+                RadioButton.removeMandatoryTick(element, enumSet);
+                return processingSelectionSubject(update, enumSet);
+            } else {
+                return alertSender.sendSubjectAlert(update);
+            }
         } else if (RadioButton.notOutOfLimit(enumSet)) {
             RadioButton.radioButtonImpl(element, enumSet);
             return processingSelectionSubject(update, enumSet);

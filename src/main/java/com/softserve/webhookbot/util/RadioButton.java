@@ -4,6 +4,7 @@ import com.softserve.webhookbot.enumeration.Subject;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
+
 @Component
 public class RadioButton {
     public static void radioButtonImpl(Subject element, EnumSet<Subject> enumSet) {
@@ -68,10 +69,8 @@ public class RadioButton {
                 enumSet.add(Subject.MATH_STANDARD);
                 break;
             case MATH_STANDARD:
-                if (notOutOfLimit(enumSet)) {
-                    enumSet.remove(element);
-                    enumSet.add(Subject.MATH_PROFILE);
-                }
+                enumSet.remove(element);
+                enumSet.add(Subject.MATH_PROFILE);
                 break;
             default:
                 enumSet.remove(element);
@@ -79,7 +78,7 @@ public class RadioButton {
     }
 
 
-    public static boolean isRadioButton(Subject element, EnumSet<Subject> enumSet) {
+    private static boolean isRadioButton(Subject element, EnumSet<Subject> enumSet) {
         switch (element) {
             case LITERATURE:
             case UKRAINIAN:

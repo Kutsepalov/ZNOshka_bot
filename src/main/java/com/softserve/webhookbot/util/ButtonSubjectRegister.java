@@ -1,6 +1,5 @@
 package com.softserve.webhookbot.util;
 
-import com.softserve.webhookbot.entity.VersionChanger;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Component
 public class ButtonSubjectRegister {
-    private final EnumSetUtil enumSetUtil;
     private final List<List<InlineKeyboardButton>> rowList;
     private final List<List<InlineKeyboardButton>> additionalSubjectRow;
     private final List<InlineKeyboardButton> ukraineRow;
@@ -25,7 +23,6 @@ public class ButtonSubjectRegister {
     private final List<InlineKeyboardButton> deleteRow;
     private final List<InlineKeyboardButton> findRow;
     private final InlineKeyboardMarkup inlineKeyboardMarkup;
-    private final VersionChanger versionChanger;
 
     private void clearAllRow() {
         additionalSubjectRow.clear();
@@ -61,7 +58,7 @@ public class ButtonSubjectRegister {
     private void addFindButton(Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         currentButton.setText("Знайти спеціальності" + " " + EmojiParser.parseToUnicode(":mag:"));
-        currentButton.setCallbackData("Search" + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        currentButton.setCallbackData("Search" + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
     }
@@ -75,7 +72,7 @@ public class ButtonSubjectRegister {
             counter--;
         }
         currentButton.setText("Видалити всі" + " " + counter + "/" + " " + "5" + EmojiParser.parseToUnicode(":white_check_mark:"));
-        currentButton.setCallbackData("Delete" + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        currentButton.setCallbackData("Delete" + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);
     }
@@ -116,7 +113,7 @@ public class ButtonSubjectRegister {
         } else {
             subjectButton.setText(text);
         }
-        subjectButton.setCallbackData(data + "/" + versionChanger.getVersion() + "/" + EnumSetUtil.code(enumSet));
+        subjectButton.setCallbackData(data + "/" + EnumSetUtil.code(enumSet));
     }
 
 }
