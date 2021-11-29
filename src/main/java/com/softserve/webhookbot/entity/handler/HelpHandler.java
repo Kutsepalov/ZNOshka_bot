@@ -11,7 +11,7 @@ public class HelpHandler{
     private Message message;
     private SendMessage sendMessage;
 
-    public SendMessage handler(Update update) {
+    public SendMessage handle(Update update) {
         message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         //TODO вытащить из файла правила пользования

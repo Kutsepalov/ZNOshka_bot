@@ -18,7 +18,7 @@ public class AdditionalMessageHandler {
         sendMessage.setReplyMarkup(null);
     }
 
-    public SendMessage handler(Update update) {
+    public SendMessage handle(Update update) {
         cleanRequests();
         message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));

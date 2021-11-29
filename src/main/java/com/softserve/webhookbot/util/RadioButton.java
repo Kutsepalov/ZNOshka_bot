@@ -108,7 +108,7 @@ public class RadioButton {
                 || (enumSet.size() < 7 && enumSet.contains(Subject.MATH_STANDARD) && enumSet.contains(Subject.CREATIVE_COMPETITION));
     }
 
-    public static boolean notEnough(EnumSet<Subject> enumSet) {
+    public static boolean selectedEnough(EnumSet<Subject> enumSet) {
         return enumSet.size() >= (enumSet.contains(Subject.MATH_STANDARD) ? 4 : 3);
     }
 

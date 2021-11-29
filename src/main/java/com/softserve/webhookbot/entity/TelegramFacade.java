@@ -35,8 +35,8 @@ public class TelegramFacade {
             } else if (callbackQuery.equals("Delete")) {
                 return subjectHandler.deleteSelectedSubject(update, enumSet);
             } else if (callbackQuery.equals("Search")) {
-                if (RadioButton.notEnough(enumSet)) {
-                    return specializationHandler.handleFiltered(update, enumSet);
+                if (RadioButton.selectedEnough(enumSet)) {
+                    return specializationHandler.handle(update);
                 } else {
                     return alertSender.sendNotEnoughSubject(update);
                 }
@@ -47,15 +47,15 @@ public class TelegramFacade {
                     enumSet = EnumSet.of(Subject.UKRAINIAN,Subject.MATH_PROFILE);
                     return subjectHandler.handle(update, enumSet);
                 case "Показати всі спеціальності":
-                    return specializationHandler.handler(update);
+                    return specializationHandler.handle(update);
                 case "Правила користування":
-                    return helpHandler.handler(update);
+                    return helpHandler.handle(update);
                 case "/start":
-                    return startHandler.handler(update);
+                    return startHandler.handle(update);
                 case "Наші контакти":
-                    return contactsHandler.handler(update);
+                    return contactsHandler.handle(update);
                 default:
-                    return additionalMessageHandler.handler(update);
+                    return additionalMessageHandler.handle(update);
             }
         }
         return null;
