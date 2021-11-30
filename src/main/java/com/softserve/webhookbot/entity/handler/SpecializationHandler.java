@@ -27,24 +27,16 @@ public class SpecializationHandler {
 
     public SendMessage handle(Update update) {
         cleanRequests();
-        sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         // прикрепть кнопки выбора специальности
-        sendMessage.setText("Cпеціальності:1");
+        sendMessage.setText("Cпеціальності:from menu");
         return sendMessage;
     }
 
-    public SendMessage handleFiltered(Update update, EnumSet<Subject> enumSet) {
-        message = update.getMessage();
-        sendMessage.setChatId(String.valueOf(message.getChatId()));
-        filteredSpecialty = filter.getFiltered(enumSet);
-        StringBuilder stringBuilder = new StringBuilder();
-        for (List<Specialty> value : filteredSpecialty.values()) {
-            for (Specialty currentSpecialty : value) {
-                stringBuilder.append(currentSpecialty).append("\n");
-            }
-        }
-        // прикрепть кнопки выбора специальности
-        sendMessage.setText(String.valueOf(stringBuilder));
+    public SendMessage handle(Update update, EnumSet<Subject> enumSet) {
+        cleanRequests();
+        sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        sendMessage.setText("Cпеціальності:from search");
         return sendMessage;
     }
 

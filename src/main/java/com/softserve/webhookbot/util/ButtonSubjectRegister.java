@@ -35,7 +35,7 @@ public class ButtonSubjectRegister {
     }
 
 
-    public InlineKeyboardMarkup getInlineSubjectButtons(Set<Subject> enumSet, int counter) {
+    public InlineKeyboardMarkup getInlineSubjectButtons(EnumSet<Subject> enumSet, int counter) {
         clearAllRow();
         addDeleteButton(counter, enumSet);
         for (Subject subject : Subject.values()) {
@@ -43,7 +43,7 @@ public class ButtonSubjectRegister {
             InlineKeyboardButton currentButton = new InlineKeyboardButton();
             String text = subject.getName();
             String data = subject.name();
-            subjectChoice(singleButtonRow, currentButton, (EnumSet<Subject>) enumSet, text, data);
+            subjectChoice(singleButtonRow, currentButton, enumSet, text, data);
         }
         rowList.add(ukraineRow);
         rowList.add(mathRow);
@@ -63,15 +63,24 @@ public class ButtonSubjectRegister {
         rowList.add(findRow);
     }
 
-    private void addDeleteButton(int counter, Set<Subject> enumSet) {
+    private void addDeleteButton(int counter, EnumSet<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
         if (enumSet.contains(Subject.CREATIVE_COMPETITION)) {
             counter--;
         }
-        if (enumSet.contains(Subject.MATH_STANDARD)) {
-            counter--;
+        if(RadioButton.notOutOfLimit(enumSet)) {
+            currentButton.setText("Видалити всі" + " "
+                    + counter + "/"
+                    + " " + "5"
+                    + EmojiParser.parseToUnicode(":white_check_mark:"));
         }
-        currentButton.setText("Видалити всі" + " " + counter + "/" + " " + "5" + EmojiParser.parseToUnicode(":white_check_mark:"));
+        else {
+            currentButton.setText("Видалити всі" + " "
+                    + counter + "/" + " "
+                    + "5" + EmojiParser.parseToUnicode(":white_check_mark:")
+                    + EmojiParser.parseToUnicode(":exclamation:")
+                    +" "+"(вибрано забагато предметів)");
+        }
         currentButton.setCallbackData("Delete" + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);

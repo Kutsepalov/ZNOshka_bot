@@ -3,6 +3,7 @@ package com.softserve.webhookbot.entity.handler;
 import com.softserve.webhookbot.util.ButtonSubjectRegister;
 import com.softserve.webhookbot.entity.sender.AlertSender;
 import com.softserve.webhookbot.enumeration.Subject;
+import com.softserve.webhookbot.util.EnumSetUtil;
 import com.softserve.webhookbot.util.RadioButton;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.util.EnumSet;
 
@@ -22,7 +24,6 @@ public class SubjectHandler {
     private EditMessageReplyMarkup editMessageReplyMarkup;
     private Message message;
     private SendMessage sendMessage;
-    private AlertSender alertSender;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
@@ -51,23 +52,12 @@ public class SubjectHandler {
 
     public BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element, EnumSet<Subject> enumSet) {
         if (enumSet.contains(element)) {
-            if (RadioButton.notOutOfLimit(enumSet)) {
-                RadioButton.removeMandatoryTick(element, enumSet);
-                return processingSelectionSubject(update, enumSet);
-            } else {
-                return alertSender.sendSubjectAlert(update);
-            }
-        } else if (RadioButton.notOutOfLimit(enumSet)) {
-            RadioButton.radioButtonImpl(element, enumSet);
+            RadioButton.removeMandatoryTick(element, enumSet);
             return processingSelectionSubject(update, enumSet);
         } else {
-            if (RadioButton.outOfLimitChecker(element, enumSet)) {
-                RadioButton.radioButtonImpl(element, enumSet);
-                return processingSelectionSubject(update, enumSet);
-            }
-            return alertSender.sendSubjectAlert(update);
+            RadioButton.radioButtonImpl(element, enumSet);
+            return processingSelectionSubject(update, enumSet);
         }
     }
-
 
 }

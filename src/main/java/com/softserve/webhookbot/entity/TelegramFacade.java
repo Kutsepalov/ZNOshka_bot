@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.EnumSet;
+
 @RequiredArgsConstructor
 @Component
 public class TelegramFacade {
@@ -22,21 +23,25 @@ public class TelegramFacade {
     private final ContactsHandler contactsHandler;
     private final AdditionalMessageHandler additionalMessageHandler;
     private final UpdateSessionParser updateSessionParser;
-    private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN,Subject.MATH_PROFILE);
+    private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
 
     BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
             updateSessionParser.parse(update);
             String callbackQuery = updateSessionParser.getCallback();
             enumSet = updateSessionParser.getEnumSet();
-             if (Subject.contains(callbackQuery)) {
+            if (Subject.contains(callbackQuery)) {
                 Subject element = Subject.valueOf(callbackQuery);
                 return subjectHandler.setAndRemoveTick(update, element, enumSet);
             } else if (callbackQuery.equals("Delete")) {
                 return subjectHandler.deleteSelectedSubject(update, enumSet);
             } else if (callbackQuery.equals("Search")) {
                 if (RadioButton.selectedEnough(enumSet)) {
-                    return specializationHandler.handle(update);
+                    if (RadioButton.notOutOfLimit(enumSet)) {
+                        return specializationHandler.handle(update, enumSet);
+                    } else {
+                        return alertSender.sendSubjectAlert(update);
+                    }
                 } else {
                     return alertSender.sendNotEnoughSubject(update);
                 }
@@ -44,7 +49,7 @@ public class TelegramFacade {
         } else if (update.hasMessage()) {
             switch (update.getMessage().getText()) {
                 case "Вибрати предмети":
-                    enumSet = EnumSet.of(Subject.UKRAINIAN,Subject.MATH_PROFILE);
+                    enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
                     return subjectHandler.handle(update, enumSet);
                 case "Показати всі спеціальності":
                     return specializationHandler.handle(update);

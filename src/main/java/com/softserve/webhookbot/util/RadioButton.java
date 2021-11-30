@@ -69,7 +69,7 @@ public class RadioButton {
                 enumSet.add(Subject.MATH_STANDARD);
                 break;
             case MATH_STANDARD:
-                enumSet.remove(element);
+                    enumSet.remove(element);
                 enumSet.add(Subject.MATH_PROFILE);
                 break;
             default:
@@ -77,43 +77,13 @@ public class RadioButton {
         }
     }
 
-
-    private static boolean isRadioButton(Subject element, EnumSet<Subject> enumSet) {
-        switch (element) {
-            case LITERATURE:
-            case UKRAINIAN:
-            case MATH_STANDARD:
-                return true;
-            case FRENCH:
-                return hasForeignLanguageSelected(enumSet, Subject.ENGLISH, Subject.GERMANY, Subject.SPANISH);
-            case ENGLISH:
-                return hasForeignLanguageSelected(enumSet, Subject.FRENCH, Subject.GERMANY, Subject.SPANISH);
-            case GERMANY:
-                return hasForeignLanguageSelected(enumSet, Subject.FRENCH, Subject.ENGLISH, Subject.SPANISH);
-            case SPANISH:
-                return hasForeignLanguageSelected(enumSet, Subject.FRENCH, Subject.ENGLISH, Subject.GERMANY);
-            default:
-                return false;
-        }
-    }
-
-    private static boolean hasForeignLanguageSelected(EnumSet<Subject> enumSet, Subject subject1, Subject subject2, Subject subject3) {
-        return enumSet.contains(subject1) || enumSet.contains(subject2) || enumSet.contains(subject3);
-    }
-
-    public static boolean notOutOfLimit(EnumSet<Subject> enumSet) {
-        return (enumSet.size() < 5)
-                || (enumSet.size() < 6 && enumSet.contains(Subject.CREATIVE_COMPETITION))
-                || (enumSet.size() < 6 && enumSet.contains(Subject.MATH_STANDARD))
-                || (enumSet.size() < 7 && enumSet.contains(Subject.MATH_STANDARD) && enumSet.contains(Subject.CREATIVE_COMPETITION));
-    }
-
     public static boolean selectedEnough(EnumSet<Subject> enumSet) {
         return enumSet.size() >= (enumSet.contains(Subject.MATH_STANDARD) ? 4 : 3);
     }
 
-    public static boolean outOfLimitChecker(Subject element, EnumSet<Subject> enumSet) {
-        return isRadioButton(element, enumSet) || element == Subject.CREATIVE_COMPETITION || element == Subject.MATH_STANDARD;
+
+    public static boolean notOutOfLimit(EnumSet<Subject> enumSet) {
+        return enumSet.size() <= (enumSet.contains(Subject.CREATIVE_COMPETITION) ? 6 : 5);
     }
 }
 
