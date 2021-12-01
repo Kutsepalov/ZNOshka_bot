@@ -1,25 +1,32 @@
 package com.softserve.webhookbot.enumeration;
 
 public enum Subject {
-    UKRAINIAN("Українська мова"),
-    LITERATURE("Українська мова і література"),
+    UKRAINIAN("Українська мова", 2),
+    LITERATURE("Українська мова і література", 3),
     MATH_STANDARD("Математика (стандартна)"),
     MATH_PROFILE("Математика (профільна)"),
     HISTORY("Історія України"),
-    ENGLISH("Англійська мова"),
-    SPANISH("Іспанська мова"),
-    GERMANY("Німецька мова"),
-    FRENCH("Французька мова"),
+    FOREIGN("Іноземна мова", 1),
+    ENGLISH("Англійська мова", 1),
+    SPANISH("Іспанська мова", 1),
+    GERMANY("Німецька мова", 1),
+    FRENCH("Французька мова", 1),
     BIOLOGY("Біологія"),
     GEOGRAPHY("Географія"),
     PHYSICS("Фізика"),
     CHEMISTRY("Хімія"),
     CREATIVE_COMPETITION("Творчий конкурс");
 
-    private String name;
+    private final String name;
+    private final int priority;
+
+    Subject(String name, int priority) {
+        this.name = name;
+        this.priority = priority;
+    }
 
     Subject(String name) {
-        this.name = name;
+        this(name, 0);
     }
 
     public String getName() {
@@ -34,4 +41,7 @@ public enum Subject {
         return false;
     }
 
+    public int getPriority() {
+        return priority;
+    }
 }
