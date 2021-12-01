@@ -4,6 +4,7 @@ import com.softserve.webhookbot.enumeration.Subject;
 
 import java.util.EnumSet;
 
+@Deprecated(forRemoval = true)
 public class Specialty {
     private String code;
     private String name;

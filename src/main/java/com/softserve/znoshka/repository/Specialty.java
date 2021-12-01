@@ -1,6 +1,9 @@
 package com.softserve.znoshka.repository;
 
+import com.softserve.webhookbot.enumeration.Subject;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class Specialty {
@@ -9,6 +12,8 @@ public class Specialty {
     private String first;
     private List<String> second;
     private List<String> third;
+
+    private EnumSet<Subject> subjects;
 
     public Specialty() {
         second = new ArrayList<>();
@@ -53,6 +58,14 @@ public class Specialty {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public void setSpecialties(EnumSet<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public EnumSet<Subject> getSubjects() {
+        return subjects;
     }
 
         @Override
