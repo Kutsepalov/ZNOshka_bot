@@ -1,11 +1,17 @@
 package com.softserve.webhookbot.controller;
 
 import com.softserve.webhookbot.entity.WebhookBot;
+import com.softserve.webhookbot.enumeration.Subject;
+import com.softserve.webhookbot.util.EnumSetUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import javax.annotation.PostConstruct;
@@ -49,8 +55,33 @@ public class UpdateController {
         }
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Void> root() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+        logger(update);
         return telegramBot.onWebhookUpdateReceived(update);
+    }
+
+    private void logger(Update update) {
+        Message msg;
+        if(update.hasMessage()) {
+            msg = update.getMessage();
+            log.info(chatData(msg) + " - \"" + msg.getText() + "\"");
+        } else if(update.hasCallbackQuery()) {
+            CallbackQuery cbq = update.getCallbackQuery();
+            msg = cbq.getMessage();
+            String[] data = update.getCallbackQuery().getData().split("/");
+            if (data[0].equals("Search")) {
+                log.info(chatData(msg) + " - SEARCH" + EnumSetUtil.decode(Integer.parseInt(data[1]), Subject.class));
+            }
+        }
+    }
+
+    private String chatData(Message msg) {
+        return "Chat[" + msg.getChatId() + "]:" + msg.getChat().getUserName();
     }
 }
