@@ -6,6 +6,7 @@ import com.softserve.webhookbot.enumeration.Subject;
 import com.softserve.webhookbot.util.RadioButton;
 import com.softserve.webhookbot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -25,6 +26,13 @@ public class TelegramFacade {
     private final UpdateSessionParser updateSessionParser;
     private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
 
+    @Value("${telegrambot.data.search}")
+    private String searchData;
+    @Value("${telegrambot.data.delete}")
+    private String deleteData;
+    @Value("${telegrambot.data.menu}")
+    private String menuData;
+
     BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
             updateSessionParser.parse(update);
@@ -33,9 +41,11 @@ public class TelegramFacade {
             if (Subject.contains(callbackQuery)) {
                 Subject element = Subject.valueOf(callbackQuery);
                 return subjectHandler.setAndRemoveTick(update, element, enumSet);
-            } else if (callbackQuery.equals("Delete")) {
+            } else if (callbackQuery.equals(deleteData)) {
                 return subjectHandler.deleteSelectedSubject(update, enumSet);
-            } else if (callbackQuery.equals("Search")) {
+            } else if (callbackQuery.equals(menuData)) {
+                    return subjectHandler.deleteCurrentMarkup(update);
+            } else if (callbackQuery.equals(searchData)) {
                 if (RadioButton.selectedEnough(enumSet)) {
                     if (RadioButton.notOutOfLimit(enumSet)) {
                         return specializationHandler.handle(update, enumSet);

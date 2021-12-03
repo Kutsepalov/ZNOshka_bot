@@ -3,6 +3,7 @@ package com.softserve.webhookbot.util;
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -15,6 +16,31 @@ import java.util.Set;
 @AllArgsConstructor
 @Component
 public class ButtonSubjectRegister {
+    @Value("${telegrambot.text.find-specialty}")
+    private String findSpecialty;
+    @Value("${telegrambot.text.delete-all}")
+    private  String deleteAll;
+    @Value("${telegrambot.text.out-of-limit}")
+    private  String outOfLimit;
+    @Value("${telegrambot.text.to-main-menu}")
+    private String toMainMenu;
+    @Value("${telegrambot.mark.tick}")
+    private  String tick;
+    @Value("${telegrambot.mark.find}")
+    private  String mag;
+    @Value("${telegrambot.mark.out-of-limit}")
+    private  String exclamationMark;
+    @Value("${telegrambot.mark.separator}")
+    private String separator;
+    @Value("${telegrambot.data.search}")
+    private String searchData;
+    @Value("${telegrambot.data.delete}")
+    private String deleteData;
+    @Value("${telegrambot.data.menu}")
+    private String menuData;
+    private static final int MAX_SIZE = 5;
+
+
     private final List<List<InlineKeyboardButton>> rowList;
     private final List<List<InlineKeyboardButton>> additionalSubjectRow;
     private final List<InlineKeyboardButton> ukraineRow;
@@ -22,9 +48,11 @@ public class ButtonSubjectRegister {
     private final List<InlineKeyboardButton> languageRow;
     private final List<InlineKeyboardButton> deleteRow;
     private final List<InlineKeyboardButton> findRow;
+    private final List<InlineKeyboardButton> menuRow;
     private final InlineKeyboardMarkup inlineKeyboardMarkup;
 
     private void clearAllRow() {
+        menuRow.clear();
         additionalSubjectRow.clear();
         rowList.clear();
         ukraineRow.clear();
@@ -50,6 +78,7 @@ public class ButtonSubjectRegister {
         rowList.addAll(additionalSubjectRow);
         rowList.add(languageRow);
         addFindButton(enumSet);
+        addBackToMenuButton(enumSet);
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         return inlineKeyboardMarkup;
@@ -57,10 +86,18 @@ public class ButtonSubjectRegister {
 
     private void addFindButton(Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
-        currentButton.setText("Знайти спеціальності" + " " + EmojiParser.parseToUnicode(":mag:"));
-        currentButton.setCallbackData("Search" + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        currentButton.setText(findSpecialty + " " + EmojiParser.parseToUnicode(mag));
+        currentButton.setCallbackData(searchData + separator + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
+    }
+
+    private void addBackToMenuButton(Set<Subject> enumSet) {
+        InlineKeyboardButton currentButton = new InlineKeyboardButton();
+        currentButton.setText(toMainMenu);
+        currentButton.setCallbackData(menuData + separator + EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        menuRow.add(currentButton);
+        rowList.add(menuRow);
     }
 
     private void addDeleteButton(int counter, EnumSet<Subject> enumSet) {
@@ -68,20 +105,19 @@ public class ButtonSubjectRegister {
         if (enumSet.contains(Subject.CREATIVE_COMPETITION)) {
             counter--;
         }
-        if(RadioButton.notOutOfLimit(enumSet)) {
-            currentButton.setText("Видалити всі" + " "
-                    + counter + "/"
-                    + " " + "5"
-                    + EmojiParser.parseToUnicode(":white_check_mark:"));
+        if (RadioButton.notOutOfLimit(enumSet)) {
+            currentButton.setText(deleteAll + " "
+                    + counter + separator
+                    + " " + MAX_SIZE
+                    + EmojiParser.parseToUnicode(tick));
+        } else {
+            currentButton.setText(deleteAll + " "
+                    + counter + separator + " "
+                    + MAX_SIZE + EmojiParser.parseToUnicode(tick)
+                    + EmojiParser.parseToUnicode(exclamationMark)
+                    + " " + outOfLimit);
         }
-        else {
-            currentButton.setText("Видалити всі" + " "
-                    + counter + "/" + " "
-                    + "5" + EmojiParser.parseToUnicode(":white_check_mark:")
-                    + EmojiParser.parseToUnicode(":exclamation:")
-                    +" "+"(вибрано забагато предметів)");
-        }
-        currentButton.setCallbackData("Delete" + "/" + EnumSetUtil.code((EnumSet<Subject>) enumSet));
+        currentButton.setCallbackData(deleteData + separator + EnumSetUtil.code(enumSet));
         deleteRow.add(currentButton);
         rowList.add(deleteRow);
     }
@@ -118,11 +154,11 @@ public class ButtonSubjectRegister {
 
     private void setTextAndData(InlineKeyboardButton subjectButton, EnumSet<Subject> enumSet, String text, String data) {
         if (enumSet.contains(Subject.valueOf(data))) {
-            subjectButton.setText(EmojiParser.parseToUnicode(":white_check_mark:") + text);
+            subjectButton.setText(EmojiParser.parseToUnicode(tick) + text);
         } else {
             subjectButton.setText(text);
         }
-        subjectButton.setCallbackData(data + "/" + EnumSetUtil.code(enumSet));
+        subjectButton.setCallbackData(data + separator + EnumSetUtil.code(enumSet));
     }
 
 }
