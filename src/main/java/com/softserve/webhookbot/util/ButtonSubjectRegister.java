@@ -2,7 +2,7 @@ package com.softserve.webhookbot.util;
 
 import com.softserve.webhookbot.enumeration.Subject;
 import com.vdurmont.emoji.EmojiParser;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -13,7 +13,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class ButtonSubjectRegister {
     @Value("${telegrambot.text.find-specialty}")
@@ -36,8 +36,6 @@ public class ButtonSubjectRegister {
     private String searchData;
     @Value("${telegrambot.data.delete}")
     private String deleteData;
-    @Value("${telegrambot.data.menu}")
-    private String menuData;
     private static final int MAX_SIZE = 5;
 
 
@@ -78,7 +76,6 @@ public class ButtonSubjectRegister {
         rowList.addAll(additionalSubjectRow);
         rowList.add(languageRow);
         addFindButton(enumSet);
-        addBackToMenuButton(enumSet);
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         return inlineKeyboardMarkup;
@@ -90,14 +87,6 @@ public class ButtonSubjectRegister {
         currentButton.setCallbackData(searchData + separator + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
-    }
-
-    private void addBackToMenuButton(Set<Subject> enumSet) {
-        InlineKeyboardButton currentButton = new InlineKeyboardButton();
-        currentButton.setText(toMainMenu);
-        currentButton.setCallbackData(menuData + separator + EnumSetUtil.code((EnumSet<Subject>) enumSet));
-        menuRow.add(currentButton);
-        rowList.add(menuRow);
     }
 
     private void addDeleteButton(int counter, EnumSet<Subject> enumSet) {

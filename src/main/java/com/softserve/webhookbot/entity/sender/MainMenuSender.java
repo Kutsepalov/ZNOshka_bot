@@ -1,6 +1,7 @@
 package com.softserve.webhookbot.entity.sender;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -8,14 +9,22 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class MainMenuSender {
-    private ReplyKeyboardMarkup replyKeyboardMarkup;
-    private List<KeyboardRow> rows;
+    private final ReplyKeyboardMarkup replyKeyboardMarkup;
+    private final List<KeyboardRow> rows;
+    @Value("${telegrambot.menu-message.chose-subject}")
+    private String choseSubject;
+    @Value("${telegrambot.menu-message.show-specialties}")
+    private String showSpecialties;
+    @Value("${telegrambot.menu-message.show-help}")
+    private String showHelp;
+    @Value("${telegrambot.menu-message.show-contact}")
+    private String showContact;
 
 
-     public ReplyKeyboardMarkup getMenuReply() {
+    public ReplyKeyboardMarkup getMenuReply() {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         replyKeyboardMarkup.setSelective(true);
@@ -23,10 +32,10 @@ public class MainMenuSender {
         KeyboardRow row2 = new KeyboardRow();
         KeyboardRow row3 = new KeyboardRow();
         KeyboardRow row4 = new KeyboardRow();
-        row1.add(new KeyboardButton("Вибрати предмети"));
-        row2.add(new KeyboardButton("Показати всі спеціальності"));
-        row3.add(new KeyboardButton("Правила користування"));
-        row4.add(new KeyboardButton("Наші контакти"));
+        row1.add(new KeyboardButton(choseSubject));
+        row2.add(new KeyboardButton(showSpecialties));
+        row3.add(new KeyboardButton(showHelp));
+        row4.add(new KeyboardButton(showContact));
         rows.clear();
         rows.add(row1);
         rows.add(row2);

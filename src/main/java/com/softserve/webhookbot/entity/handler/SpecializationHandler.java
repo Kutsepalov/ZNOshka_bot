@@ -1,12 +1,11 @@
 package com.softserve.webhookbot.entity.handler;
 
+import com.softserve.webhookbot.enumeration.Subject;
 import com.softserve.webhookbot.Filter;
 import com.softserve.webhookbot.Specialty;
-import com.softserve.webhookbot.enumeration.Subject;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.EnumSet;

@@ -1,8 +1,8 @@
 package com.softserve.webhookbot.entity;
 
 import com.softserve.webhookbot.entity.handler.*;
-import com.softserve.webhookbot.entity.sender.AlertSender;
 import com.softserve.webhookbot.enumeration.Subject;
+import com.softserve.webhookbot.entity.sender.AlertSender;
 import com.softserve.webhookbot.util.RadioButton;
 import com.softserve.webhookbot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
@@ -30,21 +30,16 @@ public class TelegramFacade {
     private String searchData;
     @Value("${telegrambot.data.delete}")
     private String deleteData;
-    @Value("${telegrambot.data.menu}")
-    private String menuData;
 
     BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
-            updateSessionParser.parse(update);
-            String callbackQuery = updateSessionParser.getCallback();
-            enumSet = updateSessionParser.getEnumSet();
+            String callbackQuery = updateSessionParser.getCallback(update);
+            enumSet = updateSessionParser.getEnumSet(update);
             if (Subject.contains(callbackQuery)) {
                 Subject element = Subject.valueOf(callbackQuery);
                 return subjectHandler.setAndRemoveTick(update, element, enumSet);
             } else if (callbackQuery.equals(deleteData)) {
                 return subjectHandler.deleteSelectedSubject(update, enumSet);
-            } else if (callbackQuery.equals(menuData)) {
-                    return subjectHandler.deleteCurrentMarkup(update);
             } else if (callbackQuery.equals(searchData)) {
                 if (RadioButton.selectedEnough(enumSet)) {
                     if (RadioButton.notOutOfLimit(enumSet)) {
