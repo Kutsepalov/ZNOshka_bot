@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DataProcessor {
+public final class DataProcessor {
 
     public static List<BranchOfKnowledge> createBranches() throws IOException {
         SpecialtyToSubject sts = new Parser().doParse();
