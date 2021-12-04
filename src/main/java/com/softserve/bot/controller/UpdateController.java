@@ -1,5 +1,7 @@
 package com.softserve.bot.controller;
 
+import com.softserve.bot.model.Subject;
+import com.softserve.bot.util.EnumSetUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;

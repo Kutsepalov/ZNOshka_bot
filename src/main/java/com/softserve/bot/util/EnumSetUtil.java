@@ -14,7 +14,7 @@ public class EnumSetUtil {
         return res;
     }
 
-    static <T extends Enum<T>> EnumSet<T> decode(int code, Class<T> tClass) {
+    public static <T extends Enum<T>> EnumSet<T> decode(int code, Class<T> tClass) {
         EnumSet<T> result = EnumSet.allOf(tClass);
         for (var e : result) {
             if (((1 << e.ordinal()) & code) == 0) {
