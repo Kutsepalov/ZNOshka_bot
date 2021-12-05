@@ -6,7 +6,6 @@ import com.softserve.bot.model.Subject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,10 @@ public class Filter {
      */
     private static List<BranchOfKnowledge> branches;
 
+    private Filter() {
+
+    }
+
     static {
         try {
             branches = DataProcessor.createBranches();
@@ -38,7 +41,7 @@ public class Filter {
      * @param subjects set of subjects chosen by user
      * @return filtered map branch - specialties, that fits input data
      */
-    public static Map<String, List<Specialty>> getFiltered(EnumSet<Subject> subjects) {
+    public static Map<String, List<Specialty>> getFiltered(Set<Subject> subjects) {
         Map<String, List<Specialty>> result = new HashMap<>();
 
         if (subjects.stream().noneMatch(s -> s.getPriority() > 1)) {
@@ -79,15 +82,15 @@ public class Filter {
         return result;
     }
 
-    static boolean specialtyMatches(Specialty specialty, EnumSet<Subject> userSubjects) {
+    static boolean specialtyMatches(Specialty specialty, Set<Subject> userSubjects) {
         return firstMatches(specialty, userSubjects) && otherMatch(specialty, userSubjects);
     }
 
-    static boolean firstMatches(Specialty specialty, EnumSet<Subject> userSubjects) {
+    static boolean firstMatches(Specialty specialty, Set<Subject> userSubjects) {
         return userSubjects.contains(specialty.getFirst()) || userSubjects.contains(Subject.LITERATURE);
     }
 
-    static boolean otherMatch(Specialty specialty, EnumSet<Subject> userSubjects) {
+    static boolean otherMatch(Specialty specialty, Set<Subject> userSubjects) {
         return specialty.getSecond()
                 .stream()
                 .anyMatch(v -> userSubjects

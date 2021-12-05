@@ -19,16 +19,6 @@ public class Parser {
         specialtyToSubject = new SpecialtyToSubject();
     }
 
-//    private Properties getPathToExcel() {
-//        Properties props = new Properties();
-//        try (InputStream in = this.getClass().getResourceAsStream("excel.properties")) {
-//            props.load(in);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return props;
-//    }
-
     private Subject checkSubject(String subjectName) {
         switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
             case "українська мова":
@@ -60,7 +50,7 @@ public class Parser {
             case "історія україни":
                 return Subject.HISTORY;
             default:
-                throw new RuntimeException("There is no data to parse");
+                throw new IllegalArgumentException("There is no data to parse");
         }
     }
 

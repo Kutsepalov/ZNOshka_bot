@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 @AllArgsConstructor
 @Component
-public class StartHandler{
+public class StartHandler implements Handler {
     private final MainMenuSender mainMenuSender;
     private Message message;
     private final SendMessage sendMessage;

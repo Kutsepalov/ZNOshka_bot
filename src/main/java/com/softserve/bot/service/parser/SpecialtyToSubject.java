@@ -46,24 +46,6 @@ public class SpecialtyToSubject {
         return specialtyIdToName;
     }
 
-    public void printFirst(){
-        for(String key : domainIdToName.keySet()){
-            System.out.println("Key: " + key + " value: " + domainIdToName.get(key));
-        }
-    }
-
-    public void printSecond(){
-        for(String key : domainIdToSpecialtyId.keySet()){
-            System.out.println("Key: " + key + " value: " + domainIdToSpecialtyId.get(key));
-        }
-    }
-    //TODO make sort by key
-    public void printThird(){
-        for(String key : specialtyIdToName.keySet()){
-            System.out.println("Key: " + key + " value: " + specialtyIdToName.get(key));
-        }
-    }
-
     public void setSpecialtyIdToName(BiMap<String, Specialty> specialtyIdToName) {
         this.specialtyIdToName = specialtyIdToName;
     }

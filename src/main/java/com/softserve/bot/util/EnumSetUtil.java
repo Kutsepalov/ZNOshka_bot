@@ -5,7 +5,12 @@ import java.util.EnumSet;
 import java.util.Set;
 
 
-public class EnumSetUtil {
+public final class EnumSetUtil {
+
+    private EnumSetUtil() {
+
+    }
+
     static <T extends Enum<T>> int code(EnumSet<T> set) {
         int res = 0;
         for (var e : set) {
@@ -23,7 +28,7 @@ public class EnumSetUtil {
         }
         return result;
     }
-    public static void addTick(Subject element, Set enumSet) {
+    public static void addTick(Subject element, Set<Subject> enumSet) {
         switch (element) {
             case UKRAINIAN:
                 enumSet.remove(Subject.LITERATURE);
@@ -70,7 +75,7 @@ public class EnumSetUtil {
         }
     }
 
-    public static void removeTick(Subject element, Set enumSet) {
+    public static void removeTick(Subject element, Set<Subject> enumSet) {
         switch (element) {
             case LITERATURE:
                 enumSet.remove(element);
@@ -93,12 +98,12 @@ public class EnumSetUtil {
         }
     }
 
-    public static boolean selectedEnough(Set enumSet) {
+    public static boolean selectedEnough(Set<Subject> enumSet) {
         return enumSet.size() >= (enumSet.contains(Subject.MATH_STANDARD) ? 4 : 3);
     }
 
 
-    public static boolean notOutOfLimit(Set enumSet) {
+    public static boolean notOutOfLimit(Set<Subject> enumSet) {
         return enumSet.size() <= (enumSet.contains(Subject.CREATIVE_COMPETITION) ? 6 : 5);
     }
 }

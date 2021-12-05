@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DataProcessor {
+    private DataProcessor() {
+
+    }
 
     public static List<BranchOfKnowledge> createBranches() throws IOException {
         SpecialtyToSubject sts = new Parser().doParse();
