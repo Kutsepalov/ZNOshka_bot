@@ -1,4 +1,4 @@
-package com.softserve.bot.service.repository;
+package com.softserve.bot.model;
 
 import com.softserve.bot.model.Subject;
 
@@ -67,3 +67,4 @@ public class Specialty {
                 '}';
     }
 }
+
