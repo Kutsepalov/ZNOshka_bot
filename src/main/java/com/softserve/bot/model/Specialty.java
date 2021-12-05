@@ -1,5 +1,7 @@
 package com.softserve.bot.model;
 
+import com.softserve.bot.model.Subject;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,3 +67,4 @@ public class Specialty {
                 '}';
     }
 }
+
