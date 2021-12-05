@@ -1,18 +1,16 @@
 package com.softserve.bot.view.handler;
 
+import com.softserve.bot.model.BotMessages;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.util.ButtonSubjectRegister;
 import com.softserve.bot.util.EnumSetUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.Set;
@@ -23,21 +21,19 @@ public class SubjectHandler {
     private final ButtonSubjectRegister buttonSubjectRegister;
     private final EditMessageReplyMarkup editMessageReplyMarkup;
     private final SendMessage sendMessage;
-
-    @Value("${telegrambot.message.all-subjects}")
-    private String allSubjects;
-
+    private final BotMessages messages;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
     }
 
-    public EditMessageReplyMarkup deleteSelectedSubject(Update update, Set enumSet) {
-        enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+    public EditMessageReplyMarkup deleteSelectedSubject(Update update, Set<Subject> enumSet) {
+        enumSet.clear();
+        enumSet.addAll(EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE));
         return processingSelectionSubject(update, enumSet);
     }
 
-    private EditMessageReplyMarkup processingSelectionSubject(Update update, Set enumSet) {
+    private EditMessageReplyMarkup processingSelectionSubject(Update update, Set<Subject> enumSet) {
         editMessageReplyMarkup.setReplyMarkup(null);
         editMessageReplyMarkup.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         editMessageReplyMarkup.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
@@ -46,23 +42,22 @@ public class SubjectHandler {
     }
 
 
-    public SendMessage handle(Update update, Set enumSet) {
+    public SendMessage handle(Update update, Set<Subject> enumSet) {
         cleanRequests();
         Message message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));
-        sendMessage.setText(allSubjects);
+        sendMessage.setText(messages.getAllSubjects());
         return sendMessage;
     }
 
-    public BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element, Set enumSet) {
+    public BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element, Set<Subject> enumSet) {
         if (enumSet.contains(element)) {
             EnumSetUtil.removeTick(element, enumSet);
-            return processingSelectionSubject(update, enumSet);
         } else {
             EnumSetUtil.addTick(element, enumSet);
-            return processingSelectionSubject(update, enumSet);
         }
+        return processingSelectionSubject(update, enumSet);
     }
 
 }

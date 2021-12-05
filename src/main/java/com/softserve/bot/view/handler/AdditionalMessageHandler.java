@@ -1,8 +1,8 @@
 package com.softserve.bot.view.handler;
 
+import com.softserve.bot.model.BotMessages;
 import com.softserve.bot.view.sender.MainMenuSender;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -13,8 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class AdditionalMessageHandler {
     private final MainMenuSender mainMenuSender;
     private final SendMessage sendMessage;
-    @Value("${telegrambot.message.show-menu}")
-    private String menu;
+    private final BotMessages messages;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
@@ -24,7 +23,7 @@ public class AdditionalMessageHandler {
         cleanRequests();
         Message message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setText(menu);
+        sendMessage.setText(messages.getShowMenu());
         sendMessage.setReplyMarkup(mainMenuSender.getMenuReply());
         return sendMessage;
     }
