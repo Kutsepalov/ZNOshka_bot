@@ -1,14 +1,12 @@
 package com.softserve.bot.view.handler;
 
-import com.softserve.bot.model.Subject;
-import com.softserve.bot.service.Filter;
-import com.softserve.bot.service.Specialty;
+import com.softserve.bot.model.Specialty;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import java.util.EnumSet;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Component
 public class SpecializationHandler {
-    private Filter filter;
+    //private Filter filter;
     private Map<String, List<Specialty>> filteredSpecialty;
     private Message message;
     private SendMessage sendMessage;

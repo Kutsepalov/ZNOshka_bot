@@ -1,5 +1,7 @@
-package com.softserve.bot.service.repository;
+package com.softserve.bot.service;
 
+import com.softserve.bot.model.BranchOfKnowledge;
+import com.softserve.bot.model.Specialty;
 import com.softserve.bot.service.parser.Parser;
 import com.softserve.bot.service.parser.SpecialtyToSubject;
 

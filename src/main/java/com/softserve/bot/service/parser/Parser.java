@@ -1,7 +1,8 @@
 package com.softserve.bot.service.parser;
 
+
+import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
-import com.softserve.bot.service.repository.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -45,7 +46,7 @@ public class Parser {
             case "французька мова":
                 return Subject.FRENCH;
             case "іноземна мова":
-                return Subject.FOREIGN_LANGUAGE;
+                return Subject.FOREIGN;
             case "біологія":
                 return Subject.BIOLOGY;
             case "географія":
@@ -171,20 +172,9 @@ public class Parser {
             if (!res[i].isEmpty()) {
                 specialty.getSecond().add(checkSubject(res[i]));
             }
-
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
-    }
-
-    public static void main(String[] args) throws IOException {
-        Parser parser = new Parser();
-        SpecialtyToSubject sts = parser.doParse();
-        sts.printFirst();
-        System.out.println("====================================================================================================================================================================================================================================");
-        sts.printSecond();
-        System.out.println("=============================================================================================================================================================================================================================================================================================");
-        sts.printThird();
     }
 
 }
