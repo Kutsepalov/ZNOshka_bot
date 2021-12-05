@@ -1,12 +1,12 @@
 package com.softserve.bot.view;
 
+import com.softserve.bot.model.BotMessages;
 import com.softserve.bot.util.EnumSetUtil;
 import com.softserve.bot.view.handler.*;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.view.sender.AlertSender;
 import com.softserve.bot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -24,12 +24,8 @@ public class TelegramFacade {
     private final ContactsHandler contactsHandler;
     private final AdditionalMessageHandler additionalMessageHandler;
     private final UpdateSessionParser updateSessionParser;
+    private final BotMessages messages;
     private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
-
-    @Value("${telegrambot.data.search}")
-    private String searchData;
-    @Value("${telegrambot.data.delete}")
-    private String deleteData;
 
     public BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
@@ -38,9 +34,9 @@ public class TelegramFacade {
             if (Subject.contains(callbackQuery)) {
                 Subject element = Subject.valueOf(callbackQuery);
                 return subjectHandler.setAndRemoveTick(update, element, enumSet);
-            } else if (callbackQuery.equals(deleteData)) {
+            } else if (callbackQuery.equals(messages.getDeleteData())) {
                 return subjectHandler.deleteSelectedSubject(update, enumSet);
-            } else if (callbackQuery.equals(searchData)) {
+            } else if (callbackQuery.equals(messages.getSearchData())) {
                 if (EnumSetUtil.selectedEnough(enumSet)) {
                     if (EnumSetUtil.notOutOfLimit(enumSet)) {
                         return specializationHandler.handle(update, enumSet);
@@ -70,5 +66,4 @@ public class TelegramFacade {
         }
         return null;
     }
-
 }

@@ -1,7 +1,7 @@
 package com.softserve.bot.view.sender;
 
+import com.softserve.bot.model.BotMessages;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -14,15 +14,8 @@ import java.util.List;
 public class MainMenuSender {
     private final ReplyKeyboardMarkup replyKeyboardMarkup;
     private final List<KeyboardRow> rows;
-    @Value("${telegrambot.menu-message.chose-subject}")
-    private String choseSubject;
-    @Value("${telegrambot.menu-message.show-specialties}")
-    private String showSpecialties;
-    @Value("${telegrambot.menu-message.show-help}")
-    private String showHelp;
-    @Value("${telegrambot.menu-message.show-contact}")
-    private String showContact;
 
+    private final BotMessages messages;
 
     public ReplyKeyboardMarkup getMenuReply() {
         replyKeyboardMarkup.setResizeKeyboard(true);
@@ -32,10 +25,10 @@ public class MainMenuSender {
         KeyboardRow row2 = new KeyboardRow();
         KeyboardRow row3 = new KeyboardRow();
         KeyboardRow row4 = new KeyboardRow();
-        row1.add(new KeyboardButton(choseSubject));
-        row2.add(new KeyboardButton(showSpecialties));
-        row3.add(new KeyboardButton(showHelp));
-        row4.add(new KeyboardButton(showContact));
+        row1.add(new KeyboardButton(messages.getChooseSubjectMenu()));
+        row2.add(new KeyboardButton(messages.getShowSpecialtiesMenu()));
+        row3.add(new KeyboardButton(messages.getRulesMenu()));
+        row4.add(new KeyboardButton(messages.getContactsMenu()));
         rows.clear();
         rows.add(row1);
         rows.add(row2);

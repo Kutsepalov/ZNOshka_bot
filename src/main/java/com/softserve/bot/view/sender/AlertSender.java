@@ -1,22 +1,22 @@
 package com.softserve.bot.view.sender;
 
-
-import org.springframework.beans.factory.annotation.Value;
+import com.softserve.bot.model.BotMessages;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+@AllArgsConstructor
 @Component
 public class AlertSender {
-    @Value("${telegrambot.alert.out-of-limit}")
-    private String outOfLimit;
-    @Value("${telegrambot.alert.not-enough}")
-    private String notEnough;
+
+    private BotMessages messages;
      public AnswerCallbackQuery sendSubjectAlert(Update update) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(false);
-        answerCallbackQuery.setText(outOfLimit);
+        answerCallbackQuery.setText(messages.getTooManyAlert());
         return answerCallbackQuery;
     }
 
@@ -24,7 +24,7 @@ public class AlertSender {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(false);
-        answerCallbackQuery.setText(notEnough);
+        answerCallbackQuery.setText(messages.getNotEnoughAlert());
         return answerCallbackQuery;
     }
 }
