@@ -1,20 +1,20 @@
 package com.softserve.bot.service.repository;
 
-import com.softserve.webhookbot.enumeration.Subject;
+import com.softserve.bot.model.Subject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Specialty {
     private String name;
     private String code;
     private Subject first;
-    private List<Subject> second;
-    private List<Subject> third;
+    private Set<Subject> second;
+    private Set<Subject> third;
 
     public Specialty() {
-        second = new ArrayList<>();
-        third = new ArrayList<>();
+        second = new HashSet<>();
+        third = new HashSet<>();
     }
 
     public String getName() {
@@ -33,19 +33,19 @@ public class Specialty {
         this.first = first;
     }
 
-    public List<Subject> getSecond() {
+    public Set<Subject> getSecond() {
         return second;
     }
 
-    public void setSecond(List<Subject> second) {
+    public void setSecond(Set<Subject> second) {
         this.second = second;
     }
 
-    public List<Subject> getThird() {
+    public Set<Subject> getThird() {
         return third;
     }
 
-    public void setThird(List<Subject> third) {
+    public void setThird(Set<Subject> third) {
         this.third = third;
     }
 

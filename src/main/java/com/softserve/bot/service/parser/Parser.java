@@ -1,5 +1,6 @@
 package com.softserve.bot.service.parser;
 
+import com.softserve.bot.model.Subject;
 import com.softserve.bot.service.repository.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -13,7 +14,7 @@ import java.util.List;
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
 
-    public Parser(){
+    public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
     }
 
@@ -28,59 +29,42 @@ public class Parser {
 //    }
 
     private Subject checkSubject(String subjectName) {
-        Subject subj;
-
         switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
             case "українська мова":
-                subj = Subject.UKRAINIAN;
-                break;
+                return Subject.UKRAINIAN;
             case "українська мова і література":
-                subj = Subject.LITERATURE;
-                break;
+                return Subject.LITERATURE;
             case "математика":
-                subj = Subject.MATH_STANDARD;
-                break;
+                return Subject.MATH_STANDARD;
             case "англійська мова":
-                subj = Subject.ENGLISH;
-                break;
+                return Subject.ENGLISH;
             case "іспанська мова":
-                subj = Subject.SPANISH;
-                break;
+                return Subject.SPANISH;
             case "німецька мова":
-                subj = Subject.GERMANY;
-                break;
+                return Subject.GERMANY;
             case "французька мова":
-                subj = Subject.FRENCH;
-                break;
+                return Subject.FRENCH;
             case "іноземна мова":
-                subj = Subject.FOREIGN_LANGUAGE;
-                break;
+                return Subject.FOREIGN_LANGUAGE;
             case "біологія":
-                subj = Subject.BIOLOGY;
-                break;
+                return Subject.BIOLOGY;
             case "географія":
-                subj = Subject.GEOGRAPHY;
-                break;
+                return Subject.GEOGRAPHY;
             case "фізика":
-                subj = Subject.PHYSICS;
-                break;
+                return Subject.PHYSICS;
             case "хімія":
-                subj = Subject.CHEMISTRY;
-                break;
+                return Subject.CHEMISTRY;
             case "творчий конкурс":
-                subj = Subject.CREATIVE_COMPETITION;
-                break;
+                return Subject.CREATIVE_COMPETITION;
             case "історія україни":
-                subj = Subject.HISTORY;
-                break;
+                return Subject.HISTORY;
             default:
-                subj = null;
+                throw new RuntimeException("There is no data to parse");
         }
-        return subj;
     }
 
     public SpecialtyToSubject doParse() throws IOException {
-        try(XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
+        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
             XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
             XSSFRow row;
             String domainName;
@@ -100,8 +84,23 @@ public class Parser {
                 }
 
             }
+            checkForEmptySubjectInSpecialty(specialtyToSubject);
             return specialtyToSubject;
         }
+    }
+
+    private void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
+        List<String> badKeys = new ArrayList<>();
+        for (String key : sts.getSpecialtyIdToName().keySet()){
+            if(sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
+            && sts.getSpecialtyIdToName().get(key).getThird().isEmpty()){
+                badKeys.add(key);
+            }
+        }
+        for (String key : badKeys){
+            sts.getSpecialtyIdToName().remove(key);
+        }
+
     }
 
     protected void setDomainToSpecialty(SpecialtyToSubject sts, XSSFSheet sheet, String curDomainId, int curRow) {
@@ -112,7 +111,7 @@ public class Parser {
             if (sheet.getRow(i) != null) {
                 row = sheet.getRow(i);
             }
-            if(row == null) throw new NullPointerException();
+            if (row == null) throw new NullPointerException();
             if (row.getCell(0).toString().isEmpty() || curDomainId.equals(row.getCell(0).toString())) {
                 specialId.add(setTrueIdFormat(row, 2));
             } else {
@@ -150,8 +149,15 @@ public class Parser {
     protected void setSpecialty(SpecialtyToSubject sts, XSSFRow row) {
         String[] res = row.getCell(7).toString().split("або");
         Specialty specialty = new Specialty();
-        specialty.setName(row.getCell(3).toString());
-        specialty.setFirst(checkSubject(row.getCell(4).toString()));
+        if (!row.getCell(2).toString().isEmpty()) {
+            specialty.setCode(row.getCell(2).toString());
+        }
+        if (!row.getCell(3).toString().isEmpty()) {
+            specialty.setName(row.getCell(3).toString());
+        }
+        if (!row.getCell(4).toString().isEmpty() && row.getCell(4).toString() != null) {
+            specialty.setFirst(checkSubject(row.getCell(4).toString()));
+        }
 
         for (int i = 0; i < res.length; i++) {
             if (!res[i].equals("")) {
@@ -162,10 +168,23 @@ public class Parser {
         res = row.getCell(5).toString().split("або");
 
         for (int i = 0; i < res.length; i++) {
-            specialty.getSecond().add(checkSubject(res[i]));
+            if (!res[i].isEmpty()) {
+                specialty.getSecond().add(checkSubject(res[i]));
+            }
+
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Parser parser = new Parser();
+        SpecialtyToSubject sts = parser.doParse();
+        sts.printFirst();
+        System.out.println("====================================================================================================================================================================================================================================");
+        sts.printSecond();
+        System.out.println("=============================================================================================================================================================================================================================================================================================");
+        sts.printThird();
     }
 
 }
