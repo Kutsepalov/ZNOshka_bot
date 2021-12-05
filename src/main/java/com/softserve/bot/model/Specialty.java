@@ -1,7 +1,5 @@
 package com.softserve.bot.model;
 
-import com.softserve.webhookbot.enumeration.Subject;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
