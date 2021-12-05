@@ -1,32 +1,26 @@
 package com.softserve.bot.model;
 
 public enum Subject {
-    UKRAINIAN("Українська мова", 2),
-    LITERATURE("Українська мова і література", 3),
+    UKRAINIAN("Українська мова"),
+    LITERATURE("Українська мова і література"),
     MATH_STANDARD("Математика (стандартна)"),
     MATH_PROFILE("Математика (профільна)"),
     HISTORY("Історія України"),
-    FOREIGN("Іноземна мова", 1),
-    ENGLISH("Англійська мова", 1),
-    SPANISH("Іспанська мова", 1),
-    GERMANY("Німецька мова", 1),
-    FRENCH("Французька мова", 1),
+    FOREIGN_LANGUAGE("Іноземна мова"),
+    ENGLISH("Англійська мова"),
+    SPANISH("Іспанська мова"),
+    GERMANY("Німецька мова"),
+    FRENCH("Французька мова"),
     BIOLOGY("Біологія"),
     GEOGRAPHY("Географія"),
     PHYSICS("Фізика"),
     CHEMISTRY("Хімія"),
     CREATIVE_COMPETITION("Творчий конкурс");
 
-    private final String name;
-    private final int priority;
-
-    Subject(String name, int priority) {
-        this.name = name;
-        this.priority = priority;
-    }
+    private String name;
 
     Subject(String name) {
-        this(name, 0);
+        this.name = name;
     }
 
     public String getName() {
@@ -41,7 +35,4 @@ public enum Subject {
         return false;
     }
 
-    public int getPriority() {
-        return priority;
-    }
 }

@@ -1,4 +1,6 @@
-package com.softserve.bot.model;
+package com.softserve.bot.service.repository;
+
+import com.softserve.bot.model.Subject;
 
 import java.util.HashSet;
 import java.util.Set;

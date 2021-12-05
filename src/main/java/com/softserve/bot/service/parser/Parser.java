@@ -1,52 +1,106 @@
 package com.softserve.bot.service.parser;
 
-import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import com.softserve.bot.service.repository.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class Parser {
+    private final SpecialtyToSubject specialtyToSubject;
 
-    public Properties getPathToExcel() throws IOException {
-        Properties props = new Properties();
-        try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("excel.properties")) {
-            props.load(in);
+    public Parser() {
+        specialtyToSubject = new SpecialtyToSubject();
+    }
+
+//    private Properties getPathToExcel() {
+//        Properties props = new Properties();
+//        try (InputStream in = this.getClass().getResourceAsStream("excel.properties")) {
+//            props.load(in);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return props;
+//    }
+
+    private Subject checkSubject(String subjectName) {
+        switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
+            case "українська мова":
+                return Subject.UKRAINIAN;
+            case "українська мова і література":
+                return Subject.LITERATURE;
+            case "математика":
+                return Subject.MATH_STANDARD;
+            case "англійська мова":
+                return Subject.ENGLISH;
+            case "іспанська мова":
+                return Subject.SPANISH;
+            case "німецька мова":
+                return Subject.GERMANY;
+            case "французька мова":
+                return Subject.FRENCH;
+            case "іноземна мова":
+                return Subject.FOREIGN_LANGUAGE;
+            case "біологія":
+                return Subject.BIOLOGY;
+            case "географія":
+                return Subject.GEOGRAPHY;
+            case "фізика":
+                return Subject.PHYSICS;
+            case "хімія":
+                return Subject.CHEMISTRY;
+            case "творчий конкурс":
+                return Subject.CREATIVE_COMPETITION;
+            case "історія україни":
+                return Subject.HISTORY;
+            default:
+                throw new RuntimeException("There is no data to parse");
         }
-        return props;
     }
 
     public SpecialtyToSubject doParse() throws IOException {
-        SpecialtyToSubject specialtyToSubject = new SpecialtyToSubject();
-        XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(getPathToExcel().getProperty("pathToExcel")));
-        XSSFSheet excelSheet = excelBook.getSheet(getPathToExcel().getProperty("sheetName"));
-        XSSFRow row;
-        String domainName = "";
-        String domainId = "";
+        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
+            XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
+            XSSFRow row;
+            String domainName;
+            String domainId = "";
 
-        for (int i = 2; i <= excelSheet.getLastRowNum() + 1; i++) {
-            if (excelSheet.getRow(i) != null) {
-                row = excelSheet.getRow(i);
-                if (domainId.equals(specialtyToSubject.getDomainIdToName().get(domainId)) || !row.getCell(0).toString().equals("")) {
-                    domainId = row.getCell(0).toString();
-                    domainName = row.getCell(1).toString();
-                    specialtyToSubject.getDomainIdToName().put(setTrueDomainIdFormat(row, 0), domainName);
-                    setDomainToSpecialty(specialtyToSubject, excelSheet, domainId, i);
+            for (int i = 2; i <= excelSheet.getLastRowNum() + 1; i++) {
+                if (excelSheet.getRow(i) != null) {
+                    row = excelSheet.getRow(i);
+                    if (domainId.equals(specialtyToSubject.getDomainIdToName().get(domainId)) || !row.getCell(0).toString().equals("")) {
+                        domainId = row.getCell(0).toString();
+                        domainName = row.getCell(1).toString();
+                        specialtyToSubject.getDomainIdToName().put(setTrueDomainIdFormat(row, 0), domainName);
+                        setDomainToSpecialty(specialtyToSubject, excelSheet, domainId, i);
+                    }
+
+                    setSpecialty(specialtyToSubject, row);
                 }
 
-                setSpecialty(specialtyToSubject, row);
             }
+            checkForEmptySubjectInSpecialty(specialtyToSubject);
+            return specialtyToSubject;
+        }
+    }
 
+    private void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
+        List<String> badKeys = new ArrayList<>();
+        for (String key : sts.getSpecialtyIdToName().keySet()){
+            if(sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
+            && sts.getSpecialtyIdToName().get(key).getThird().isEmpty()){
+                badKeys.add(key);
+            }
+        }
+        for (String key : badKeys){
+            sts.getSpecialtyIdToName().remove(key);
         }
 
-        return specialtyToSubject;
     }
 
     protected void setDomainToSpecialty(SpecialtyToSubject sts, XSSFSheet sheet, String curDomainId, int curRow) {
@@ -57,6 +111,7 @@ public class Parser {
             if (sheet.getRow(i) != null) {
                 row = sheet.getRow(i);
             }
+            if (row == null) throw new NullPointerException();
             if (row.getCell(0).toString().isEmpty() || curDomainId.equals(row.getCell(0).toString())) {
                 specialId.add(setTrueIdFormat(row, 2));
             } else {
@@ -92,32 +147,45 @@ public class Parser {
     }
 
     protected void setSpecialty(SpecialtyToSubject sts, XSSFRow row) {
-        String[] res = row.getCell(7).toString().split("або ");
+        String[] res = row.getCell(7).toString().split("або");
         Specialty specialty = new Specialty();
-        specialty.setCode(row.getCell(2).toString());
-        specialty.setName(row.getCell(3).toString());
-        specialty.setFirst(Subject.valueOf(row.getCell(4).toString()));
+        if (!row.getCell(2).toString().isEmpty()) {
+            specialty.setCode(row.getCell(2).toString());
+        }
+        if (!row.getCell(3).toString().isEmpty()) {
+            specialty.setName(row.getCell(3).toString());
+        }
+        if (!row.getCell(4).toString().isEmpty() && row.getCell(4).toString() != null) {
+            specialty.setFirst(checkSubject(row.getCell(4).toString()));
+        }
 
         for (int i = 0; i < res.length; i++) {
             if (!res[i].equals("")) {
-                specialty.getThird().add(Subject.valueOf(res[i]));
+                specialty.getThird().add(checkSubject(res[i]));
             }
         }
 
-        res = row.getCell(5).toString().split(" або ");
+        res = row.getCell(5).toString().split("або");
 
         for (int i = 0; i < res.length; i++) {
-            specialty.getSecond().add(Subject.valueOf(res[i]));
+            if (!res[i].isEmpty()) {
+                specialty.getSecond().add(checkSubject(res[i]));
+            }
+
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
     }
 
     public static void main(String[] args) throws IOException {
-        SpecialtyToSubject sts = new Parser().doParse();
-
-        //sts.printFirst();
-        //sts.printSecond();
+        Parser parser = new Parser();
+        SpecialtyToSubject sts = parser.doParse();
+        sts.printFirst();
+        System.out.println("====================================================================================================================================================================================================================================");
+        sts.printSecond();
+        System.out.println("=============================================================================================================================================================================================================================================================================================");
         sts.printThird();
     }
+
 }
+
