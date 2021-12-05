@@ -1,6 +1,7 @@
 package com.softserve.bot.service.parser;
 
 import com.softserve.bot.model.Specialty;
+import com.softserve.bot.model.Subject;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -95,18 +96,18 @@ public class Parser {
         Specialty specialty = new Specialty();
         specialty.setCode(row.getCell(2).toString());
         specialty.setName(row.getCell(3).toString());
-        specialty.setFirst(row.getCell(4).toString());
+        specialty.setFirst(Subject.valueOf(row.getCell(4).toString()));
 
         for (int i = 0; i < res.length; i++) {
             if (!res[i].equals("")) {
-                specialty.getThird().add(res[i]);
+                specialty.getThird().add(Subject.valueOf(res[i]));
             }
         }
 
         res = row.getCell(5).toString().split(" або ");
 
         for (int i = 0; i < res.length; i++) {
-            specialty.getSecond().add(res[i]);
+            specialty.getSecond().add(Subject.valueOf(res[i]));
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);

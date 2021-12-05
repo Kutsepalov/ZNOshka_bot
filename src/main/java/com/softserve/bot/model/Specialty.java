@@ -1,21 +1,18 @@
 package com.softserve.bot.model;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Specialty {
     private String name;
     private String code;
-    private String first;
-    private List<String> second;
-    private List<String> third;
-
-    private EnumSet<Subject> subjects;
+    private Subject first;
+    private Set<Subject> second;
+    private Set<Subject> third;
 
     public Specialty() {
-        second = new ArrayList<>();
-        third = new ArrayList<>();
+        second = new HashSet<>();
+        third = new HashSet<>();
     }
 
     public String getName() {
@@ -26,27 +23,27 @@ public class Specialty {
         this.name = name;
     }
 
-    public String getFirst() {
+    public Subject getFirst() {
         return first;
     }
 
-    public void setFirst(String first) {
+    public void setFirst(Subject first) {
         this.first = first;
     }
 
-    public List<String> getSecond() {
+    public Set<Subject> getSecond() {
         return second;
     }
 
-    public void setSecond(List<String> second) {
+    public void setSecond(Set<Subject> second) {
         this.second = second;
     }
 
-    public List<String> getThird() {
+    public Set<Subject> getThird() {
         return third;
     }
 
-    public void setThird(List<String> third) {
+    public void setThird(Set<Subject> third) {
         this.third = third;
     }
 
@@ -58,23 +55,13 @@ public class Specialty {
         this.code = code;
     }
 
-    public void setSpecialties(EnumSet<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
-    public EnumSet<Subject> getSubjects() {
-        return subjects;
-    }
-
-        @Override
+    @Override
     public String toString() {
         return "Specialty{" +
-                "name='"+ code + "-" + name + '\'' +
+                "name='" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
                 '}';
     }
-
-
 }
