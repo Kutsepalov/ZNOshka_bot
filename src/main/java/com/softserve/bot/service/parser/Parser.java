@@ -1,6 +1,6 @@
 package com.softserve.bot.service.parser;
 
-import com.softserve.bot.service.repository.Specialty;
+import com.softserve.bot.model.Specialty;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

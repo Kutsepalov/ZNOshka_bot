@@ -1,14 +1,11 @@
 package com.softserve.bot.view.handler;
 
-import com.softserve.bot.model.Subject;
-import com.softserve.bot.service.Filter;
-import com.softserve.bot.service.Specialty;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import java.util.EnumSet;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

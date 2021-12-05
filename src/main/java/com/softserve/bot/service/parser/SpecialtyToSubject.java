@@ -2,7 +2,7 @@ package com.softserve.bot.service.parser;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.softserve.bot.service.repository.Specialty;
+import com.softserve.bot.model.Specialty;
 
 import java.util.Collection;
 import java.util.HashMap;
