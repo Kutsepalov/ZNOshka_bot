@@ -19,7 +19,7 @@ public class Parser {
         specialtyToSubject = new SpecialtyToSubject();
     }
 
-    private Subject checkSubject(String subjectName) {
+    protected Subject checkSubject(String subjectName) {
         switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
             case "українська мова":
                 return Subject.UKRAINIAN;
@@ -80,7 +80,7 @@ public class Parser {
         }
     }
 
-    private void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
+    protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
         List<String> badKeys = new ArrayList<>();
         for (String key : sts.getSpecialtyIdToName().keySet()){
             if(sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
