@@ -1,19 +1,18 @@
 package com.softserve.bot.service.repository;
 
-import java.util.ArrayList;
+import com.softserve.bot.model.Subject;
+
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public class Specialty {
     private String name;
     private String code;
-    private String first;
-    private List<String> second;
-    private List<String> third;
+    private Subject first;
+    private Set<Subject> second;
+    private Set<Subject> third;
 
-    public Specialty() {
-        second = new ArrayList<>();
-        third = new ArrayList<>();
-    }
 
     public String getName() {
         return name;
@@ -23,27 +22,27 @@ public class Specialty {
         this.name = name;
     }
 
-    public String getFirst() {
+    public Subject getFirst() {
         return first;
     }
 
-    public void setFirst(String first) {
+    public void setFirst(Subject first) {
         this.first = first;
     }
 
-    public List<String> getSecond() {
+    public Set<Subject> getSecond() {
         return second;
     }
 
-    public void setSecond(List<String> second) {
+    public void setSecond(Set<Subject> second) {
         this.second = second;
     }
 
-    public List<String> getThird() {
+    public Set<Subject> getThird() {
         return third;
     }
 
-    public void setThird(List<String> third) {
+    public void setThird(Set<Subject> third) {
         this.third = third;
     }
 
