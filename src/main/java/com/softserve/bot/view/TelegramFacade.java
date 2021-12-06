@@ -56,22 +56,35 @@ public class TelegramFacade {
 
     private BotApiMethod<?> handleCallback(Update update) {
         String callbackQuery = updateSessionParser.getCallback(update);
-        enumSet =  updateSessionParser.getEnumSet(update);
         if (Subject.contains(callbackQuery)) {
             Subject element = Subject.valueOf(callbackQuery);
+            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.setAndRemoveTick(update, element, enumSet);
         } else if (callbackQuery.equals(messages.getDeleteData())) {
+            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.deleteSelectedSubject(update, enumSet);
         } else if (callbackQuery.equals(messages.getSearchData())) {
+            enumSet = updateSessionParser.getEnumSet(update);
             if (EnumSetUtil.selectedEnough(enumSet)) {
                 if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                    return specializationHandler.handle(update, enumSet);
+                    return specializationHandler.handleFiltered(update, enumSet);
                 } else {
                     return alertSender.sendSubjectAlert(update);
                 }
             } else {
                 return alertSender.sendNotEnoughSubject(update);
             }
+        } else if (callbackQuery.equals("Branch type")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleBranchType(update,callback.get("text"));
+        }
+        else if (callbackQuery.equals("Branch")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
+        }
+        else if (callbackQuery.equals("Speciality")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleSpeciality(update,callback);
         }
         return null;
     }

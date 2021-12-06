@@ -5,11 +5,9 @@ import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Maksym Bohachov
@@ -59,7 +57,7 @@ public class Filter {
 
             for (Specialty specialty : input) {
 
-                if (specialtyMatches(specialty, subjects)) {
+                if (specialty != null && specialtyMatches(specialty, subjects)) {
                     output.add(specialty);
                 }
             }
@@ -102,4 +100,34 @@ public class Filter {
                                 .stream()
                                 .anyMatch(k -> v == k || v.getPriority() == 1 && k.getPriority() == 1));
     }
+
+    public static List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType){
+        if(branchType.equalsIgnoreCase("Гуманітарні")){
+            return new ArrayList<>( branches.subList(0,branches.size() / 2));
+        }
+        else{
+            return branches.subList(branches.size() / 2,branches.size());
+        }
+    }
+
+    public  static List<Specialty> getSpecialitiesByBranchName(String branchName){
+      return  branches.stream()
+                .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
+                .map(branch -> branch.getSpecialties())
+                .findAny().get();
+    }
+
+    public static Specialty getSpecialtyByName(String specialtyCode){
+        return  branches.stream()
+                .flatMap(branch -> branch.getSpecialties().stream())
+                .filter(specialty -> specialty != null && specialty.getCode().equalsIgnoreCase(specialtyCode))
+                .findAny().get();
+    }
+
+    public static List<BranchOfKnowledge> getBranchesByName(Map<String,List<Specialty>> filteredSpecialty){
+        return branches.stream()
+                .filter(branch -> filteredSpecialty.containsKey(branch.getTitle()))
+                .collect(Collectors.toList());
+    }
+
 }

@@ -52,6 +52,16 @@ public class SubjectHandler implements Handler {
         return sendMessage;
     }
 
+    public SendMessage handleReturn(Update update) {
+        cleanRequests();
+        Set<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+        Message message = update.getCallbackQuery().getMessage();
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
+        sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));
+        sendMessage.setText(messages.getAllSubjects());
+        return sendMessage;
+    }
+
     public BotApiMethod<? extends Serializable> setAndRemoveTick(Update update, Subject element, Set<Subject> enumSet) {
         if (enumSet.contains(element)) {
             EnumSetUtil.removeTick(element, enumSet);
