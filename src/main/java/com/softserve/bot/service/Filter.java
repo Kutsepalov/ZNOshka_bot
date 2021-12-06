@@ -4,10 +4,8 @@ import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Maksym Bohachov
@@ -19,18 +17,10 @@ public class Filter {
     /**
      * Basic list of branches
      */
-    private static List<BranchOfKnowledge> branches;
+    private static final List<BranchOfKnowledge> branches = DataProcessor.createBranches();
 
     private Filter() {
 
-    }
-
-    static {
-        try {
-            branches = DataProcessor.createBranches();
-        } catch (IOException e) {
-            System.exit(-1);
-        }
     }
 
     /**
@@ -113,7 +103,7 @@ public class Filter {
     public  static List<Specialty> getSpecialitiesByBranchName(String branchName){
       return  branches.stream()
                 .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
-                .map(branch -> branch.getSpecialties())
+                .map(BranchOfKnowledge::getSpecialties)
                 .findAny().get();
     }
 
@@ -126,7 +116,7 @@ public class Filter {
 
     public static List<BranchOfKnowledge> getBranchesByName(Map<String,List<Specialty>> filteredSpecialty){
         return branches.stream()
-                .filter(branch -> filteredSpecialty.containsKey(branch.getTitle()))
+                .filter(branch -> filteredSpecialty.containsKey(branch.toString()))
                 .collect(Collectors.toList());
     }
 

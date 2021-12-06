@@ -1,11 +1,9 @@
 package com.softserve.bot.view.handler;
 
-import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.service.Filter;
 import com.softserve.bot.util.SpecialityButtonRegister;
-import com.softserve.bot.view.TelegramFacade;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,14 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
 @Component
 public class SpecializationHandler implements Handler {
-    private Map<String, List<Specialty>> filteredSpecialty;
     private Message message;
     private SendMessage sendMessage;
 
@@ -104,16 +100,7 @@ public class SpecializationHandler implements Handler {
         message = update.getCallbackQuery().getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         var branches = Filter.getFiltered(enumSet);
-        System.out.println(filteredSpecialty);
-        var branchesOfKnowledge = Filter.getBranchesByName(filteredSpecialty);
-        System.out.println(branchesOfKnowledge);
-//        StringBuilder stringBuilder = new StringBuilder();
-//        for (List<Specialty> value : filteredSpecialty.values()) {
-//            for (Specialty currentSpecialty : value) {
-//                stringBuilder.append(currentSpecialty).append("\n");
-//            }
-//        }
-
+        var branchesOfKnowledge = Filter.getBranchesByName(branches);
         sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branchesOfKnowledge));
         sendMessage.setText("Галузі: ");
         return sendMessage;

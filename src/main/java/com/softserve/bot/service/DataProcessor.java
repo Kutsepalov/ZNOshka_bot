@@ -14,7 +14,7 @@ public final class DataProcessor {
 
     }
 
-    public static List<BranchOfKnowledge> createBranches() throws IOException {
+    public static List<BranchOfKnowledge> createBranches() {
         SpecialtyToSubject sts = new Parser().doParse();
         List<BranchOfKnowledge> branchesOfKnowledge = new ArrayList<>();
         List<String> ciphers = new ArrayList<>(sts.getDomainIdToName().keySet());

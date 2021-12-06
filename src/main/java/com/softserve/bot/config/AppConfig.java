@@ -80,12 +80,16 @@ public class AppConfig {
             instance = xmlMapper.readValue(xml, BotMessages.class);
         } catch (SecurityException e) {
             log.error("File \"bot-msg.xml\" read access denied");
+            System.exit(1);
         } catch (FileNotFoundException e) {
             log.error("File \"bot-msg.xml\" not found");
+            System.exit(1);
         } catch (JacksonException e) {
             log.error("Entry of file \"bot-msg.xml\" incorrect");
+            System.exit(1);
         } catch (IOException e) {
             log.error("Error reading file: " + e.getMessage());
+            System.exit(1);
         }
         return instance;
     }

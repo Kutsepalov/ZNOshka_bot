@@ -1,17 +1,19 @@
 package com.softserve.bot.service.parser;
 
-
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
 
@@ -54,7 +56,7 @@ public class Parser {
         }
     }
 
-    public SpecialtyToSubject doParse() throws IOException {
+    public SpecialtyToSubject doParse() {
         try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
             XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
             XSSFRow row;
@@ -76,8 +78,17 @@ public class Parser {
 
             }
             checkForEmptySubjectInSpecialty(specialtyToSubject);
-            return specialtyToSubject;
+        } catch (SecurityException e) {
+            log.error("File \"Book1.xlsx\" read access denied");
+            System.exit(1);
+        } catch (FileNotFoundException e) {
+            log.error("File \"Book1.xlsx\" not found");
+            System.exit(1);
+        } catch (IOException e) {
+            log.error("Error reading file: " + e.getMessage());
+            System.exit(1);
         }
+        return specialtyToSubject;
     }
 
     protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
@@ -166,15 +177,5 @@ public class Parser {
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
     }
-
-    public static void main(String[] args) throws IOException {
-        Parser parser = new Parser();
-        SpecialtyToSubject sts = parser.doParse();
-
-        for(String key : sts.getSpecialtyIdToName().keySet()){
-            System.out.println(sts.getSpecialtyIdToName().get(key));
-        }
-    }
-
 }
 
