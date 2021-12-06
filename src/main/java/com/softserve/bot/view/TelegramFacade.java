@@ -9,8 +9,8 @@ import com.softserve.bot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
 import java.util.EnumSet;
 
 @RequiredArgsConstructor
@@ -29,40 +29,63 @@ public class TelegramFacade {
 
     public BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
-            String callbackQuery = updateSessionParser.getCallback(update);
-            enumSet =  updateSessionParser.getEnumSet(update);
-            if (Subject.contains(callbackQuery)) {
-                Subject element = Subject.valueOf(callbackQuery);
-                return subjectHandler.setAndRemoveTick(update, element, enumSet);
-            } else if (callbackQuery.equals(messages.getDeleteData())) {
-                return subjectHandler.deleteSelectedSubject(update, enumSet);
-            } else if (callbackQuery.equals(messages.getSearchData())) {
-                if (EnumSetUtil.selectedEnough(enumSet)) {
-                    if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                        return specializationHandler.handle(update, enumSet);
-                    } else {
-                        return alertSender.sendSubjectAlert(update);
-                    }
-                } else {
-                    return alertSender.sendNotEnoughSubject(update);
-                }
-            }
+            return handleCallback(update);
         } else if (update.hasMessage()) {
-            switch (update.getMessage().getText()) {
-                case "Вибрати предмети":
-                    enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
-                    return subjectHandler.handle(update, enumSet);
-                case "Показати всі спеціальності":
-                    return specializationHandler.handle(update);
-                case "Правила користування":
-                    return helpHandler.handle(update);
-                case "/start":
-                    return startHandler.handle(update);
-                case "Наші контакти":
-                    return contactsHandler.handle(update);
-                default:
-                    return additionalMessageHandler.handle(update);
+            return handleMessage(update);
+        }
+        return null;
+    }
+
+    private SendMessage handleMessage(Update update) {
+        switch (update.getMessage().getText()) {
+            case "Вибрати предмети":
+                enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+                return subjectHandler.handle(update);
+            case "Показати всі спеціальності":
+                return specializationHandler.handle(update);
+            case "Правила користування":
+                return helpHandler.handle(update);
+            case "/start":
+                return startHandler.handle(update);
+            case "Наші контакти":
+                return contactsHandler.handle(update);
+            default:
+                return additionalMessageHandler.handle(update);
+        }
+    }
+
+    private BotApiMethod<?> handleCallback(Update update) {
+        String callbackQuery = updateSessionParser.getCallback(update);
+        if (Subject.contains(callbackQuery)) {
+            Subject element = Subject.valueOf(callbackQuery);
+            enumSet = updateSessionParser.getEnumSet(update);
+            return subjectHandler.setAndRemoveTick(update, element, enumSet);
+        } else if (callbackQuery.equals(messages.getDeleteData())) {
+            enumSet = updateSessionParser.getEnumSet(update);
+            return subjectHandler.deleteSelectedSubject(update, enumSet);
+        } else if (callbackQuery.equals(messages.getSearchData())) {
+            enumSet = updateSessionParser.getEnumSet(update);
+            if (EnumSetUtil.selectedEnough(enumSet)) {
+                if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                    enumSet.add(Subject.FOREIGN);
+                    return specializationHandler.handle(update, enumSet);
+                } else {
+                    return alertSender.sendSubjectAlert(update);
+                }
+            } else {
+                return alertSender.sendNotEnoughSubject(update);
             }
+        } else if (callbackQuery.equals("Branch type")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleBranchType(update,callback.get("text"));
+        }
+        else if (callbackQuery.equals("Branch")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
+        }
+        else if (callbackQuery.equals("Speciality")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return specializationHandler.handleSpeciality(update,callback);
         }
         return null;
     }

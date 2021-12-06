@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @RequiredArgsConstructor
 @Component
-public class AdditionalMessageHandler {
+public class AdditionalMessageHandler implements Handler {
     private final MainMenuSender mainMenuSender;
     private final SendMessage sendMessage;
     private final BotMessages messages;

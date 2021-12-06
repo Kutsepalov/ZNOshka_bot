@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 @Component
-public class ContactsHandler{
+public class ContactsHandler implements Handler {
     private final SendMessage sendMessage;
     private final BotMessages botMessages;
 
@@ -20,7 +20,7 @@ public class ContactsHandler{
         cleanRequests();
         Message message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        sendMessage.setText(botMessages.getContactsMenu());
+        sendMessage.setText(botMessages.getContacts());
         return sendMessage;
     }
 }

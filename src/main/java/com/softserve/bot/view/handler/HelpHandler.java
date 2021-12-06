@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 @AllArgsConstructor
 @Component
-public class HelpHandler{
+public class HelpHandler implements Handler {
     private Message message;
     private final SendMessage sendMessage;
     private final BotMessages botMessages;

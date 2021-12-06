@@ -1,4 +1,4 @@
-package com.softserve.bot.service.repository;
+package com.softserve.bot.model;
 
 import java.util.List;
 

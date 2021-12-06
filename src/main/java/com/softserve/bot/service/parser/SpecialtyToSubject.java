@@ -2,7 +2,7 @@ package com.softserve.bot.service.parser;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.softserve.bot.service.repository.Specialty;
+import com.softserve.bot.model.Specialty;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,24 +44,6 @@ public class SpecialtyToSubject {
 
     public BiMap<String, Specialty> getSpecialtyIdToName() {
         return specialtyIdToName;
-    }
-
-    public void printFirst(){
-        for(String key : domainIdToName.keySet()){
-            System.out.println("Key: " + key + " value: " + domainIdToName.get(key));
-        }
-    }
-
-    public void printSecond(){
-        for(String key : domainIdToSpecialtyId.keySet()){
-            System.out.println("Key: " + key + " value: " + domainIdToSpecialtyId.get(key));
-        }
-    }
-    //TODO make sort by key
-    public void printThird(){
-        for(String key : specialtyIdToName.keySet()){
-            System.out.println("Key: " + key + " value: " + specialtyIdToName.get(key));
-        }
     }
 
     public void setSpecialtyIdToName(BiMap<String, Specialty> specialtyIdToName) {

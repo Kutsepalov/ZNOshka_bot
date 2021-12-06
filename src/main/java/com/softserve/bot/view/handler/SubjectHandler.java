@@ -17,7 +17,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
-public class SubjectHandler {
+public class SubjectHandler implements Handler {
     private final ButtonSubjectRegister buttonSubjectRegister;
     private final EditMessageReplyMarkup editMessageReplyMarkup;
     private final SendMessage sendMessage;
@@ -42,9 +42,20 @@ public class SubjectHandler {
     }
 
 
-    public SendMessage handle(Update update, Set<Subject> enumSet) {
+    public SendMessage handle(Update update) {
         cleanRequests();
+        Set<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
         Message message = update.getMessage();
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
+        sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));
+        sendMessage.setText(messages.getAllSubjects());
+        return sendMessage;
+    }
+
+    public SendMessage handleReturn(Update update) {
+        cleanRequests();
+        Set<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+        Message message = update.getCallbackQuery().getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));
         sendMessage.setText(messages.getAllSubjects());
