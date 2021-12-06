@@ -67,7 +67,8 @@ public class TelegramFacade {
             enumSet = updateSessionParser.getEnumSet(update);
             if (EnumSetUtil.selectedEnough(enumSet)) {
                 if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                    return specializationHandler.handleFiltered(update, enumSet);
+                    enumSet.add(Subject.FOREIGN);
+                    return specializationHandler.handle(update, enumSet);
                 } else {
                     return alertSender.sendSubjectAlert(update);
                 }
