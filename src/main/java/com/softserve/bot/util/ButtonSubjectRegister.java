@@ -45,6 +45,9 @@ public class ButtonSubjectRegister {
         clearAllRow();
         addDeleteButton(counter, enumSet);
         for (Subject subject : Subject.values()) {
+            if(subject==Subject.FOREIGN){
+                continue;
+            }
             List<InlineKeyboardButton> singleButtonRow = new ArrayList<>();
             InlineKeyboardButton currentButton = new InlineKeyboardButton();
             String text = subject.getName();
