@@ -1,7 +1,8 @@
 package com.softserve.bot.service.parser;
 
+import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
-import com.softserve.bot.service.repository.Specialty;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -9,7 +10,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.*;
 
+@Slf4j
 public class Parser {
+    private final SpecialtyToSubject specialtyToSubject;
+
+    public Parser() {
+        specialtyToSubject = new SpecialtyToSubject();
+    }
 
     public Properties getPathToFiles() throws IOException {
         Properties props = new Properties();
@@ -20,7 +27,6 @@ public class Parser {
     }
 
     public SpecialtyToSubject doParse() {
-        SpecialtyToSubject specialtyToSubject = new SpecialtyToSubject();
 
         doParseDomain(specialtyToSubject);
         doParseSpecialties(specialtyToSubject);
@@ -60,12 +66,12 @@ public class Parser {
     }
 
     protected Set<Subject> addSubjectListToEnum(String[] second, int index) {
-            String[] res = String.valueOf(second[index]).split(",");
-            List<Subject> list = new ArrayList<>();
-            for (String re : res) {
-                list.add(checkSubject(re));
-            }
-            return EnumSet.copyOf(list);
+        String[] res = String.valueOf(second[index]).split(",");
+        List<Subject> list = new ArrayList<>();
+        for (String re : res) {
+            list.add(checkSubject(re));
+        }
+        return EnumSet.copyOf(list);
     }
 
     private Subject checkSubject(String subjectName) {
@@ -101,6 +107,20 @@ public class Parser {
             default:
                 throw new RuntimeException("There is no data to parse");
         }
+    }
+
+    protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts) {
+        List<String> badKeys = new ArrayList<>();
+        for (String key : sts.getSpecialtyIdToName().keySet()) {
+            if (sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
+                    && sts.getSpecialtyIdToName().get(key).getThird().isEmpty()) {
+                badKeys.add(key);
+            }
+        }
+        for (String key : badKeys) {
+            sts.getSpecialtyIdToName().remove(key);
+        }
+
     }
 
     public void doParseExcelToCSV() throws IOException {
@@ -162,8 +182,8 @@ public class Parser {
 
     protected void setDomainToSpecialty(SpecialtyToSubject sts) {
         List<String> specialId = new ArrayList<>();
-        for (String keyD: sts.getDomainIdToName().keySet()) {
-            for (String keyS: sts.getSpecialtyIdToName().keySet()) {
+        for (String keyD : sts.getDomainIdToName().keySet()) {
+            for (String keyS : sts.getSpecialtyIdToName().keySet()) {
                 if ("014".equals(keyS)) {
                     continue;
                 }
@@ -175,7 +195,6 @@ public class Parser {
             specialId = new ArrayList<>();
         }
     }
-
 
 
     protected StringBuilder setSpecialtyForCSV(XSSFRow row, StringBuilder sb) {
