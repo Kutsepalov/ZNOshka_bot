@@ -65,6 +65,7 @@ public class TelegramFacade {
         } else if (callbackQuery.equals(messages.getSearchData())) {
             if (EnumSetUtil.selectedEnough(enumSet)) {
                 if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                    enumSet.add(Subject.FOREIGN);
                     return specializationHandler.handle(update, enumSet);
                 } else {
                     return alertSender.sendSubjectAlert(update);
