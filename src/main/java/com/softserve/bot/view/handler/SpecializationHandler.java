@@ -26,10 +26,13 @@ public class SpecializationHandler implements Handler {
     }
 
 
-    public SendMessage handle(Update update, Set<Subject> enumSet) {
-        cleanRequests();
-        sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-        sendMessage.setText("Cпеціальності:from search");
+    public SendMessage handle(Update update, EnumSet<Subject> enumSet) {
+        message = update.getCallbackQuery().getMessage();
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
+        var branches = Filter.getFiltered(enumSet);
+        var branchesOfKnowledge = Filter.getBranchesByName(branches);
+        sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branchesOfKnowledge));
+        sendMessage.setText("Галузі: ");
         return sendMessage;
     }
 
