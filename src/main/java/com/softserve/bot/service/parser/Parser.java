@@ -203,11 +203,5 @@ public class Parser {
         return sb;
     }
 
-    public static void main(String[] args) throws IOException {
-//        SpecialtyToSubject sts = new Parser().doParse();
-//        new Parser().doParseExcelToCSV();
-//        sts.printFirst();
-//        sts.printSecond();
-//        sts.printThird();
-    }
+
 }
