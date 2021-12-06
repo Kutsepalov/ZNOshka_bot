@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +16,10 @@ import java.util.List;
 
 @Slf4j
 public class Parser {
+    @Value("parser.path")
+    private String pathToExcel;
+    @Value("parser.sheetName")
+    private String sheetName;
     private final SpecialtyToSubject specialtyToSubject;
 
     public Parser() {
@@ -57,8 +62,8 @@ public class Parser {
     }
 
     public SpecialtyToSubject doParse() {
-        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream("src/main/resources/Book1.xlsx"))) {
-            XSSFSheet excelSheet = excelBook.getSheet("Sheet1");
+        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(pathToExcel))) {
+            XSSFSheet excelSheet = excelBook.getSheet(sheetName);
             XSSFRow row;
             String domainName;
             String domainId = "";
@@ -91,15 +96,15 @@ public class Parser {
         return specialtyToSubject;
     }
 
-    protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
+    protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts) {
         List<String> badKeys = new ArrayList<>();
-        for (String key : sts.getSpecialtyIdToName().keySet()){
-            if(sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
-            && sts.getSpecialtyIdToName().get(key).getThird().isEmpty()){
+        for (String key : sts.getSpecialtyIdToName().keySet()) {
+            if (sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
+                    && sts.getSpecialtyIdToName().get(key).getThird().isEmpty()) {
                 badKeys.add(key);
             }
         }
-        for (String key : badKeys){
+        for (String key : badKeys) {
             sts.getSpecialtyIdToName().remove(key);
         }
 
@@ -152,7 +157,7 @@ public class Parser {
         String[] res = row.getCell(7).toString().split("або");
         Specialty specialty = new Specialty();
         if (!row.getCell(2).toString().isEmpty()) {
-            specialty.setCode(row.getCell(2).toString());
+            specialty.setCode(deleteZeros(row.getCell(2).toString()));
         }
         if (!row.getCell(3).toString().isEmpty()) {
             specialty.setName(row.getCell(3).toString());
@@ -174,8 +179,13 @@ public class Parser {
                 specialty.getSecond().add(checkSubject(res[i]));
             }
         }
+        sts.getSpecialtyIdToName().put(deleteZeros(setTrueIdFormat(row, 2)), specialty);
+    }
 
-        sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
+    protected String deleteZeros(String str) {
+        String regex = "([.]0$)";
+
+        return str.split(regex)[0];
     }
 }
 
