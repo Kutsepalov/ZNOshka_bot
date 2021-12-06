@@ -19,14 +19,14 @@ public class Parser {
         specialtyToSubject = new SpecialtyToSubject();
     }
 
-    private Subject checkSubject(String subjectName) {
+    protected Subject checkSubject(String subjectName) {
         switch (subjectName.replace('\u00A0', ' ').trim().toLowerCase()) {
             case "українська мова":
                 return Subject.UKRAINIAN;
             case "українська мова і література":
                 return Subject.LITERATURE;
             case "математика":
-                return Subject.MATH_STANDARD;
+                return Subject.MATH_PROFILE;
             case "англійська мова":
                 return Subject.ENGLISH;
             case "іспанська мова":
@@ -80,7 +80,7 @@ public class Parser {
         }
     }
 
-    private void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
+    protected void checkForEmptySubjectInSpecialty(SpecialtyToSubject sts){
         List<String> badKeys = new ArrayList<>();
         for (String key : sts.getSpecialtyIdToName().keySet()){
             if(sts.getSpecialtyIdToName().get(key).getFirst() == null && sts.getSpecialtyIdToName().get(key).getSecond().isEmpty()
@@ -165,6 +165,15 @@ public class Parser {
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Parser parser = new Parser();
+        SpecialtyToSubject sts = parser.doParse();
+
+        for(String key : sts.getSpecialtyIdToName().keySet()){
+            System.out.println(sts.getSpecialtyIdToName().get(key));
+        }
     }
 
 }
