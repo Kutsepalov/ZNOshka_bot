@@ -26,7 +26,7 @@ public class Parser {
             case "українська мова і література":
                 return Subject.LITERATURE;
             case "математика":
-                return Subject.MATH_STANDARD;
+                return Subject.MATH_PROFILE;
             case "англійська мова":
                 return Subject.ENGLISH;
             case "іспанська мова":
@@ -165,6 +165,15 @@ public class Parser {
         }
 
         sts.getSpecialtyIdToName().put(setTrueIdFormat(row, 2), specialty);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Parser parser = new Parser();
+        SpecialtyToSubject sts = parser.doParse();
+
+        for(String key : sts.getSpecialtyIdToName().keySet()){
+            System.out.println(sts.getSpecialtyIdToName().get(key));
+        }
     }
 
 }
