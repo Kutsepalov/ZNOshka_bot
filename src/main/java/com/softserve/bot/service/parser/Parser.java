@@ -7,6 +7,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,11 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Component
 public class Parser {
-    @Value("parser.path")
+
+    @Value("${parser.path}")
     private String pathToExcel;
-    @Value("parser.sheetName")
+    @Value("${parser.sheetName}")
     private String sheetName;
+
     private final SpecialtyToSubject specialtyToSubject;
 
     public Parser() {
