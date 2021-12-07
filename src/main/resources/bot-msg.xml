@@ -31,7 +31,7 @@
 
     <find-all>Знайти спеціальності</find-all>
     <remove-all>Видалити всі</remove-all>
-    <error>Вибрано забагато предметів</error>
+    <error>(вибрано забагато предметів)</error>
 
     <tick>:white_check_mark:</tick>
     <find>:mag:</find>
