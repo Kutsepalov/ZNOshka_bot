@@ -6,25 +6,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
+@Component
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
+
+    @Value("${parser.path}")
+    private String path;
+    @Value("${parser.sheetName}")
+    private String sheetName;
+    @Value("${parser.path}")
+    private String CNBranches;
+    @Value("${parser.path}")
+    private String CNSpecialties;
 
     public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
     }
 
-    public Properties getPathToFiles() throws IOException {
+    /*public Properties getPathToFiles() throws IOException {
         Properties props = new Properties();
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("files.properties")) {
             props.load(in);
         }
         return props;
-    }
+    }*/
 
     public SpecialtyToSubject doParse() {
 
@@ -37,7 +52,7 @@ public class Parser {
 
     protected void doParseDomain(SpecialtyToSubject sts) {
         String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(getPathToFiles().getProperty("pathToCNBranches")))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
             while ((line = br.readLine()) != null) {
                 String[] domainInfo = line.split(";");
                 sts.getDomainIdToName().put(domainInfo[0], domainInfo[1]);
@@ -49,7 +64,7 @@ public class Parser {
 
     protected void doParseSpecialties(SpecialtyToSubject sts) {
         String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(getPathToFiles().getProperty("pathToCNSpecialties")))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(CNSpecialties))) {
             while ((line = br.readLine()) != null) {
                 String[] domainInfo = line.split(";");
                 Specialty specialty = new Specialty();
@@ -74,7 +89,7 @@ public class Parser {
         return EnumSet.copyOf(list);
     }
 
-    private Subject checkSubject(String subjectName) {
+    protected Subject checkSubject(String subjectName) {
         switch (subjectName.trim().toLowerCase()) {
             case "українська мова":
                 return Subject.UKRAINIAN;
@@ -124,14 +139,12 @@ public class Parser {
     }
 
     public void doParseExcelToCSV() throws IOException {
-        SpecialtyToSubject specialtyToSubject = new SpecialtyToSubject();
 
+        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(path));
+             PrintWriter writerCSVDomain = new PrintWriter(CNBranches);
+             PrintWriter writerCSVSpecialty = new PrintWriter(CNSpecialties)) {
 
-        try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(getPathToFiles().getProperty("pathToExcel")));
-             PrintWriter writerCSVDomain = new PrintWriter(getPathToFiles().getProperty("pathToCNBranches"));
-             PrintWriter writerCSVSpecialty = new PrintWriter(getPathToFiles().getProperty("pathToCNSpecialties"))) {
-
-            XSSFSheet excelSheet = excelBook.getSheet(getPathToFiles().getProperty("sheetName"));
+            XSSFSheet excelSheet = excelBook.getSheet(sheetName);
             XSSFRow row;
             StringBuilder sbForDomain = new StringBuilder();
             StringBuilder sbForSpecialty = new StringBuilder();
@@ -221,6 +234,12 @@ public class Parser {
         sb.setLength(sb.length() - 1);
         return sb;
     }
+    public static void main(String[] args) throws IOException {
+        SpecialtyToSubject sts = new Parser().doParse();
+//        new Parser().doParseExcelToCSV();
+//        sts.printFirst();
+//        sts.printSecond();
+//        sts.printThird();
 
-
+    }
 }
