@@ -106,4 +106,8 @@ public final class EnumSetUtil {
     public static boolean notOutOfLimit(Set<Subject> enumSet) {
         return enumSet.size() <= (enumSet.contains(Subject.CREATIVE_COMPETITION) ? 6 : 5);
     }
+    public static boolean containsForeignLanguage(Set<Subject> enumSet) {
+        return enumSet.contains(Subject.ENGLISH)||enumSet.contains(Subject.SPANISH)
+                ||enumSet.contains(Subject.GERMANY)||enumSet.contains(Subject.FRENCH);
+    }
 }

@@ -87,7 +87,7 @@ public class ButtonSubjectRegister {
                     + counter + messages.getSeparator() + " "
                     + MAX_SIZE + EmojiParser.parseToUnicode(messages.getTickMark())
                     + EmojiParser.parseToUnicode(messages.getOutOfLimitMark())
-                    + " " + messages.getTooManyAlert());
+                    + " " + messages.getError());
         }
         currentButton.setCallbackData(messages.getDeleteData() + messages.getSeparator() + EnumSetUtil.code((EnumSet<Subject>)enumSet));
         deleteRow.add(currentButton);
