@@ -30,8 +30,12 @@ public class UpdateSessionParser {
         String[] data = update.getCallbackQuery().getData().split("/");
         map.put("type",data[0]);
         map.put("text",data[1]);
-        if(data.length > 2)
-            map.put("branch type",data[2]);
+        if(data.length > 2) {
+            map.put("previous", data[2]);
+        }
+        if(data.length > 3) {
+            map.put("root", data[3]);
+        }
 
         return map;
     }

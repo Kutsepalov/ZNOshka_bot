@@ -120,4 +120,12 @@ public class Filter {
                 .collect(Collectors.toList());
     }
 
+    public static String getBranchOfKnowledgeName(String branchName) {
+        return branches.stream()
+                .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
+                .map(branch -> branch.getTitle())
+                .findAny()
+                .get();
+    }
+
 }

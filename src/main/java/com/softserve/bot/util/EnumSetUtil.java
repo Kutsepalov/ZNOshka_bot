@@ -106,4 +106,13 @@ public final class EnumSetUtil {
     public static boolean notOutOfLimit(Set<Subject> enumSet) {
         return enumSet.size() <= (enumSet.contains(Subject.CREATIVE_COMPETITION) ? 6 : 5);
     }
+
+    public static boolean isEnumSet(String line){
+        try{
+            Integer.parseInt(line);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }
