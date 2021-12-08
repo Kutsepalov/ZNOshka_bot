@@ -4,18 +4,21 @@ import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.service.parser.Parser;
 import com.softserve.bot.service.parser.SpecialtyToSubject;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DataProcessor {
-    private DataProcessor() {
+@Component
+@AllArgsConstructor
+public class DataProcessor {
+    private Parser parser;
 
-    }
-
-    public static List<BranchOfKnowledge> createBranches() {
-        SpecialtyToSubject sts = new Parser().doParse();
+    public List<BranchOfKnowledge> createBranches() {
+        SpecialtyToSubject sts = parser.doParse();
         List<BranchOfKnowledge> branchesOfKnowledge = new ArrayList<>();
         List<String> ciphers = new ArrayList<>(sts.getDomainIdToName().keySet());
         ciphers.forEach(x -> {
