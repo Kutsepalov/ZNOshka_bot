@@ -118,17 +118,6 @@ public class SpecializationHandler implements Handler {
         return sendMessage;
     }
 
-//    public AnswerCallbackQuery handleRedirect(Update update, Map<String, String> callback){
-//        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-//        answerCallbackQuery.setCallbackQueryId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-//        answerCallbackQuery.setUrl("https://osvita.ua/vnz/76723/");
-//        answerCallbackQuery.setText("??????");
-//
-//        System.out.println("ZAHLO");
-//
-//        return answerCallbackQuery;
-//    }
-
     protected static boolean isReturnButtonPressed(Map<String, String> callback){
         return callback.get("text").equalsIgnoreCase("Назад");
     }
