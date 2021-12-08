@@ -7,8 +7,10 @@ import com.softserve.bot.util.EnumSetUtil;
 import com.softserve.bot.util.SpecialityButtonRegister;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -116,9 +118,22 @@ public class SpecializationHandler implements Handler {
         return sendMessage;
     }
 
+//    public AnswerCallbackQuery handleRedirect(Update update, Map<String, String> callback){
+//        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+//        answerCallbackQuery.setCallbackQueryId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+//        answerCallbackQuery.setUrl("https://osvita.ua/vnz/76723/");
+//        answerCallbackQuery.setText("??????");
+//
+//        System.out.println("ZAHLO");
+//
+//        return answerCallbackQuery;
+//    }
+
     protected static boolean isReturnButtonPressed(Map<String, String> callback){
         return callback.get("text").equalsIgnoreCase("Назад");
     }
+
+
 
 
 }

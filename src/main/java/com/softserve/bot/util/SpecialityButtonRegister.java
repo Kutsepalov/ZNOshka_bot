@@ -18,6 +18,8 @@ public class SpecialityButtonRegister {
     private static final String RETURN = "Назад";
     private static final String SPECIALTY = "Speciality";
     private static final String MORE_INFORMATION = "Дізнатися більше";
+    private static final String WHERE_TO_LEARN = "Де навчають";
+    private static  final String REDIRECT = "Redirect";
 
     public static InlineKeyboardMarkup getBranchTypeKeyboard(){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -41,7 +43,7 @@ public class SpecialityButtonRegister {
             rows.add(row);
         }
         String nextCallback = buildCallback(BRANCH, RETURN, callback.get("text"));
-        var row = getSingleButtonRow(RETURN, nextCallback);
+        var row = getSingleButtonRow(RETURN+" до вибору типу галузей", nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -59,7 +61,7 @@ public class SpecialityButtonRegister {
             rows.add(row);
         }
         String nextCallback = buildCallback(SPECIALTY, RETURN, callback.get("text"), callback.get("previous"));
-        var row = getSingleButtonRow(RETURN, nextCallback);
+        var row = getSingleButtonRow(RETURN+" до вибору галузей", nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -81,10 +83,12 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
 
-        String nextCallback = buildCallback(MORE_INFORMATION, MORE_INFORMATION);
-        var row = getSingleButtonRow(MORE_INFORMATION, nextCallback);
-
+        var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність","https://osvita.ua/vnz/76723/");
         rows.add(row);
+
+        row = getSingleUrlButtonRow("Де навчають","https://osvita.ua/vnz/76723/");
+        rows.add(row);
+
         inlineKeyboardMarkup.setKeyboard(rows);
 
         return inlineKeyboardMarkup;
@@ -101,7 +105,7 @@ public class SpecialityButtonRegister {
             rows.add(row);
         }
         String nextCallback = buildCallback(BRANCH, RETURN, enumCode);
-        var row = getSingleButtonRow(RETURN, nextCallback);
+        var row = getSingleButtonRow("Назад до вибору предметів", nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -112,6 +116,15 @@ public class SpecialityButtonRegister {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText(text);
         button.setCallbackData(callback);
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(button);
+        return row;
+    }
+
+    protected static List<InlineKeyboardButton> getSingleUrlButtonRow(String text,String url){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setUrl(url);
+        button.setText(text);
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(button);
         return row;
