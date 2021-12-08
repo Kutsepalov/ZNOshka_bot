@@ -1,9 +1,6 @@
-package com.softserve.bot.service.repository;
+package com.softserve.bot.model;
 
-import com.softserve.bot.model.Subject;
-
-import java.util.EnumSet;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Specialty {
@@ -13,6 +10,10 @@ public class Specialty {
     private Set<Subject> second;
     private Set<Subject> third;
 
+    public Specialty() {
+        second = new HashSet<>();
+        third = new HashSet<>();
+    }
 
     public String getName() {
         return name;
@@ -54,15 +55,14 @@ public class Specialty {
         this.code = code;
     }
 
-        @Override
+    @Override
     public String toString() {
         return "Specialty{" +
-                "name='"+ code + "-" + name + '\'' +
+                "name='" + code + "-" + name + '\'' +
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
                 '}';
     }
-
-
 }
+

@@ -3,7 +3,9 @@ package com.softserve.bot.service;
 import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,23 +15,29 @@ import java.util.stream.Collectors;
  * @see BranchOfKnowledge
  * @see DataProcessor
  */
+@Component
 public class Filter {
     /**
      * Basic list of branches
      */
-    private static final List<BranchOfKnowledge> branches = DataProcessor.createBranches();
+    private List<BranchOfKnowledge> branches;
+    private DataProcessor dp;
 
-    private Filter() {
-
+    public Filter(DataProcessor dp) {
+        this.dp = dp;
     }
 
+    @PostConstruct
+    private void fillBranches() {
+        branches = dp.createBranches();
+    }
     /**
      * Filters branches and specialties in relation to input set of subjects
      *
      * @param subjects set of subjects chosen by user
      * @return filtered map branch - specialties, that fits input data
      */
-    public static Map<String, List<Specialty>> getFiltered(Set<Subject> subjects) {
+    public Map<String, List<Specialty>> getFiltered(Set<Subject> subjects) {
         Map<String, List<Specialty>> result = new HashMap<>();
 
         if (subjects.stream().noneMatch(s -> s.getPriority() > 1)) {
@@ -60,7 +68,7 @@ public class Filter {
         return result;
     }
 
-    public static Map<String, List<Specialty>> getAll() {
+    public Map<String, List<Specialty>> getAll() {
         Map<String, List<Specialty>> result = new HashMap<>();
 
         for (BranchOfKnowledge branch : branches) {
@@ -70,15 +78,15 @@ public class Filter {
         return result;
     }
 
-    static boolean specialtyMatches(Specialty specialty, Set<Subject> userSubjects) {
+    private boolean specialtyMatches(Specialty specialty, Set<Subject> userSubjects) {
         return firstMatches(specialty, userSubjects) && otherMatch(specialty, userSubjects);
     }
 
-    static boolean firstMatches(Specialty specialty, Set<Subject> userSubjects) {
+    private boolean firstMatches(Specialty specialty, Set<Subject> userSubjects) {
         return userSubjects.contains(specialty.getFirst()) || userSubjects.contains(Subject.LITERATURE);
     }
 
-    static boolean otherMatch(Specialty specialty, Set<Subject> userSubjects) {
+    private boolean otherMatch(Specialty specialty, Set<Subject> userSubjects) {
         return specialty.getSecond()
                 .stream()
                 .anyMatch(v -> userSubjects
@@ -91,7 +99,7 @@ public class Filter {
                                 .anyMatch(k -> v == k || v.getPriority() == 1 && k.getPriority() == 1));
     }
 
-    public static List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType){
+    public List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType){
         if(branchType.equalsIgnoreCase("Гуманітарні")){
             return new ArrayList<>( branches.subList(0,branches.size() / 2));
         }
@@ -100,21 +108,21 @@ public class Filter {
         }
     }
 
-    public  static List<Specialty> getSpecialitiesByBranchName(String branchName){
+    public List<Specialty> getSpecialitiesByBranchName(String branchName){
       return  branches.stream()
                 .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
                 .map(BranchOfKnowledge::getSpecialties)
                 .findAny().get();
     }
 
-    public static Specialty getSpecialtyByName(String specialtyCode){
+    public Specialty getSpecialtyByName(String specialtyCode){
         return  branches.stream()
                 .flatMap(branch -> branch.getSpecialties().stream())
                 .filter(specialty -> specialty != null && specialty.getCode().equalsIgnoreCase(specialtyCode))
                 .findAny().get();
     }
 
-    public static List<BranchOfKnowledge> getBranchesByName(Map<String,List<Specialty>> filteredSpecialty){
+    public List<BranchOfKnowledge> getBranchesByName(Map<String,List<Specialty>> filteredSpecialty){
         return branches.stream()
                 .filter(branch -> filteredSpecialty.containsKey(branch.toString()))
                 .collect(Collectors.toList());

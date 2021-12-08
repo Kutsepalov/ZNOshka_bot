@@ -6,11 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
 
 @Slf4j
+@Component
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
 
@@ -74,7 +76,7 @@ public class Parser {
         return EnumSet.copyOf(list);
     }
 
-    private Subject checkSubject(String subjectName) {
+    Subject checkSubject(String subjectName) {
         switch (subjectName.trim().toLowerCase()) {
             case "українська мова":
                 return Subject.UKRAINIAN;
