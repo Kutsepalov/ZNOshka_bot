@@ -38,7 +38,7 @@ public class SpecialityButtonRegister {
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var branch:branchesOfKnowledge){
             String buttonName = branch.getTitle();
-            String nextCallback = buildCallback(BRANCH, branch.getTitle().substring(0,4), callback.get("text"));
+            String nextCallback = buildCallback(BRANCH, branch.getCode(), callback.get("text"));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
@@ -100,7 +100,7 @@ public class SpecialityButtonRegister {
         String enumCode = String.valueOf(EnumSetUtil.code(enumSet));
         for (var branch:branchesOfKnowledge){
             String buttonName = branch.getTitle();
-            String nextCallback = buildCallback(BRANCH, branch.getTitle().substring(0,4), enumCode);
+            String nextCallback = buildCallback(BRANCH, branch.getCode(), enumCode);
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
