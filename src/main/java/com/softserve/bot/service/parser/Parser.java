@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -48,7 +49,7 @@ public class Parser {
         try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
             while ((line = br.readLine()) != null) {
                 String[] domainInfo = line.split(";");
-                sts.getDomainIdToName().put(domainInfo[0], domainInfo[1]);
+                sts.getDomainIdToName().put(domainInfo[0], String.valueOf(domainInfo[1]).replace('/', '\\'));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,8 +63,14 @@ public class Parser {
                 String[] domainInfo = line.split(";");
                 Specialty specialty = new Specialty();
                 specialty.setCode(domainInfo[0]);
-                specialty.setName(domainInfo[1]);
-                specialty.setFirst(checkSubject(domainInfo[2]));
+                specialty.setName(String.valueOf(domainInfo[1]).replace('/', '\\'));
+                try {
+                    Subject first = checkSubject(String.valueOf(domainInfo[2]).replace('/', '\\'));
+                    specialty.setFirst(first);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    log.error("Error adding First Subject to new Specialty");
+                }
                 specialty.setSecond(addSubjectListToEnum(domainInfo, 3));
                 specialty.setThird(addSubjectListToEnum(domainInfo, 4));
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
@@ -77,12 +84,17 @@ public class Parser {
         String[] res = String.valueOf(second[index]).split(",");
         List<Subject> list = new ArrayList<>();
         for (String re : res) {
-            list.add(checkSubject(re));
+            try {
+                list.add(checkSubject(re));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                log.error("Error adding Subject to Enumeration list");
+            }
         }
         return EnumSet.copyOf(list);
     }
 
-    Subject checkSubject(String subjectName) {
+    Subject checkSubject(String subjectName) throws ParseException {
         switch (subjectName.trim().toLowerCase()) {
             case "українська мова":
                 return Subject.UKRAINIAN;
@@ -113,7 +125,7 @@ public class Parser {
             case "історія україни":
                 return Subject.HISTORY;
             default:
-                throw new RuntimeException("There is no data to parse");
+                    throw new ParseException("There is no such Subject on our list", 0);
         }
     }
 
@@ -219,7 +231,7 @@ public class Parser {
         return sb;
     }
 
-    protected StringBuilder setStringArraySpecialties(XSSFRow row, StringBuilder sb, int column) {
+    private StringBuilder setStringArraySpecialties(XSSFRow row, StringBuilder sb, int column) {
         String[] res = String.valueOf(row.getCell(column)).replace(",", "").replace('\u00A0', ' ').split(" або ");
         for (String re : res) {
             sb.append(deleteFirstAndLastSpaces(re)).append(",");

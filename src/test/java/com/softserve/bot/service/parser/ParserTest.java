@@ -5,6 +5,8 @@ import com.softserve.bot.model.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -14,7 +16,12 @@ class ParserTest {
     @Test
     @DisplayName("Check Parser.checkSubject method with first letter in upper case in argument")
     void checkSubject1() {
-        var result = parser.checkSubject("Біологія");
+        Subject result = null;
+        try {
+            result = parser.checkSubject("Біологія");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         assertEquals(Subject.BIOLOGY, result);
     }
@@ -22,7 +29,12 @@ class ParserTest {
     @Test
     @DisplayName("Check Parser.checkSubject method with argument in lower case in argument")
     void checkSubject2() {
-        var result = parser.checkSubject("біологія");
+        Subject result = null;
+        try {
+            result = parser.checkSubject("біологія");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         assertEquals(Subject.BIOLOGY, result);
     }
@@ -32,7 +44,12 @@ class ParserTest {
     void checkSubject3() {
         Parser parser = new Parser();
 
-        var result = parser.checkSubject("БІОЛОГІЯ");
+        Subject result = null;
+        try {
+            result = parser.checkSubject("БІОЛОГІЯ");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         assertEquals(Subject.BIOLOGY, result);
     }
@@ -40,11 +57,11 @@ class ParserTest {
     @Test
     @DisplayName("Check Parser.checkSubject method with empty string argument, must throw RuntimeException")
     void checkSubject4() {
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+        ParseException thrown = assertThrows(ParseException.class, () -> {
             parser.checkSubject("");
-        }, "RuntimeException was expected");
+        }, "ParseException was expected");
 
-        assertEquals("There is no data to parse", thrown.getMessage());
+        assertEquals("There is no such Subject on our list", thrown.getMessage());
     }
 
     @Test
