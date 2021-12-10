@@ -52,4 +52,6 @@ public class BotMessages {
     private String rulesMenu;
     @JsonProperty("contacts-menu")
     private String contactsMenu;
+    @JsonProperty("undefined-message")
+    private String undefinedMassage;
 }

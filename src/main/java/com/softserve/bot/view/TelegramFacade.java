@@ -17,6 +17,7 @@ import java.util.EnumSet;
 @RequiredArgsConstructor
 @Component
 public class TelegramFacade {
+    private final UndefinedMessageHandler undefinedMessageHandler;
     private final AlertSender alertSender;
     private final SubjectHandler subjectHandler;
     private final SpecializationHandler specializationHandler;
@@ -31,10 +32,10 @@ public class TelegramFacade {
     public BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
             return handleCallback(update);
-        } else if (update.hasMessage()) {
+        } else if (update.hasMessage() && update.getMessage().hasText()) {
             return handleMessage(update);
         }
-        return null;
+        return undefinedMessageHandler.handle(update);
     }
 
     private SendMessage handleMessage(Update update) {
@@ -76,7 +77,7 @@ public class TelegramFacade {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleSpeciality(update, callback);
         }
-        return null;
+        return alertSender.undefinedCallback(update);
     }
 
     private BotApiMethod<?> processingSearchCallback(Update update) {
