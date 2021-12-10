@@ -41,4 +41,6 @@
     <search>Search</search>
     <delete>Delete</delete>
     <menu>Menu</menu>
+    <undefined-message>Ця функція поки що недоступна.
+        Повідомте про це на наші контакти 🗣📱</undefined-message>
 </bot>
