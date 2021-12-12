@@ -24,6 +24,7 @@ public class DataProcessor {
         ciphers.forEach(x -> {
             BranchOfKnowledge branchOfKnowledge = new BranchOfKnowledge();
             branchOfKnowledge.setTitle(sts.getDomainIdToName().get(x));
+            branchOfKnowledge.setTypeOfBranch(sts.getDomainIdToType().get(x));
             branchOfKnowledge.setCode(x);
             List<Specialty> specialties = new ArrayList<>();
             sts.getDomainIdToSpecialtyId().get(x)

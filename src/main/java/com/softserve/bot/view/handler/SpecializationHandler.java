@@ -19,18 +19,19 @@ import java.util.Set;
 @Component
 public class SpecializationHandler implements Handler {
     private Message message;
-    private SendMessage sendMessage;
+    private final SendMessage sendMessage;
+    private final Filter filter;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
     }
 
 
-    public SendMessage handle(Update update, EnumSet<Subject> enumSet) {
+    public SendMessage handle(Update update, Set<Subject> enumSet) {
         message = update.getCallbackQuery().getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        var branches = Filter.getFiltered(enumSet);
-        var branchesOfKnowledge = Filter.getBranchesByName(branches);
+        var branches = filter.getFiltered(enumSet);
+        var branchesOfKnowledge = filter.getBranchesByName(branches);
         sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branchesOfKnowledge));
         sendMessage.setText("Галузі: ");
         return sendMessage;
@@ -38,7 +39,6 @@ public class SpecializationHandler implements Handler {
 
     public SendMessage handle(Update update) {
         cleanRequests();
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         if(update.getCallbackQuery() != null) {
             sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
             sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchTypeKeyboard());
@@ -53,7 +53,7 @@ public class SpecializationHandler implements Handler {
 
     public SendMessage handleBranchType(Update update, String branchType) {
 
-        var branches = Filter.getBranchesOfKnowledgeByType(branchType);
+        var branches = filter.getBranchesOfKnowledgeByType(branchType);
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText("Галузі:");
         InlineKeyboardMarkup keyboard = SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branches,branchType);
@@ -75,7 +75,7 @@ public class SpecializationHandler implements Handler {
             }
         }
 
-        var specialties = Filter.getSpecialitiesByBranchName(callback.get("text"));
+        var specialties = filter.getSpecialitiesByBranchName(callback.get("text"));
 
         InlineKeyboardMarkup inlineKeyboardMarkup = SpecialityButtonRegister.getSpecialtyKeyboard(specialties, callback.get("branch type"));
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
@@ -91,7 +91,7 @@ public class SpecializationHandler implements Handler {
             return handleBranchType(update,callback.get("branch type"));
         }
 
-        Specialty specialty = Filter.getSpecialtyByName(callback.get("text"));
+        Specialty specialty = filter.getSpecialtyByName(callback.get("text"));
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText(SpecialityButtonRegister.getSubjectsText(specialty));
         sendMessage.setReplyMarkup(null);
@@ -102,8 +102,8 @@ public class SpecializationHandler implements Handler {
     public SendMessage handleFiltered(Update update, EnumSet<Subject> enumSet) {
         message = update.getCallbackQuery().getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
-        var branches = Filter.getFiltered(enumSet);
-        var branchesOfKnowledge = Filter.getBranchesByName(branches);
+        var branches = filter.getFiltered(enumSet);
+        var branchesOfKnowledge = filter.getBranchesByName(branches);
         sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branchesOfKnowledge));
         sendMessage.setText("Галузі: ");
         return sendMessage;
