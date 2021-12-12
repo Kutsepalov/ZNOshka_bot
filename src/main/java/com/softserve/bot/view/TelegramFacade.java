@@ -78,7 +78,7 @@ public class TelegramFacade {
             }
         } else if (callbackQuery.equals("Branch type")) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchType(update,callback.get("text"));
+            return specializationHandler.handleBranchType(update,callback);
         }
         else if (callbackQuery.equals("Branch")) {
             var callback = updateSessionParser.parseToMap(update);

@@ -110,4 +110,13 @@ public final class EnumSetUtil {
         return enumSet.contains(Subject.ENGLISH)||enumSet.contains(Subject.SPANISH)
                 ||enumSet.contains(Subject.GERMANY)||enumSet.contains(Subject.FRENCH);
     }
+
+    public static boolean isEnumSet(String line){
+        try{
+            Integer.parseInt(line);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }
