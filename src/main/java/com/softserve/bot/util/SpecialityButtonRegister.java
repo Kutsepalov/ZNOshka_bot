@@ -12,7 +12,7 @@ import java.util.List;
 public class SpecialityButtonRegister {
     public static InlineKeyboardMarkup getBranchTypeKeyboard(){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        String[] branchTypes=new String[]{"Гуманітарні" ,"технічні"};
+        String[] branchTypes=new String[]{"Гуманітарні" ,"Технічні"};
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var branchType:branchTypes){
             InlineKeyboardButton button = new InlineKeyboardButton();

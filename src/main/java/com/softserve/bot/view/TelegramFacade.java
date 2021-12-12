@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
 import java.util.EnumSet;
 
 @RequiredArgsConstructor
@@ -66,37 +65,29 @@ public class TelegramFacade {
             enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.deleteSelectedSubject(update, enumSet);
         } else if (callbackQuery.equals(messages.getSearchData())) {
-            return processingSearchCallback(update);
+            enumSet = updateSessionParser.getEnumSet(update);
+            if (EnumSetUtil.selectedEnough(enumSet)) {
+                if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                    enumSet.add(Subject.FOREIGN);
+                    return specializationHandler.handle(update, enumSet);
+                } else {
+                    return alertSender.sendSubjectAlert(update);
+                }
+            } else {
+                return alertSender.sendNotEnoughSubject(update);
+            }
         } else if (callbackQuery.equals("Branch type")) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchType(update, callback.get("text"));
-        } else if (callbackQuery.equals("Branch")) {
+            return specializationHandler.handleBranchType(update,callback.get("text"));
+        }
+        else if (callbackQuery.equals("Branch")) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchOfKnowledge(update, callback, subjectHandler);
-        } else if (callbackQuery.equals("Speciality")) {
+            return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
+        }
+        else if (callbackQuery.equals("Speciality")) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleSpeciality(update, callback);
+            return specializationHandler.handleSpeciality(update,callback);
         }
         return alertSender.undefinedCallback(update);
-    }
-
-    private BotApiMethod<?> processingSearchCallback(Update update) {
-        enumSet = updateSessionParser.getEnumSet(update);
-        if (EnumSetUtil.selectedEnough(enumSet)) {
-            if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                return processingSpecialty(update);
-            } else {
-                return alertSender.sendSubjectAlert(update);
-            }
-        } else {
-            return alertSender.sendNotEnoughSubject(update);
-        }
-    }
-
-    private BotApiMethod<?> processingSpecialty(Update update) {
-        if (EnumSetUtil.containsForeignLanguage(enumSet)) {
-            enumSet.add(Subject.FOREIGN);
-        }
-        return specializationHandler.handle(update, enumSet);
     }
 }
