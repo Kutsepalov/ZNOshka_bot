@@ -66,7 +66,7 @@ public class SpecializationHandler implements Handler {
         cleanRequests();
 
         if(callback.get("text").equals("Назад")){
-            if(callback.get("branch type").equalsIgnoreCase("Sub selection"))
+            if(callback.get("type").equalsIgnoreCase("Sub selection"))
             {
                 return subjectHandler.handleReturn(update);
             }
@@ -77,7 +77,7 @@ public class SpecializationHandler implements Handler {
 
         var specialties = filter.getSpecialitiesByBranchName(callback.get("text"));
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = SpecialityButtonRegister.getSpecialtyKeyboard(specialties, callback.get("branch type"));
+        InlineKeyboardMarkup inlineKeyboardMarkup = SpecialityButtonRegister.getSpecialtyKeyboard(specialties, callback.get("type"));
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText("Спеціальності:");
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
@@ -88,7 +88,7 @@ public class SpecializationHandler implements Handler {
         cleanRequests();
 
         if(callback.get("text").equals("Назад")){
-            return handleBranchType(update,callback.get("branch type"));
+            return handleBranchType(update,callback.get("type"));
         }
 
         Specialty specialty = filter.getSpecialtyByName(callback.get("text"));
