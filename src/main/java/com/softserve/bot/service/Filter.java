@@ -113,9 +113,9 @@ public class Filter {
         }
     }
 
-    public List<Specialty> getSpecialitiesByBranchName(String branchName){
+    public List<Specialty> getSpecialitiesByBranchCode(String branchCode){
       return  branches.stream()
-                .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
+                .filter(branch -> branch.getCode().equals(branchCode))
                 .map(BranchOfKnowledge::getSpecialties)
                 .findAny().get();
     }
@@ -135,7 +135,7 @@ public class Filter {
 
     public  String getBranchOfKnowledgeName(String branchName) {
         return branches.stream()
-                .filter(branch -> branch.getTitle().substring(0,4).equals(branchName))
+                .filter(branch -> branch.getCode().equals(branchName))
                 .map(branch -> branch.getTitle())
                 .findAny()
                 .get();
