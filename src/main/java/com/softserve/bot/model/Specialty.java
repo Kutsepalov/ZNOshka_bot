@@ -6,6 +6,7 @@ import java.util.Set;
 public class Specialty {
     private String name;
     private String code;
+    private String link;
     private Subject first;
     private Set<Subject> second;
     private Set<Subject> third;
@@ -55,6 +56,14 @@ public class Specialty {
         this.code = code;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     @Override
     public String toString() {
         return "Specialty{" +
@@ -62,6 +71,7 @@ public class Specialty {
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
+                ", link='" + link + '\'' +
                 '}';
     }
 }

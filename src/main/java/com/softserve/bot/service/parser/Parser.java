@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -30,6 +27,8 @@ public class Parser {
     private String CNBranches;
     @Value("${parser.CNSpecialties}")
     private String CNSpecialties;
+    @Value("${parser.LinksToSpecialties}")
+    private String LinksToSpecialties;
 
     public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
@@ -45,18 +44,6 @@ public class Parser {
         return specialtyToSubject;
     }
 
-    protected void setDomainIdType(SpecialtyToSubject sts) {
-        String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
-            while ((line = br.readLine()) != null) {
-                String[] domainInfo = line.split(";");
-                sts.getDomainIdToType().put(domainInfo[0], TypeOfBranch.valueOf(domainInfo[2]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void doParseDomain(SpecialtyToSubject sts) {
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
@@ -70,6 +57,7 @@ public class Parser {
     }
 
     protected void doParseSpecialties(SpecialtyToSubject sts) {
+        Map<String, String> linksSpecialty = new HashMap<>();
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNSpecialties))) {
             while ((line = br.readLine()) != null) {
@@ -86,11 +74,39 @@ public class Parser {
                 }
                 specialty.setSecond(addSubjectListToEnum(domainInfo, 3));
                 specialty.setThird(addSubjectListToEnum(domainInfo, 4));
+                linksSpecialty = doParseLinksToSpecialties();
+                specialty.setLink(linksSpecialty.get(specialty.getCode()));
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void setDomainIdType(SpecialtyToSubject sts) {
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
+            while ((line = br.readLine()) != null) {
+                String[] domainInfo = line.split(";");
+                sts.getDomainIdToType().put(domainInfo[0], TypeOfBranch.valueOf(domainInfo[2]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected Map<String, String> doParseLinksToSpecialties() {
+        Map<String, String> links = new HashMap<>();
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(LinksToSpecialties))) {
+            while ((line = br.readLine()) != null) {
+                String[] domainInfo = line.split(";");
+                links.put(deleteFirstAndLastSpaces(domainInfo[0]), deleteFirstAndLastSpaces(String.valueOf(domainInfo[2])));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return links;
     }
 
     protected Set<Subject> addSubjectListToEnum(String[] second, int index) {
