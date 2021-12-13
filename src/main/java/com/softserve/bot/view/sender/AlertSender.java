@@ -27,4 +27,12 @@ public class AlertSender {
         answerCallbackQuery.setText(messages.getNotEnoughAlert());
         return answerCallbackQuery;
     }
+
+    public BotApiMethod<?> undefinedCallback(Update update) {
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+        answerCallbackQuery.setShowAlert(true);
+        answerCallbackQuery.setText(messages.getUndefinedMassage());
+        return answerCallbackQuery;
+    }
 }

@@ -7,8 +7,10 @@ import com.softserve.bot.util.EnumSetUtil;
 import com.softserve.bot.util.SpecialityButtonRegister;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -21,7 +23,7 @@ import java.util.Set;
 public class SpecializationHandler implements Handler {
     private Message message;
     private SendMessage sendMessage;
-    Filter filter;
+    private Filter filter;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
@@ -120,6 +122,8 @@ public class SpecializationHandler implements Handler {
     protected static boolean isReturnButtonPressed(Map<String, String> callback){
         return callback.get("text").equalsIgnoreCase("Назад");
     }
+
+
 
 
 }

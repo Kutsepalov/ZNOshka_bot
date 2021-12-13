@@ -3,6 +3,7 @@ package com.softserve.bot.service;
 import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import com.softserve.bot.model.TypeOfBranch;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -101,16 +102,20 @@ public class Filter {
 
     public List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType){
         if(branchType.equalsIgnoreCase("Гуманітарні")){
-            return new ArrayList<>( branches.subList(0,branches.size() / 2));
+            return branches.stream()
+                    .filter(branchOfKnowledge -> branchOfKnowledge.getTypeOfBranch().equals(TypeOfBranch.HUMANITIES))
+                    .collect(Collectors.toList());
         }
         else{
-            return branches.subList(branches.size() / 2,branches.size());
+            return branches.stream()
+                    .filter(branchOfKnowledge -> branchOfKnowledge.getTypeOfBranch().equals(TypeOfBranch.TECHNICAL))
+                    .collect(Collectors.toList());
         }
     }
 
-    public List<Specialty> getSpecialitiesByBranchCode(String code){
+    public List<Specialty> getSpecialitiesByBranchCode(String branchCode){
       return  branches.stream()
-                .filter(branch -> branch.getCode().equals(code))
+                .filter(branch -> branch.getCode().equals(branchCode))
                 .map(BranchOfKnowledge::getSpecialties)
                 .findAny().get();
     }
@@ -128,9 +133,9 @@ public class Filter {
                 .collect(Collectors.toList());
     }
 
-    public String getBranchOfKnowledgeName(String code) {
+    public  String getBranchOfKnowledgeName(String branchName) {
         return branches.stream()
-                .filter(branch -> branch.getCode().equals(code))
+                .filter(branch -> branch.getCode().equals(branchName))
                 .map(branch -> branch.getTitle())
                 .findAny()
                 .get();

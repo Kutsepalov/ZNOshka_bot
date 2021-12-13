@@ -6,6 +6,15 @@ public class BranchOfKnowledge {
     private String title;
     private String code;
     private List<Specialty> specialties;
+    private TypeOfBranch typeOfBranch;
+
+    public TypeOfBranch getTypeOfBranch() {
+        return typeOfBranch;
+    }
+
+    public void setTypeOfBranch(TypeOfBranch typeOfBranch) {
+        this.typeOfBranch = typeOfBranch;
+    }
 
     public BranchOfKnowledge(String title, String code) {
         this.title = title;

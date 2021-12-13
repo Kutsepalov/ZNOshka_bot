@@ -2,6 +2,7 @@ package com.softserve.bot.service.parser;
 
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import com.softserve.bot.model.TypeOfBranch;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -40,8 +41,20 @@ public class Parser {
         doParseDomain(specialtyToSubject);
         doParseSpecialties(specialtyToSubject);
         setDomainToSpecialty(specialtyToSubject);
-
+        setDomainIdType(specialtyToSubject);
         return specialtyToSubject;
+    }
+
+    protected void setDomainIdType(SpecialtyToSubject sts) {
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
+            while ((line = br.readLine()) != null) {
+                String[] domainInfo = line.split(";");
+                sts.getDomainIdToType().put(domainInfo[0], TypeOfBranch.valueOf(domainInfo[2]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void doParseDomain(SpecialtyToSubject sts) {
@@ -166,10 +179,10 @@ public class Parser {
                             domainName = deleteFirstAndLastSpaces(String.valueOf(row.getCell(1)));
                             domId = Integer.parseInt(domainId);
                             if ((domId >= 1 && domId <= 10) || (domId >= 20 && domId <= 24) || (domId >= 28 && domId <= 29)) {
-                                sbForDomain = appendDomainIdDomainName(sbForDomain, domainId, domainName, "Г");
+                                sbForDomain = appendDomainIdDomainName(sbForDomain, domainId, domainName, TypeOfBranch.HUMANITIES);
                             }
                             if ((domId >= 11 && domId <= 19) || (domId >= 25 && domId <= 27)) {
-                                sbForDomain = appendDomainIdDomainName(sbForDomain, domainId, domainName, "Т");
+                                sbForDomain = appendDomainIdDomainName(sbForDomain, domainId, domainName, TypeOfBranch.TECHNICAL);
                             }
                         }
                     }
@@ -184,7 +197,7 @@ public class Parser {
         }
     }
 
-    protected StringBuilder appendDomainIdDomainName(StringBuilder sb, String id, String name, String type) {
+    protected StringBuilder appendDomainIdDomainName(StringBuilder sb, String id, String name, TypeOfBranch type) {
         return sb.append(id).append(";").append(name).append(";").append(type).append("\n");
     }
 
