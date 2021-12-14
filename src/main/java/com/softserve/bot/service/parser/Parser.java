@@ -84,6 +84,8 @@ public class Parser {
                 specialty.setLinkUniv(linksUniversities.get(specialty.getCode()));
 
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
+
+                log.info("univ link" +" "+specialty.getLinkUniv() + " " + specialty.getName());
             }
         } catch (IOException e) {
             e.printStackTrace();
