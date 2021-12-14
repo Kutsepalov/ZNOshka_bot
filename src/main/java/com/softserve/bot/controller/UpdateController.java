@@ -56,11 +56,14 @@ public class UpdateController {
 
     @GetMapping("/")
     public ResponseEntity<Void> root() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+        if(!update.hasMessage() && !update.hasCallbackQuery()) {
+            return null;
+        }
         logger(update);
         return telegramBot.onWebhookUpdateReceived(update);
     }
