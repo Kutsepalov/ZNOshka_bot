@@ -15,7 +15,6 @@ public class Specialty {
     public Specialty() {
         second = new HashSet<>();
         third = new HashSet<>();
-        this.linkUniv = "Поки що ми не знаємо, де цьому навчають, варто пошукати в іншому місці.";
     }
 
     public String getName() {
@@ -58,12 +57,20 @@ public class Specialty {
         this.code = code;
     }
 
+    public boolean hasLinkSpec() {
+        return linkSpec != null;
+    }
+
     public String getLinkSpec() {
         return linkSpec;
     }
 
     public void setLinkSpec(String linkSpec) {
         this.linkSpec = linkSpec;
+    }
+
+    public boolean hasLinkUniv() {
+        return linkUniv != null;
     }
 
     public String getLinkUniv() {
