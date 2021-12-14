@@ -59,8 +59,8 @@ public class Parser {
     }
 
     protected void doParseSpecialties(SpecialtyToSubject sts) {
-        Map<String, String> linksSpecialty = new HashMap<>();
-        Map<String, String> linksUniversities = new HashMap<>();
+        Map<String, String> linksSpecialty;
+        Map<String, String> linksUniversities;
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNSpecialties))) {
             while ((line = br.readLine()) != null) {
@@ -80,10 +80,18 @@ public class Parser {
 
                 linksSpecialty = doParseLinksToSpecialties(LinksToSpecialties);
                 linksUniversities = doParseLinksToSpecialties(LinksToUniversities);
-                specialty.setLinkSpec(linksSpecialty.get(specialty.getCode()));
-                specialty.setLinkUniv(linksUniversities.get(specialty.getCode()));
+
+                if (linksSpecialty.get(specialty.getCode()) != null) {
+                    specialty.setLinkSpec(linksSpecialty.get(specialty.getCode()));
+                }
+                if (linksUniversities.get(specialty.getCode()) != null) {
+                    specialty.setLinkUniv(linksUniversities.get(specialty.getCode()));
+                }
 
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
+            }
+            for (String s : sts.getSpecialtyIdToName().keySet()) {
+                System.out.println(sts.getSpecialtyIdToName().get(s).getLinkUniv());
             }
         } catch (IOException e) {
             e.printStackTrace();

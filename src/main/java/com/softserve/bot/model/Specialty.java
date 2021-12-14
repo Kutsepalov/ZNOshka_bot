@@ -15,7 +15,7 @@ public class Specialty {
     public Specialty() {
         second = new HashSet<>();
         third = new HashSet<>();
-        linkUniv = "";
+        this.linkUniv = "Поки що ми не знаємо, де цьому навчають, варто пошукати в іншому місці.";
     }
 
     public String getName() {
