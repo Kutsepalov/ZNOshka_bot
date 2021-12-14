@@ -72,7 +72,7 @@ public class UpdateController {
         Message msg;
         if(update.hasMessage()) {
             msg = update.getMessage();
-            log.info(chatData(msg) + " - \"" + msg.getText() + "\"");
+            log.info(chatData(msg) + " - " + (msg.getText()==null ? "<empty>" : ("\"" + msg.getText() + "\"")));
         } else if(update.hasCallbackQuery()) {
             CallbackQuery cbq = update.getCallbackQuery();
             msg = cbq.getMessage();
@@ -84,6 +84,6 @@ public class UpdateController {
     }
 
     private String chatData(Message msg) {
-        return "Chat[" + msg.getChatId() + "]:" + msg.getChat().getUserName();
+        return "Chat[" + msg.getChatId() + "]:" + (msg.getChat().getUserName()==null ? "<hidden>" : msg.getChat().getUserName());
     }
 }
