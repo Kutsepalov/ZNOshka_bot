@@ -6,6 +6,8 @@ import java.util.Set;
 public class Specialty {
     private String name;
     private String code;
+    private String linkSpec;
+    private String linkUniv;
     private Subject first;
     private Set<Subject> second;
     private Set<Subject> third;
@@ -55,6 +57,30 @@ public class Specialty {
         this.code = code;
     }
 
+    public boolean hasLinkSpec() {
+        return linkSpec != null;
+    }
+
+    public String getLinkSpec() {
+        return linkSpec;
+    }
+
+    public void setLinkSpec(String linkSpec) {
+        this.linkSpec = linkSpec;
+    }
+
+    public boolean hasLinkUniv() {
+        return linkUniv != null;
+    }
+
+    public String getLinkUniv() {
+        return linkUniv;
+    }
+
+    public void setLinkUniv(String linkUniv) {
+        this.linkUniv = linkUniv;
+    }
+
     @Override
     public String toString() {
         return "Specialty{" +
@@ -62,6 +88,8 @@ public class Specialty {
                 ", first='" + first + '\'' +
                 ", second=" + second +
                 ", third=" + third +
+                ", linkToSpec='" + linkSpec + '\'' +
+                ", linkToSpec='" + linkUniv + '\'' +
                 '}';
     }
 }
