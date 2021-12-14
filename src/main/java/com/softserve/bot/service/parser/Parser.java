@@ -29,6 +29,8 @@ public class Parser {
     private String CNSpecialties;
     @Value("${parser.LinksToSpecialties}")
     private String LinksToSpecialties;
+    @Value("${parser.LinksToUniversities}")
+    private String LinksToUniversities;
 
     public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
@@ -58,6 +60,7 @@ public class Parser {
 
     protected void doParseSpecialties(SpecialtyToSubject sts) {
         Map<String, String> linksSpecialty = new HashMap<>();
+        Map<String, String> linksUniversities = new HashMap<>();
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNSpecialties))) {
             while ((line = br.readLine()) != null) {
@@ -74,8 +77,12 @@ public class Parser {
                 }
                 specialty.setSecond(addSubjectListToEnum(domainInfo, 3));
                 specialty.setThird(addSubjectListToEnum(domainInfo, 4));
-                linksSpecialty = doParseLinksToSpecialties();
-                specialty.setLink(linksSpecialty.get(specialty.getCode()));
+
+                linksSpecialty = doParseLinksToSpecialties(LinksToSpecialties);
+                linksUniversities = doParseLinksToSpecialties(LinksToUniversities);
+                specialty.setLinkSpec(linksSpecialty.get(specialty.getCode()));
+                specialty.setLinkUniv(linksUniversities.get(specialty.getCode()));
+
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
             }
         } catch (IOException e) {
@@ -95,10 +102,10 @@ public class Parser {
         }
     }
 
-    protected Map<String, String> doParseLinksToSpecialties() {
+    protected Map<String, String> doParseLinksToSpecialties(String pathToCsv) {
         Map<String, String> links = new HashMap<>();
         String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(LinksToSpecialties))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(pathToCsv))) {
             while ((line = br.readLine()) != null) {
                 String[] domainInfo = line.split(";");
                 links.put(deleteFirstAndLastSpaces(domainInfo[0]), deleteFirstAndLastSpaces(String.valueOf(domainInfo[2])));
@@ -172,7 +179,7 @@ public class Parser {
 
     }
 
-    public void doParseExcelToCSV() throws IOException {
+    public void doParseExcelToCSV() {
 
         try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(path));
              PrintWriter writerCSVDomain = new PrintWriter(CNBranches);
@@ -208,8 +215,10 @@ public class Parser {
             }
             writerCSVDomain.write(sbForDomain.toString());
             writerCSVSpecialty.write(sbForSpecialty.toString());
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e ) {
             log.warn(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -252,10 +261,10 @@ public class Parser {
                 .append(deleteFirstAndLastSpaces(String.valueOf(row.getCell(3)).replace('\u00A0', ' '))).append(";")
                 .append(deleteFirstAndLastSpaces(String.valueOf(row.getCell(4)).replace('\u00A0', ' '))).append(";");
 
-        sb = setStringArraySpecialties(row, sb, 5);
+        setStringArraySpecialties(row, sb, 5);
         sb.append(";");
 
-        sb = setStringArraySpecialties(row, sb, 6);
+        setStringArraySpecialties(row, sb, 6);
         sb.append("\n");
         return sb;
     }
