@@ -39,7 +39,7 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var branch:branchesOfKnowledge){
-            String buttonName = branch.getTitle();
+            String buttonName = branch.getCode() + " " + branch.getTitle();
             String nextCallback = buildCallback(BRANCH, branch.getCode(), callback.get("text"));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
@@ -58,7 +58,7 @@ public class SpecialityButtonRegister {
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var specialty:specialties){
             String buttonName = specialty.getCode() + " " + specialty.getName();
-            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(),callback.get("text") ,callback.get("previous"));
+            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(), callback.get("text"), callback.get("previous"));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
@@ -85,16 +85,12 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
 
-        log.info("Specialty link description value: " + specialty.getLinkSpec());
-
-        if(specialty.getLinkSpec() != null && !specialty.getLinkSpec().equals("")) {
+        if(!specialty.getLinkSpec().equals("")) {
             var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність", specialty.getLinkSpec());
             rows.add(row);
         }
 
-        log.info("Specialty link university value: " + specialty.getLinkUniv());
-
-        if(specialty.getLinkUniv() != null && !specialty.getLinkUniv().equals("")) {
+        if(!specialty.getLinkUniv().equals("")) {
             var row = getSingleUrlButtonRow("Де навчають", specialty.getLinkUniv());
             rows.add(row);
         }
