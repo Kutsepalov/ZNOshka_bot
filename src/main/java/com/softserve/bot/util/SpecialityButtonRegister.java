@@ -85,12 +85,12 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
 
-        if(!specialty.getLinkSpec().equals("")) {
+        if(specialty.hasLinkSpec()) {
             var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність", specialty.getLinkSpec());
             rows.add(row);
         }
 
-        if(!specialty.getLinkUniv().equals("")) {
+        if(specialty.hasLinkUniv()) {
             var row = getSingleUrlButtonRow("Де навчають", specialty.getLinkUniv());
             rows.add(row);
         }
