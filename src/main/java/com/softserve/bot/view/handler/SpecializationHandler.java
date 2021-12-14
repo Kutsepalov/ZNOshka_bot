@@ -7,10 +7,8 @@ import com.softserve.bot.util.EnumSetUtil;
 import com.softserve.bot.util.SpecialityButtonRegister;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.ResponseParameters;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -42,7 +40,6 @@ public class SpecializationHandler implements Handler {
 
     public SendMessage handle(Update update) {
         cleanRequests();
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         if(update.getCallbackQuery() != null) {
             sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
             sendMessage.setReplyMarkup(SpecialityButtonRegister.getBranchTypeKeyboard());

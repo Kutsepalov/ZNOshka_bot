@@ -31,7 +31,7 @@ public class TelegramFacade {
     public BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
             return handleCallback(update);
-        } else if (update.hasMessage() && update.getMessage().hasText()) {
+        } else if (update.getMessage().hasText()) {
             return handleMessage(update);
         }
         return undefinedMessageHandler.handle(update);
