@@ -90,9 +90,6 @@ public class Parser {
 
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
             }
-            for (String s : sts.getSpecialtyIdToName().keySet()) {
-                System.out.println(sts.getSpecialtyIdToName().get(s).getLinkUniv());
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

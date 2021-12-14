@@ -3,6 +3,7 @@ package com.softserve.bot.util;
 import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -11,6 +12,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class SpecialityButtonRegister {
 
     private static final String BRANCH_TYPE = "Branch type";
@@ -37,7 +39,7 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var branch:branchesOfKnowledge){
-            String buttonName = branch.getTitle();
+            String buttonName = branch.getCode() + " " + branch.getTitle();
             String nextCallback = buildCallback(BRANCH, branch.getCode(), callback.get("text"));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
@@ -55,8 +57,8 @@ public class SpecialityButtonRegister {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var specialty:specialties){
-            String buttonName = specialty.getName();
-            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(),callback.get("text") ,callback.get("previous"));
+            String buttonName = specialty.getCode() + " " + specialty.getName();
+            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(), callback.get("text"), callback.get("previous"));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
@@ -79,15 +81,19 @@ public class SpecialityButtonRegister {
         return String.join("\n", branchOfKnowledge, spec, first, second, third);
     }
 
-    public static InlineKeyboardMarkup getSubjectsKeyboard(){
+    public static InlineKeyboardMarkup getSubjectsKeyboard(Specialty specialty){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
 
-        var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність","https://osvita.ua/vnz/76723/");
-        rows.add(row);
+        if(specialty.hasLinkSpec()) {
+            var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність", specialty.getLinkSpec());
+            rows.add(row);
+        }
 
-        row = getSingleUrlButtonRow("Де навчають","https://osvita.ua/vnz/76723/");
-        rows.add(row);
+        if(specialty.hasLinkUniv()) {
+            var row = getSingleUrlButtonRow("Де навчають", specialty.getLinkUniv());
+            rows.add(row);
+        }
 
         inlineKeyboardMarkup.setKeyboard(rows);
 

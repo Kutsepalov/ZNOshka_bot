@@ -101,7 +101,7 @@ public class SpecializationHandler implements Handler {
         Specialty specialty = filter.getSpecialtyByName(callback.get("text"));
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText(SpecialityButtonRegister.getSubjectsText(specialty,branchName));
-        sendMessage.setReplyMarkup(SpecialityButtonRegister.getSubjectsKeyboard());
+        sendMessage.setReplyMarkup(SpecialityButtonRegister.getSubjectsKeyboard(specialty));
 
         return sendMessage;
     }
