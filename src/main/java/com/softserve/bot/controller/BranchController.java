@@ -1,9 +1,11 @@
 package com.softserve.bot.controller;
 
-import com.softserve.bot.dto.BranchDTO;
+import com.softserve.bot.dto.BranchDto;
+import com.softserve.bot.model.Specialty;
+import com.softserve.bot.service.Filter;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,31 +13,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/branches")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BranchController {
-    private BranchDTO branchDTO;
+    private final Filter filter;
+    private List<BranchDto> branchDto;
 
-    @GetMapping
-    public ResponseEntity<List<String>> findBranches() {
-        try {
-            List<String> list = branchDTO.getBranches();
-            return new ResponseEntity<List<String>>(list, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}/specialties")
+    public ResponseEntity<List<BranchDto>> findSpecialtiesByBranchId(@PathVariable String id) {
+        branchDto = filter.getSpecialitiesByBranchCode(id).stream()
+                .map(BranchDto::new)
+                .collect(Collectors.toList());
+        if (branchDto.isEmpty()) {
+            return new ResponseEntity<List<BranchDto>>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<List<BranchDto>>(branchDto, HttpStatus.OK);
         }
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<String> findBranchById(@PathVariable  String id) {
-        try {
-             String branch = branchDTO.getBranchesById(id);
-            return new ResponseEntity<String>(branch, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
-        }
-    }
-
 }
