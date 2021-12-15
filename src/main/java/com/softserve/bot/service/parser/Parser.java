@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -30,6 +27,10 @@ public class Parser {
     private String CNBranches;
     @Value("${parser.CNSpecialties}")
     private String CNSpecialties;
+    @Value("${parser.LinksToSpecialties}")
+    private String LinksToSpecialties;
+    @Value("${parser.LinksToUniversities}")
+    private String LinksToUniversities;
 
     public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
@@ -45,18 +46,6 @@ public class Parser {
         return specialtyToSubject;
     }
 
-    protected void setDomainIdType(SpecialtyToSubject sts) {
-        String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
-            while ((line = br.readLine()) != null) {
-                String[] domainInfo = line.split(";");
-                sts.getDomainIdToType().put(domainInfo[0], TypeOfBranch.valueOf(domainInfo[2]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void doParseDomain(SpecialtyToSubject sts) {
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
@@ -70,6 +59,8 @@ public class Parser {
     }
 
     protected void doParseSpecialties(SpecialtyToSubject sts) {
+        Map<String, String> linksSpecialty;
+        Map<String, String> linksUniversities;
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(CNSpecialties))) {
             while ((line = br.readLine()) != null) {
@@ -86,11 +77,48 @@ public class Parser {
                 }
                 specialty.setSecond(addSubjectListToEnum(domainInfo, 3));
                 specialty.setThird(addSubjectListToEnum(domainInfo, 4));
+
+                linksSpecialty = doParseLinksToSpecialties(LinksToSpecialties);
+                linksUniversities = doParseLinksToSpecialties(LinksToUniversities);
+
+                if (linksSpecialty.get(specialty.getCode()) != null) {
+                    specialty.setLinkSpec(linksSpecialty.get(specialty.getCode()));
+                }
+                if (linksUniversities.get(specialty.getCode()) != null) {
+                    specialty.setLinkUniv(linksUniversities.get(specialty.getCode()));
+                }
+
                 sts.getSpecialtyIdToName().put(domainInfo[0], specialty);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void setDomainIdType(SpecialtyToSubject sts) {
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(CNBranches))) {
+            while ((line = br.readLine()) != null) {
+                String[] domainInfo = line.split(";");
+                sts.getDomainIdToType().put(domainInfo[0], TypeOfBranch.valueOf(domainInfo[2]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected Map<String, String> doParseLinksToSpecialties(String pathToCsv) {
+        Map<String, String> links = new HashMap<>();
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(pathToCsv))) {
+            while ((line = br.readLine()) != null) {
+                String[] domainInfo = line.split(";");
+                links.put(deleteFirstAndLastSpaces(domainInfo[0]), deleteFirstAndLastSpaces(String.valueOf(domainInfo[2])));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return links;
     }
 
     protected Set<Subject> addSubjectListToEnum(String[] second, int index) {
@@ -156,7 +184,7 @@ public class Parser {
 
     }
 
-    public void doParseExcelToCSV() throws IOException {
+    public void doParseExcelToCSV() {
 
         try (XSSFWorkbook excelBook = new XSSFWorkbook(new FileInputStream(path));
              PrintWriter writerCSVDomain = new PrintWriter(CNBranches);
@@ -192,8 +220,10 @@ public class Parser {
             }
             writerCSVDomain.write(sbForDomain.toString());
             writerCSVSpecialty.write(sbForSpecialty.toString());
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e ) {
             log.warn(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -236,10 +266,10 @@ public class Parser {
                 .append(deleteFirstAndLastSpaces(String.valueOf(row.getCell(3)).replace('\u00A0', ' '))).append(";")
                 .append(deleteFirstAndLastSpaces(String.valueOf(row.getCell(4)).replace('\u00A0', ' '))).append(";");
 
-        sb = setStringArraySpecialties(row, sb, 5);
+        setStringArraySpecialties(row, sb, 5);
         sb.append(";");
 
-        sb = setStringArraySpecialties(row, sb, 6);
+        setStringArraySpecialties(row, sb, 6);
         sb.append("\n");
         return sb;
     }
