@@ -26,7 +26,7 @@ public class TelegramFacade {
     private final AdditionalMessageHandler additionalMessageHandler;
     private final UpdateSessionParser updateSessionParser;
     private final BotMessages messages;
-    private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+    private EnumSet<Subject> enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
 
     public BotApiMethod<?> handleUpdate(Update update) {
         if (update.hasCallbackQuery()) {
@@ -40,7 +40,7 @@ public class TelegramFacade {
     private SendMessage handleMessage(Update update) {
         switch (update.getMessage().getText()) {
             case "Вибрати предмети":
-                enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+                enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
                 return subjectHandler.handle(update);
             case "Показати всі спеціальності":
                 return specializationHandler.handle(update);
