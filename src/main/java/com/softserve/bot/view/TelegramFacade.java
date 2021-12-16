@@ -40,7 +40,6 @@ public class TelegramFacade {
     private SendMessage handleMessage(Update update) {
         switch (update.getMessage().getText()) {
             case "Вибрати предмети":
-                enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
                 return subjectHandler.handle(update);
             case "Показати всі спеціальності":
                 return specializationHandler.handle(update);
@@ -57,37 +56,37 @@ public class TelegramFacade {
 
     private BotApiMethod<?> handleCallback(Update update) {
         String callbackQuery = updateSessionParser.getCallback(update);
+        var callback = updateSessionParser.parseToMap(update);
+        enumSet = updateSessionParser.getEnumSet(update);
         if (Subject.contains(callbackQuery)) {
             Subject element = Subject.valueOf(callbackQuery);
-            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.setAndRemoveTick(update, element, enumSet);
         } else if (callbackQuery.equals(messages.getDeleteData())) {
-            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.deleteSelectedSubject(update, enumSet);
         } else if (callbackQuery.equals(messages.getSearchData())) {
-            enumSet = updateSessionParser.getEnumSet(update);
-            if (EnumSetUtil.selectedEnough(enumSet)) {
-                if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                    enumSet.add(Subject.FOREIGN);
-                    return specializationHandler.handle(update, enumSet);
-                } else {
-                    return alertSender.sendSubjectAlert(update);
-                }
-            } else {
-                return alertSender.sendNotEnoughSubject(update);
-            }
-        } else if (callbackQuery.equals("Branch type")) {
-            var callback = updateSessionParser.parseToMap(update);
+            return processingSearchCallback(update);
+        } else if (callbackQuery.equals(messages.getBranchType())) {
             return specializationHandler.handleBranchType(update,callback);
         }
-        else if (callbackQuery.equals("Branch")) {
-            var callback = updateSessionParser.parseToMap(update);
+        else if (callbackQuery.equals(messages.getBranch())) {
             return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
         }
-        else if (callbackQuery.equals("Speciality")) {
-            var callback = updateSessionParser.parseToMap(update);
+        else if (callbackQuery.equals(messages.getSpecialty())) {
             return specializationHandler.handleSpeciality(update,callback);
         }
         return alertSender.undefinedCallback(update);
+    }
+
+    private BotApiMethod<?> processingSearchCallback(Update update) {
+        if (EnumSetUtil.selectedEnough(enumSet)) {
+            if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                enumSet.add(Subject.FOREIGN);
+                return specializationHandler.handle(update, enumSet);
+            } else {
+                return alertSender.sendSubjectAlert(update);
+            }
+        } else {
+            return alertSender.sendNotEnoughSubject(update);
+        }
     }
 }
