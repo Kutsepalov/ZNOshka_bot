@@ -111,7 +111,7 @@ public class SpecialityButtonRegister {
             rows.add(row);
         }
         String nextCallback = buildCallback(BRANCH, RETURN, enumCode);
-        var row = getSingleButtonRow("Назад до вибору предметів", nextCallback);
+        var row = getSingleButtonRow("Назад до вибору предметів \uD83D\uDD19", nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);

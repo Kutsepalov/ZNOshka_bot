@@ -1,10 +1,17 @@
 package com.softserve.bot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.softserve.bot.service.DataProcessor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Class which contains default messages for Bot interface.
+ * Value read from <strong>bot-msg.xml</strong>
+ *
+ * @author Max Kutsepalov
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

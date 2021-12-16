@@ -29,7 +29,7 @@ public class SubjectHandler implements Handler {
 
     public EditMessageReplyMarkup deleteSelectedSubject(Update update, Set<Subject> enumSet) {
         enumSet.clear();
-        enumSet.addAll(EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE));
+        enumSet.addAll(EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE));
         return processingSelectionSubject(update, enumSet);
     }
 
@@ -44,7 +44,7 @@ public class SubjectHandler implements Handler {
 
     public SendMessage handle(Update update) {
         cleanRequests();
-        Set<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+        Set<Subject> enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
         Message message = update.getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));
@@ -54,7 +54,7 @@ public class SubjectHandler implements Handler {
 
     public SendMessage handleReturn(Update update) {
         cleanRequests();
-        Set<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
+        Set<Subject> enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
         Message message = update.getCallbackQuery().getMessage();
         sendMessage.setChatId(String.valueOf(message.getChatId()));
         sendMessage.setReplyMarkup(buttonSubjectRegister.getInlineSubjectButtons(enumSet, enumSet.size()));

@@ -66,7 +66,7 @@ public class ButtonSubjectRegister {
 
     private void addFindButton(Set<Subject> enumSet) {
         InlineKeyboardButton currentButton = new InlineKeyboardButton();
-        currentButton.setText(messages.getFindAll() + " " + EmojiParser.parseToUnicode(messages.getFindMark()));
+        currentButton.setText(messages.getFindAll());
         currentButton.setCallbackData(messages.getSearchData() + messages.getSeparator() + EnumSetUtil.code((EnumSet<Subject>) enumSet));
         findRow.add(currentButton);
         rowList.add(findRow);
