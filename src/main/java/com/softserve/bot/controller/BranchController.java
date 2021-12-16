@@ -5,6 +5,7 @@ import com.softserve.bot.dto.SpecialtyDTO;
 import com.softserve.bot.exception.BranchControllerException;
 import com.softserve.bot.exception.SpecialtyNotFoundException;
 import com.softserve.bot.model.Specialty;
+import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.service.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,8 @@ public class BranchController {
                 .orElseThrow(SpecialtyNotFoundException::new);
         return new ResponseEntity<SpecialtyDTO>(specialtyDTO,HttpStatus.OK);
 
+    @GetMapping
+    public ResponseEntity<List<BranchOfKnowledge>> getBranches(){
+        return new ResponseEntity<List<BranchOfKnowledge>>(filter.getBranchesOfKnowledge(), HttpStatus.OK);
     }
 }
