@@ -1,6 +1,7 @@
 package com.softserve.bot.controller;
 
 import com.softserve.bot.dto.BranchDto;
+import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.service.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,5 +26,10 @@ public class BranchController {
                 .map(BranchDto::new)
                 .collect(Collectors.toList());
                   return new ResponseEntity<List<BranchDto>>(branchDto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BranchOfKnowledge>> getBranches(){
+        return new ResponseEntity<List<BranchOfKnowledge>>(filter.getBranchesOfKnowledge(), HttpStatus.OK);
     }
 }
