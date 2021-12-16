@@ -37,15 +37,15 @@ public class BranchController {
     }
 
     @GetMapping("/{idBranch}/specialties/{idSpecialty}")
-    public ResponseEntity<SpecialtyDTO> findSpecialtyByBranchIdAndSpecialtyId(@PathVariable String idBranch, @PathVariable String idSpecialty){
+    public ResponseEntity<SpecialtyDTO> findSpecialtyByBranchIdAndSpecialtyId(@PathVariable String idBranch, @PathVariable String idSpecialty) {
         SpecialtyDTO specialtyDTO = filter.getSpecialitiesByBranchCode(idBranch)
                 .stream()
                 .map(SpecialtyDTO::new)
                 .filter(specialty -> idSpecialty.equals(specialty.getCode()))
                 .findAny()
                 .orElseThrow(SpecialtyNotFoundException::new);
-        return new ResponseEntity<SpecialtyDTO>(specialtyDTO,HttpStatus.OK);
-
+        return new ResponseEntity<SpecialtyDTO>(specialtyDTO, HttpStatus.OK);
+    }
     @GetMapping
     public ResponseEntity<List<BranchOfKnowledge>> getBranches(){
         return new ResponseEntity<List<BranchOfKnowledge>>(filter.getBranchesOfKnowledge(), HttpStatus.OK);
