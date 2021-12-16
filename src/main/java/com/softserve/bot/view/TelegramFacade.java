@@ -56,26 +56,22 @@ public class TelegramFacade {
 
     private BotApiMethod<?> handleCallback(Update update) {
         String callbackQuery = updateSessionParser.getCallback(update);
+        var callback = updateSessionParser.parseToMap(update);
+        enumSet = updateSessionParser.getEnumSet(update);
         if (Subject.contains(callbackQuery)) {
             Subject element = Subject.valueOf(callbackQuery);
-            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.setAndRemoveTick(update, element, enumSet);
         } else if (callbackQuery.equals(messages.getDeleteData())) {
-            enumSet = updateSessionParser.getEnumSet(update);
             return subjectHandler.deleteSelectedSubject(update, enumSet);
         } else if (callbackQuery.equals(messages.getSearchData())) {
-            enumSet = updateSessionParser.getEnumSet(update);
             return processingSearchCallback(update);
         } else if (callbackQuery.equals(messages.getBranchType())) {
-            var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleBranchType(update,callback);
         }
         else if (callbackQuery.equals(messages.getBranch())) {
-            var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
         }
         else if (callbackQuery.equals(messages.getSpecialty())) {
-            var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleSpeciality(update,callback);
         }
         return alertSender.undefinedCallback(update);
