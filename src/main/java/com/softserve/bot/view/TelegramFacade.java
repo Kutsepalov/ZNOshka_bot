@@ -65,28 +65,32 @@ public class TelegramFacade {
             return subjectHandler.deleteSelectedSubject(update, enumSet);
         } else if (callbackQuery.equals(messages.getSearchData())) {
             enumSet = updateSessionParser.getEnumSet(update);
-            if (EnumSetUtil.selectedEnough(enumSet)) {
-                if (EnumSetUtil.notOutOfLimit(enumSet)) {
-                    enumSet.add(Subject.FOREIGN);
-                    return specializationHandler.handle(update, enumSet);
-                } else {
-                    return alertSender.sendSubjectAlert(update);
-                }
-            } else {
-                return alertSender.sendNotEnoughSubject(update);
-            }
-        } else if (callbackQuery.equals("Branch type")) {
+            return processingSearchCallback(update);
+        } else if (callbackQuery.equals(messages.getBranchType())) {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleBranchType(update,callback);
         }
-        else if (callbackQuery.equals("Branch")) {
+        else if (callbackQuery.equals(messages.getBranch())) {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
         }
-        else if (callbackQuery.equals("Speciality")) {
+        else if (callbackQuery.equals(messages.getSpecialty())) {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleSpeciality(update,callback);
         }
         return alertSender.undefinedCallback(update);
+    }
+
+    private BotApiMethod<?> processingSearchCallback(Update update) {
+        if (EnumSetUtil.selectedEnough(enumSet)) {
+            if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                enumSet.add(Subject.FOREIGN);
+                return specializationHandler.handle(update, enumSet);
+            } else {
+                return alertSender.sendSubjectAlert(update);
+            }
+        } else {
+            return alertSender.sendNotEnoughSubject(update);
+        }
     }
 }
