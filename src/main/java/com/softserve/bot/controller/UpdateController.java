@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.telegram.telegrambots.meta.api.interfaces.Validable;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -22,16 +22,10 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @AllArgsConstructor
-@RestController()
-@RequestMapping("/")
+@RestController
 public class UpdateController {
     private final WebhookBot telegramBot;
 
-    /**
-     *  Method is called after bean initialization.
-     *  Functional creates request upon link which register webhook link on Telegram server.
-     *  Webhook link - link to which requests for this application are sent.
-     */
     @PostConstruct
     private void botRegistration() {
         try {
@@ -43,7 +37,7 @@ public class UpdateController {
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode == HttpURLConnection.HTTP_OK) { // success
                 String res = IOUtils.toString(con.getInputStream(), StandardCharsets.UTF_8);
                 if(res.contains("Webhook was set") || res.contains("Webhook is already set")) {
                     log.info("Bot registration success");
@@ -60,24 +54,13 @@ public class UpdateController {
         }
     }
 
-    /**
-     * Method for checking life state this app.
-     *
-     * @return empty response with 204 code.
-     */
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<Void> root() {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Method for getting messages from Telegram users.
-     *
-     * @param update model with user message values.
-     * @return messages for users or NULL if Update is empty.
-     */
-    @PostMapping
-    public Validable onUpdateReceived(@RequestBody Update update) {
+    @PostMapping("/")
+    public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
         if(!update.hasMessage() && !update.hasCallbackQuery()) {
             return null;
         }
@@ -101,7 +84,6 @@ public class UpdateController {
     }
 
     private String chatData(Message msg) {
-        return "Chat[" + msg.getChatId() + "]:"
-                + (msg.getChat().getUserName()==null ? "<hidden>" : msg.getChat().getUserName());
+        return "Chat[" + msg.getChatId() + "]:" + (msg.getChat().getUserName()==null ? "<hidden>" : msg.getChat().getUserName());
     }
 }

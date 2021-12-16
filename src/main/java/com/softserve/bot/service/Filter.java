@@ -141,8 +141,4 @@ public class Filter {
                 .get();
     }
 
-    public List<BranchOfKnowledge> getBranchesOfKnowledge(){
-        return branches;
-    }
-
 }

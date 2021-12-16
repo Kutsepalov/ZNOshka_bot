@@ -28,7 +28,7 @@ public final class EnumSetUtil {
         }
         return result;
     }
-    public static void setTick(Subject element, Set<Subject> enumSet) {
+    public static void addTick(Subject element, Set<Subject> enumSet) {
         switch (element) {
             case UKRAINIAN:
                 enumSet.remove(Subject.LITERATURE);
