@@ -40,7 +40,6 @@ public class TelegramFacade {
     private SendMessage handleMessage(Update update) {
         switch (update.getMessage().getText()) {
             case "Вибрати предмети":
-                enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
                 return subjectHandler.handle(update);
             case "Показати всі спеціальності":
                 return specializationHandler.handle(update);
