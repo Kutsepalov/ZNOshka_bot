@@ -52,7 +52,7 @@ public class SubjectHandler implements Handler {
         return sendMessage;
     }
 
-    public SendMessage handleReturn(Update update) {
+    SendMessage handleReturn(Update update) {
         cleanRequests();
         Set<Subject> enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
         Message message = update.getCallbackQuery().getMessage();
@@ -66,7 +66,7 @@ public class SubjectHandler implements Handler {
         if (enumSet.contains(element)) {
             EnumSetUtil.removeTick(element, enumSet);
         } else {
-            EnumSetUtil.addTick(element, enumSet);
+            EnumSetUtil.setTick(element, enumSet);
         }
         return processingSelectionSubject(update, enumSet);
     }
