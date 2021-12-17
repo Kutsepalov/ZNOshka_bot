@@ -3,6 +3,7 @@ package com.softserve.bot.service.parser;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.model.TypeOfBranch;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-
+@Setter
 @Slf4j
 @Component
 public class Parser {
@@ -31,6 +32,8 @@ public class Parser {
     private String LinksToSpecialties;
     @Value("${parser.LinksToUniversities}")
     private String LinksToUniversities;
+
+
 
     public Parser() {
         specialtyToSubject = new SpecialtyToSubject();
@@ -166,7 +169,7 @@ public class Parser {
             case "історія україни":
                 return Subject.HISTORY;
             default:
-                    throw new ParseException("There is no such Subject on our list", 0);
+                throw new ParseException("There is no such Subject on our list", 0);
         }
     }
 
@@ -220,7 +223,7 @@ public class Parser {
             }
             writerCSVDomain.write(sbForDomain.toString());
             writerCSVSpecialty.write(sbForSpecialty.toString());
-        } catch (FileNotFoundException e ) {
+        } catch (FileNotFoundException e) {
             log.warn(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
