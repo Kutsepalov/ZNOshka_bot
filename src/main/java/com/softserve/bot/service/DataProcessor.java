@@ -5,13 +5,10 @@ import com.softserve.bot.model.Specialty;
 import com.softserve.bot.service.parser.Parser;
 import com.softserve.bot.service.parser.SpecialtyToSubject;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 @Component
 @AllArgsConstructor
 public class DataProcessor {
@@ -34,5 +31,4 @@ public class DataProcessor {
         });
         return branchesOfKnowledge;
     }
-
 }
