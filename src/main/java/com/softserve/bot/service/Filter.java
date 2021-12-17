@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
  * @see Specialty
  * @see BranchOfKnowledge
  * @see DataProcessor
+ * @updated_by Roman Grabovetskiy
+ * @tested_by Roman Grabovetskiy,Igor Gladush
  */
 @Component
 public class Filter {
