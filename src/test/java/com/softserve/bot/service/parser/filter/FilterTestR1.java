@@ -1,8 +1,9 @@
-package com.softserve.bot.service;
+package com.softserve.bot.service.parser.filter;
 
-import com.softserve.bot.model.BranchOfKnowledge;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
+import com.softserve.bot.service.DataProcessor;
+import com.softserve.bot.service.Filter;
 import com.softserve.bot.service.parser.Parser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
