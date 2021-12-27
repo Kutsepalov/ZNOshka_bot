@@ -7,6 +7,7 @@ import com.softserve.bot.model.Subject;
 import com.softserve.bot.view.sender.AlertSender;
 import com.softserve.bot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,6 +17,8 @@ import java.util.EnumSet;
 @RequiredArgsConstructor
 @Component
 public class TelegramFacade {
+    @Value("845514423")
+    private String ADMIN;
     private final UndefinedMessageHandler undefinedMessageHandler;
     private final AlertSender alertSender;
     private final SubjectHandler subjectHandler;
@@ -25,6 +28,7 @@ public class TelegramFacade {
     private final ContactsHandler contactsHandler;
     private final AdditionalMessageHandler additionalMessageHandler;
     private final UpdateSessionParser updateSessionParser;
+    private final AdminHandler adminHandler;
     private final BotMessages messages;
     private EnumSet<Subject> enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
 
@@ -38,20 +42,40 @@ public class TelegramFacade {
     }
 
     private SendMessage handleMessage(Update update) {
-        switch (update.getMessage().getText()) {
-            case "Вибрати предмети":
-                enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
-                return subjectHandler.handle(update);
-            case "Показати всі спеціальності":
-                return specializationHandler.handle(update);
-            case "Правила користування":
-                return helpHandler.handle(update);
-            case "/start":
-                return startHandler.handle(update);
-            case "Наші контакти":
-                return contactsHandler.handle(update);
-            default:
-                return additionalMessageHandler.handle(update);
+        if((String.valueOf(update.getMessage().getChatId()).equals(ADMIN))) {
+            switch (update.getMessage().getText()) {
+                case "Вибрати предмети":
+                    enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
+                    return subjectHandler.handle(update);
+                case "Показати всі спеціальності":
+                    return specializationHandler.handle(update);
+                case "Правила користування":
+                    return helpHandler.handle(update);
+                case "/start":
+                    return startHandler.handleAdmin(update);
+                case "Наші контакти":
+                    return contactsHandler.handle(update);
+                case "Адмін панель:":
+                    return adminHandler.handle(update);
+                default:
+                    return adminHandler.handleText(update);
+                }
+            } else {
+                switch (update.getMessage().getText()) {
+                case "Вибрати предмети":
+                    enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
+                    return subjectHandler.handle(update);
+                case "Показати всі спеціальності":
+                    return specializationHandler.handle(update);
+                case "Правила користування":
+                    return helpHandler.handle(update);
+                case "/start":
+                    return startHandler.handle(update);
+                case "Наші контакти":
+                    return contactsHandler.handle(update);
+                default:
+                    return additionalMessageHandler.handle(update);
+            }
         }
     }
 
@@ -87,6 +111,9 @@ public class TelegramFacade {
         else if (callbackQuery.equals("Speciality")) {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleSpeciality(update,callback);
+        } else if(callbackQuery.equals("Send")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return adminHandler.handleSend(update, callback);
         }
         return alertSender.undefinedCallback(update);
     }
