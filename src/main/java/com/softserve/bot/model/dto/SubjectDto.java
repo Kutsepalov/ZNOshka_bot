@@ -1,15 +1,15 @@
-package com.softserve.bot.dto;
+package com.softserve.bot.model.dto;
 
 import com.softserve.bot.model.Subject;
 
-public class SubjectDTO {
+public class SubjectDto {
     private String name;
 
     public String getName() {
         return name;
     }
 
-    public SubjectDTO(Subject subject) {
+    public SubjectDto(Subject subject) {
         this.name = subject.getName();
     }
 }

@@ -1,6 +1,6 @@
 package com.softserve.bot.controller;
 
-import com.softserve.bot.dto.SubjectDTO;
+import com.softserve.bot.model.dto.SubjectDto;
 import com.softserve.bot.model.Subject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +17,10 @@ import java.util.stream.Stream;
 public class SubjectController {
 
     @GetMapping
-    public List<SubjectDTO> findSubjects(){
+    public List<SubjectDto> findSubjects(){
         return Stream.of(Subject.values())
                 .filter(x -> x != Subject.FOREIGN)
-                .map(SubjectDTO::new)
+                .map(SubjectDto::new)
                 .collect(Collectors.toList());
     }
 }

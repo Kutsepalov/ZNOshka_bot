@@ -1,8 +1,8 @@
-package com.softserve.bot.dto;
+package com.softserve.bot.model.dto;
 
 import com.softserve.bot.model.Specialty;
 
-public class SpecialtyDTO {
+public class SpecialtyDto {
     private String name;
     private String code;
 
@@ -14,7 +14,7 @@ public class SpecialtyDTO {
         return code;
     }
 
-    public SpecialtyDTO(Specialty specialty) {
+    public SpecialtyDto(Specialty specialty) {
         this.name = specialty.getName();
         this.code = specialty.getCode();
     }

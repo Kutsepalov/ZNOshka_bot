@@ -1,6 +1,5 @@
 package com.softserve.bot.config;
 
-
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.softserve.bot.model.BotMessages;
@@ -9,6 +8,9 @@ import com.softserve.bot.controller.WebhookBot;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +26,7 @@ import javax.sql.DataSource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 @Slf4j
 @AllArgsConstructor
@@ -42,7 +45,6 @@ public class AppConfig {
         bot.setBotToken(botConfig.getToken());
         bot.setBotUserName(botConfig.getUsername());
         bot.setWebHookPath(botConfig.getWebhookLink());
-
         return bot;
     }
 
@@ -71,21 +73,27 @@ public class AppConfig {
     }
     @Bean
     EditMessageText editMessageText(){return new EditMessageText();}
-    @Bean
-    public DataSource dataSource() {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("org.sqlite.JDBC");
-        dataSourceBuilder.url("jdbc:sqlite:znobotdatabase.db");
-        return dataSourceBuilder.build();
 
+    @ConfigurationProperties(prefix = "spring.datasource")
+    @Bean
+    public DataSource dataSource(
+            @Value("#{environment.APP_BOT_DATABASE ?: 'znoshka-bot.db'}")
+            String dbPath,
+            DataSourceProperties properties
+    ) {
+        return DataSourceBuilder.create(properties.getClassLoader())
+                .driverClassName("org.sqlite.JDBC")
+                .url("jdbc:sqlite:" + dbPath)
+                .build();
     }
+
     @Bean
     BotMessages botMessages() {
         XmlMapper xmlMapper = new XmlMapper();
         String xml;
         BotMessages instance = null;
         try {
-            xml = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("bot-msg.xml"), StandardCharsets.UTF_8);
+            xml = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("bot-msg.xml")), StandardCharsets.UTF_8);
             instance = xmlMapper.readValue(xml, BotMessages.class);
         } catch (SecurityException e) {
             log.error("File \"bot-msg.xml\" read access denied");
@@ -96,7 +104,7 @@ public class AppConfig {
         } catch (JacksonException e) {
             log.error("Entry of file \"bot-msg.xml\" incorrect");
             System.exit(1);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             log.error("Error reading file: " + e.getMessage());
             System.exit(1);
         }

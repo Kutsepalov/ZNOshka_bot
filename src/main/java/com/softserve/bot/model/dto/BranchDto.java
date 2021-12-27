@@ -1,7 +1,6 @@
-package com.softserve.bot.dto;
+package com.softserve.bot.model.dto;
 
 import com.softserve.bot.model.Specialty;
-import org.springframework.stereotype.Component;
 
 
 public class BranchDto {

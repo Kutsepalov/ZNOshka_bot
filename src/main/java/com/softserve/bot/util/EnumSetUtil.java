@@ -11,7 +11,7 @@ public final class EnumSetUtil {
 
     }
 
-    static <T extends Enum<T>> int code(EnumSet<T> set) {
+    public static <T extends Enum<T>> int code(EnumSet<T> set) {
         int res = 0;
         for (var e : set) {
             res += 1 << e.ordinal();
@@ -21,11 +21,7 @@ public final class EnumSetUtil {
 
     public static <T extends Enum<T>> EnumSet<T> decode(int code, Class<T> tClass) {
         EnumSet<T> result = EnumSet.allOf(tClass);
-        for (var e : result) {
-            if (((1 << e.ordinal()) & code) == 0) {
-                result.remove(e);
-            }
-        }
+        result.removeIf(e -> ((1 << e.ordinal()) & code) == 0);
         return result;
     }
     public static void setTick(Subject element, Set<Subject> enumSet) {

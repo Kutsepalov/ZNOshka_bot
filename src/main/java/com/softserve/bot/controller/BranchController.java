@@ -1,7 +1,7 @@
 package com.softserve.bot.controller;
 
-import com.softserve.bot.dto.BranchDto;
-import com.softserve.bot.dto.SpecialtyDTO;
+import com.softserve.bot.model.dto.BranchDto;
+import com.softserve.bot.model.dto.SpecialtyDto;
 import com.softserve.bot.exception.SpecialtyNotFoundException;
 import com.softserve.bot.exception.TypeBranchException;
 import com.softserve.bot.model.BranchOfKnowledge;
@@ -31,14 +31,14 @@ public class BranchController {
     }
 
     @GetMapping("/{idBranch}/specialties/{idSpecialty}")
-    public ResponseEntity<SpecialtyDTO> findSpecialtyByBranchIdAndSpecialtyId(@PathVariable String idBranch, @PathVariable String idSpecialty) {
-        SpecialtyDTO specialtyDTO = filter.getSpecialitiesByBranchCode(idBranch)
+    public ResponseEntity<SpecialtyDto> findSpecialtyByBranchIdAndSpecialtyId(@PathVariable String idBranch, @PathVariable String idSpecialty) {
+        SpecialtyDto specialtyDTO = filter.getSpecialitiesByBranchCode(idBranch)
                 .stream()
-                .map(SpecialtyDTO::new)
+                .map(SpecialtyDto::new)
                 .filter(specialty -> idSpecialty.equals(specialty.getCode()))
                 .findAny()
                 .orElseThrow(SpecialtyNotFoundException::new);
-        return new ResponseEntity<SpecialtyDTO>(specialtyDTO, HttpStatus.OK);
+        return new ResponseEntity<SpecialtyDto>(specialtyDTO, HttpStatus.OK);
     }
     @GetMapping
     public ResponseEntity<List<BranchOfKnowledge>> getBranches(){

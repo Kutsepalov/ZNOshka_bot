@@ -1,21 +1,34 @@
 package com.softserve.bot.view;
 
+import com.softserve.bot.controller.MailingController;
 import com.softserve.bot.model.BotMessages;
+import com.softserve.bot.model.entity.User;
+import com.softserve.bot.service.database.RequestService;
+import com.softserve.bot.service.database.UserService;
 import com.softserve.bot.util.EnumSetUtil;
 import com.softserve.bot.view.handler.*;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.view.sender.AlertSender;
 import com.softserve.bot.util.UpdateSessionParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import java.util.EnumSet;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class TelegramFacade {
+    private final UserService userService;
+    private final RequestService requestService;
     private final UndefinedMessageHandler undefinedMessageHandler;
     private final AlertSender alertSender;
     private final SubjectHandler subjectHandler;
@@ -26,15 +39,32 @@ public class TelegramFacade {
     private final AdditionalMessageHandler additionalMessageHandler;
     private final UpdateSessionParser updateSessionParser;
     private final BotMessages messages;
+//    private final MailingController mailing;
     private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
 
+//    Этот коммент стоит удалить
+//    Пропертя где лежат айди админов
+//    @Value("${app.bot.admin}")
+//    private long[] admins;
+
     public BotApiMethod<?> handleUpdate(Update update) {
+        saveUser(update);
         if (update.hasCallbackQuery()) {
             return handleCallback(update);
         } else if (update.getMessage().hasText()) {
             return handleMessage(update);
         }
         return undefinedMessageHandler.handle(update);
+    }
+
+    private void saveUser(Update update) {
+        Message msg;
+        if(update.hasCallbackQuery()) {
+            msg = update.getCallbackQuery().getMessage();
+        } else {
+            msg = update.getMessage();
+        }
+        userService.save(msg.getChatId());
     }
 
     private SendMessage handleMessage(Update update) {
@@ -49,8 +79,21 @@ public class TelegramFacade {
                 return startHandler.handle(update);
             case "Наші контакти":
                 return contactsHandler.handle(update);
-            default:
+            default: {
+                // Логика отправки сообщения всем
+//                if(update.getMessage().getText().startsWith("/send")
+//                        && Arrays.stream(admins).anyMatch(id -> id == update.getMessage().getChatId())) {
+//                    List<User> userList = userService.list();
+//                    mailing.mailingAllUsers(
+//                            update.getMessage()      Сообщение которое нужно отправить
+//                                .getText()
+//                                .replaceFirst("/send", "")
+//                                .trim(),
+//                            userList                 Кому нужно отправить
+//                    );
+//                }
                 return additionalMessageHandler.handle(update);
+            }
         }
     }
 
@@ -84,6 +127,7 @@ public class TelegramFacade {
     private BotApiMethod<?> processingSearchCallback(Update update) {
         if (EnumSetUtil.selectedEnough(enumSet)) {
             if (EnumSetUtil.notOutOfLimit(enumSet)) {
+                requestService.save(update.getCallbackQuery().getMessage().getChatId(), EnumSetUtil.code(enumSet));
                 enumSet.add(Subject.FOREIGN);
                 return specializationHandler.handle(update, enumSet);
             } else {
