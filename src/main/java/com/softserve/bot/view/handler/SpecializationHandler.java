@@ -14,14 +14,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 
 @AllArgsConstructor
 @Component
 public class SpecializationHandler implements Handler {
     private Message message;
-    private SendMessage sendMessage;
-    private Filter filter;
+    private final SendMessage sendMessage;
+    private final Filter filter;
 
     private void cleanRequests() {
         sendMessage.setReplyMarkup(null);
