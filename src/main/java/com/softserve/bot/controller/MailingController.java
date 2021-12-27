@@ -3,8 +3,10 @@ package com.softserve.bot.controller;
 import com.softserve.bot.config.BotConfig;
 import com.softserve.bot.model.BotMessages;
 import com.softserve.bot.model.entity.User;
+import io.swagger.models.Response;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -35,7 +37,7 @@ public class MailingController {
                 .queryParam("chat_id",chatId)
                 .queryParam("text",text);
         try {
-            restTemplate.getForEntity(builder.build().encode().toUri(),String.class);
+         restTemplate.getForEntity(builder.build().encode().toUri(),String.class);
             log.debug("User[" + chatId + "] got message");
             amount.incrementAndGet();
         } catch (HttpClientErrorException ex) {
