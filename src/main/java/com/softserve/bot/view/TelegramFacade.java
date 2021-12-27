@@ -91,15 +91,15 @@ public class TelegramFacade {
             return processingSearchCallback(update);
         } else if (callbackQuery.equals(messages.getBranchType())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchType(update,callback);
+            return specializationHandler.handleBranchType(update, callback);
         }
         else if (callbackQuery.equals(messages.getBranch())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
+            return specializationHandler.handleBranchOfKnowledge(update, callback, subjectHandler);
         }
         else if (callbackQuery.equals(messages.getSpecialty())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleSpeciality(update,callback);
+            return specializationHandler.handleSpeciality(update, callback);
         } else if(callbackQuery.equals("Send")) {
             return adminHandler.handleSend(update);
         }
