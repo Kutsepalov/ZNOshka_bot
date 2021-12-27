@@ -105,8 +105,8 @@ public class ButtonSubjectRegister {
                 setTextAndData(subjectButton, enumSet, text, data);
                 ukraineRow.add(subjectButton);
                 break;
-            case "Математика (стандартна)":
-            case "Математика (профільна)":
+            case "Математика (ДПА)":
+            case "Математика (ЗНО)":
                 setTextAndData(subjectButton, enumSet, text, data);
                 mathRow.add(subjectButton);
                 break;

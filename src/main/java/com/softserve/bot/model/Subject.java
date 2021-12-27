@@ -3,8 +3,8 @@ package com.softserve.bot.model;
 public enum Subject {
     UKRAINIAN("Українська мова", 2),
     LITERATURE("Українська мова і література", 3),
-    MATH_STANDARD("Математика (стандартна)"),
-    MATH_PROFILE("Математика (профільна)"),
+    MATH_STANDARD("Математика (ДПА)"),
+    MATH_PROFILE("Математика (ЗНО)"),
     HISTORY("Історія України"),
     FOREIGN("Іноземна мова", 1),
     ENGLISH("Англійська мова", 1),
