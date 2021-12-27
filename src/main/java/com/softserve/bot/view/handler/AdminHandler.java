@@ -19,26 +19,19 @@ public class AdminHandler implements Handler{
         sendMessage.setReplyMarkup(AdminButtonRegister.getAdminKeyboard());
         sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         sendMessage.setText("Виберіть операцію:");
-
         return sendMessage;
     }
 
     public SendMessage handleSend(Update update, Map<String, String> callback) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-        sendMessage.setText("Напишіть повідомлення:");
-        System.out.println(update.getCallbackQuery().getMessage().getText());
+        sendMessage.setText("Напишіть повідомлення з командой /send у початку:");
 
         return sendMessage;
     }
 
     public SendMessage handleText(Update update){
         SendMessage sendMessage = new SendMessage();
-        /*Тут я достаю ID-шникики
-        ОПА
-        Тут я отправляю сообщения
-        и тут что-то еще делаю
-        */
         sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
         sendMessage.setText("Повідомлення відправлено");
 
