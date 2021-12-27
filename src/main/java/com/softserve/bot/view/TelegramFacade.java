@@ -101,8 +101,7 @@ public class TelegramFacade {
             var callback = updateSessionParser.parseToMap(update);
             return specializationHandler.handleSpeciality(update,callback);
         } else if(callbackQuery.equals("Send")) {
-            var callback = updateSessionParser.parseToMap(update);
-            return adminHandler.handleSend(update, callback);
+            return adminHandler.handleSend(update);
         }
         return alertSender.undefinedCallback(update);
     }

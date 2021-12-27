@@ -1,13 +1,11 @@
 package com.softserve.bot.view.handler;
 
 import com.softserve.bot.util.AdminButtonRegister;
-import com.softserve.bot.util.SpecialityButtonRegister;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Map;
 
 @AllArgsConstructor
 @Component
@@ -22,7 +20,7 @@ public class AdminHandler implements Handler{
         return sendMessage;
     }
 
-    public SendMessage handleSend(Update update, Map<String, String> callback) {
+    public SendMessage handleSend(Update update) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
         sendMessage.setText("Напишіть повідомлення з командой /send у початку:");
@@ -37,6 +35,5 @@ public class AdminHandler implements Handler{
 
         return sendMessage;
     }
-
 
 }
