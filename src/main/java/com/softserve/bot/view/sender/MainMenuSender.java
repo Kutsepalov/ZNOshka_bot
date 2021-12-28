@@ -48,7 +48,7 @@ public class MainMenuSender {
         KeyboardRow row4 = new KeyboardRow();
         row1.add(new KeyboardButton(messages.getChooseSubjectMenu()));
         row2.add(new KeyboardButton(messages.getShowSpecialtiesMenu()));
-        row2.add(new KeyboardButton("Адмін панель:"));
+        row2.add(new KeyboardButton("Адмін панель"));
         row3.add(new KeyboardButton(messages.getRulesMenu()));
         row4.add(new KeyboardButton(messages.getContactsMenu()));
         rows.clear();

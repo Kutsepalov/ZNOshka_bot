@@ -2,7 +2,6 @@ package com.softserve.bot.view;
 
 import com.softserve.bot.controller.MailingController;
 import com.softserve.bot.model.BotMessages;
-import com.softserve.bot.model.entity.User;
 import com.softserve.bot.service.database.RequestService;
 import com.softserve.bot.service.database.UserService;
 import com.softserve.bot.util.EnumSetUtil;
@@ -21,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -102,6 +100,9 @@ public class TelegramFacade {
             return specializationHandler.handleSpeciality(update, callback);
         } else if(callbackQuery.equals("Send")) {
             return adminHandler.handleSend(update);
+        } else if(callbackQuery.equals("Confirmed")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return adminHandler.handleConfirmed(update, callback);
         }
         return alertSender.undefinedCallback(update);
     }
@@ -152,24 +153,10 @@ public class TelegramFacade {
                 return startHandler.handleAdmin(update);
             case "Наші контакти":
                 return contactsHandler.handle(update);
-            case "Адмін панель:":
+            case "Адмін панель":
                 return adminHandler.handle(update);
             default:
-                if (update.getMessage().getText().startsWith("/send")
-                        && Arrays.stream(admins).anyMatch(id -> id == update.getMessage().getChatId())) {
-                    List<User> userList = userService.list();
-                    mailing.mailingAllUsers(
-                            update.getMessage()
-                                    .getText()
-                                    .replaceFirst("/send", "")
-                                    .trim(),
-                            userList
-                    );
-                    return adminHandler.handleText(update);
-                }
-                else {
-                    return additionalMessageHandler.handle(update);
-                }
+                return adminHandler.handleConfirmation(update);
         }
     }
 

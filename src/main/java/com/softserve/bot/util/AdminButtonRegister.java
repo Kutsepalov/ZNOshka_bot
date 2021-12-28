@@ -8,10 +8,21 @@ import java.util.List;
 
 public class AdminButtonRegister {
 
+
     public static InlineKeyboardMarkup getAdminKeyboard(){
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        rows.add(getSingleButtonRow("Відправити повідомлення",buildCallback("Send" ,"Відправити повідомлення")));
+        rows.add(getSingleButtonRow("Розіслати повідомлення усім користувачам",buildCallback("Send" ,"Розіслати")));
+
+        keyboard.setKeyboard(rows);
+        return keyboard;
+    }
+
+    public static InlineKeyboardMarkup getConfirmationKeyboard(){
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        rows.add(getSingleButtonRow("Відправити всім",buildCallback("Confirmed" ,"Відправити всім")));
+        rows.add(getSingleButtonRow("Відмінити",buildCallback("Confirmed" ,"Відмінити")));
 
         keyboard.setKeyboard(rows);
         return keyboard;
