@@ -37,4 +37,27 @@ public class MainMenuSender {
         replyKeyboardMarkup.setKeyboard(rows);
         return replyKeyboardMarkup;
     }
+
+    public ReplyKeyboardMarkup getAdminMenuReply() {
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
+        replyKeyboardMarkup.setSelective(true);
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
+        KeyboardRow row4 = new KeyboardRow();
+        row1.add(new KeyboardButton(messages.getChooseSubjectMenu()));
+        row2.add(new KeyboardButton(messages.getShowSpecialtiesMenu()));
+        row2.add(new KeyboardButton("Адмін панель"));
+        row3.add(new KeyboardButton(messages.getRulesMenu()));
+        row4.add(new KeyboardButton(messages.getContactsMenu()));
+        rows.clear();
+        rows.add(row1);
+        rows.add(row2);
+        rows.add(row3);
+        rows.add(row4);
+        replyKeyboardMarkup.setKeyboard(rows);
+        return replyKeyboardMarkup;
+    }
+
 }

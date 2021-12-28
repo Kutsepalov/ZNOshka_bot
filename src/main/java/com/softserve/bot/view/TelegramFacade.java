@@ -2,7 +2,6 @@ package com.softserve.bot.view;
 
 import com.softserve.bot.controller.MailingController;
 import com.softserve.bot.model.BotMessages;
-import com.softserve.bot.model.entity.User;
 import com.softserve.bot.service.database.RequestService;
 import com.softserve.bot.service.database.UserService;
 import com.softserve.bot.util.EnumSetUtil;
@@ -21,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,15 +35,17 @@ public class TelegramFacade {
     private final StartHandler startHandler;
     private final ContactsHandler contactsHandler;
     private final AdditionalMessageHandler additionalMessageHandler;
+    private final AdminHandler adminHandler;
     private final UpdateSessionParser updateSessionParser;
     private final BotMessages messages;
-//    private final MailingController mailing;
+    private final MailingController mailing;
     private EnumSet<Subject> enumSet = EnumSet.of(Subject.UKRAINIAN, Subject.MATH_PROFILE);
 
 //    Этот коммент стоит удалить
+//    Та пусть остается)
 //    Пропертя где лежат айди админов
-//    @Value("${app.bot.admin}")
-//    private long[] admins;
+    @Value("${app.bot.admin}")
+    private long[] admins;
 
     public BotApiMethod<?> handleUpdate(Update update) {
         saveUser(update);
@@ -68,32 +68,10 @@ public class TelegramFacade {
     }
 
     private SendMessage handleMessage(Update update) {
-        switch (update.getMessage().getText()) {
-            case "Вибрати предмети":
-                return subjectHandler.handle(update);
-            case "Показати всі спеціальності":
-                return specializationHandler.handle(update);
-            case "Правила користування":
-                return helpHandler.handle(update);
-            case "/start":
-                return startHandler.handle(update);
-            case "Наші контакти":
-                return contactsHandler.handle(update);
-            default: {
-                // Логика отправки сообщения всем
-//                if(update.getMessage().getText().startsWith("/send")
-//                        && Arrays.stream(admins).anyMatch(id -> id == update.getMessage().getChatId())) {
-//                    List<User> userList = userService.list();
-//                    mailing.mailingAllUsers(
-//                            update.getMessage()      Сообщение которое нужно отправить
-//                                .getText()
-//                                .replaceFirst("/send", "")
-//                                .trim(),
-//                            userList                 Кому нужно отправить
-//                    );
-//                }
-                return additionalMessageHandler.handle(update);
-            }
+        if(Arrays.stream(admins).anyMatch(id -> id == update.getMessage().getChatId())) {
+            return handleAdminMessage(update);
+        } else {
+            return handleUserMessage(update);
         }
     }
 
@@ -111,15 +89,20 @@ public class TelegramFacade {
             return processingSearchCallback(update);
         } else if (callbackQuery.equals(messages.getBranchType())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchType(update,callback);
+            return specializationHandler.handleBranchType(update, callback);
         }
         else if (callbackQuery.equals(messages.getBranch())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleBranchOfKnowledge(update,callback,subjectHandler);
+            return specializationHandler.handleBranchOfKnowledge(update, callback, subjectHandler);
         }
         else if (callbackQuery.equals(messages.getSpecialty())) {
             var callback = updateSessionParser.parseToMap(update);
-            return specializationHandler.handleSpeciality(update,callback);
+            return specializationHandler.handleSpeciality(update, callback);
+        } else if(callbackQuery.equals("Send")) {
+            return adminHandler.handleSend(update);
+        } else if(callbackQuery.equals("Confirmed")) {
+            var callback = updateSessionParser.parseToMap(update);
+            return adminHandler.handleConfirmed(update, callback);
         }
         return alertSender.undefinedCallback(update);
     }
@@ -137,4 +120,44 @@ public class TelegramFacade {
             return alertSender.sendNotEnoughSubject(update);
         }
     }
+
+
+    private SendMessage handleUserMessage(Update update){
+        switch (update.getMessage().getText()) {
+            case "Вибрати предмети":
+                enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
+                return subjectHandler.handle(update);
+            case "Показати всі спеціальності":
+                return specializationHandler.handle(update);
+            case "Правила користування":
+                return helpHandler.handle(update);
+            case "/start":
+                return startHandler.handle(update);
+            case "Наші контакти":
+                return contactsHandler.handle(update);
+            default:
+                return additionalMessageHandler.handle(update);
+        }
+    }
+
+    private SendMessage handleAdminMessage(Update update) {
+        switch (update.getMessage().getText()) {
+            case "Вибрати предмети":
+                enumSet = EnumSet.of(Subject.LITERATURE, Subject.MATH_PROFILE);
+                return subjectHandler.handle(update);
+            case "Показати всі спеціальності":
+                return specializationHandler.handle(update);
+            case "Правила користування":
+                return helpHandler.handle(update);
+            case "/start":
+                return startHandler.handleAdmin(update);
+            case "Наші контакти":
+                return contactsHandler.handle(update);
+            case "Адмін панель":
+                return adminHandler.handle(update);
+            default:
+                return adminHandler.handleConfirmation(update);
+        }
+    }
+
 }

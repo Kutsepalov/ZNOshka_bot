@@ -58,7 +58,6 @@ public class SpecializationHandler implements Handler {
         InlineKeyboardMarkup keyboard = SpecialityButtonRegister.getBranchOfKnowledgeKeyboard(branches,callback);
         sendMessage.setText(callback.get("text")+" галузі:");
         sendMessage.setReplyMarkup(keyboard);
-
         return sendMessage;
     }
 
