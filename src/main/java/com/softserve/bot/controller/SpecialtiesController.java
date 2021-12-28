@@ -28,17 +28,6 @@ public class SpecialtiesController {
     private List<Specialty> specialties;
     private Map<String,List<BranchOfKnowledge>> mapOfBranches;
 
-    @GetMapping("/subject")
-    public Map<String, List<Specialty>> findBySubjects(
-            @RequestParam(value = "subj")
-                    String[] subjects
-    ) {
-        Set<Subject> set = Stream.of(subjects)
-                .map(s -> Subject.valueOf(s.toUpperCase()))
-                .collect(Collectors.toSet());
-        return filter.getFiltered(set);
-    }
-
     @GetMapping
     public ResponseEntity<Map<String, List<BranchOfKnowledge>>> getAllSpecialty(){
         mapOfBranches.put("Гуманітарні",filter.getBranchesOfKnowledgeByType("Гуманітарні"));
