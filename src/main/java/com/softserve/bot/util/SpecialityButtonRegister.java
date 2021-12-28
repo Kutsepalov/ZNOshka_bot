@@ -6,8 +6,6 @@ import com.softserve.bot.model.Subject;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,21 +14,26 @@ import java.util.stream.Collectors;
 public class SpecialityButtonRegister {
 
     private static final String BRANCH_TYPE = "Branch type";
+    private static final String BACK_TO_BRANCH_TYPE = " до вибору типу галузей \uD83D\uDD19";
     private static final String BRANCH = "Branch";
+    private static final String BACK_TO_BRANCH = " до вибору галузей \uD83D\uDD19";
     private static final String RETURN = "Назад";
     private static final String SPECIALTY = "Speciality";
-    private static final String MORE_INFORMATION = "Дізнатися більше";
+    private static final String BACK_TO_SPECIALTY = "Назад до вибору предметів \uD83D\uDD19";
+    private static final String MORE_INFORMATION = "Дізнатися більше про спеціальність";
     private static final String WHERE_TO_LEARN = "Де навчають";
-    private static  final String REDIRECT = "Redirect";
+    private static final String KEY_TEXT = "text";
+    private static final String KEY_PREVIOUS = "previous";
+    private static final String HUMANITIES = "Гуманітарні";
+    private static final String TECHNICAL = "Технічні";
 
     public static InlineKeyboardMarkup getBranchTypeKeyboard(){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        String[] branchTypes=new String[]{"Гуманітарні" ,"Технічні"};
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
-        for (var type:branchTypes){
-            var row = getSingleButtonRow(type,buildCallback(BRANCH_TYPE,type));
-            rows.add(row);
-        }
+        var row = getSingleButtonRow(HUMANITIES,buildCallback(BRANCH_TYPE,HUMANITIES));
+        rows.add(row);
+        row = getSingleButtonRow(TECHNICAL,buildCallback(BRANCH_TYPE,TECHNICAL));
+        rows.add(row);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }
@@ -40,12 +43,12 @@ public class SpecialityButtonRegister {
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var branch:branchesOfKnowledge){
             String buttonName = branch.getCode() + " " + branch.getTitle();
-            String nextCallback = buildCallback(BRANCH, branch.getCode(), callback.get("text"));
+            String nextCallback = buildCallback(BRANCH, branch.getCode(), callback.get(KEY_TEXT));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
-        String nextCallback = buildCallback(BRANCH, RETURN, callback.get("text"));
-        var row = getSingleButtonRow(RETURN+" до вибору типу галузей", nextCallback);
+        String nextCallback = buildCallback(BRANCH, RETURN, callback.get(KEY_TEXT));
+        var row = getSingleButtonRow(RETURN + BACK_TO_BRANCH_TYPE, nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -58,12 +61,12 @@ public class SpecialityButtonRegister {
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
         for (var specialty:specialties){
             String buttonName = specialty.getCode() + " " + specialty.getName();
-            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(), callback.get("text"), callback.get("previous"));
+            String nextCallback = buildCallback(SPECIALTY, specialty.getCode(), callback.get(KEY_TEXT), callback.get(KEY_PREVIOUS));
             var row = getSingleButtonRow(buttonName,nextCallback);
             rows.add(row);
         }
-        String nextCallback = buildCallback(SPECIALTY, RETURN, callback.get("text"), callback.get("previous"));
-        var row = getSingleButtonRow(RETURN+" до вибору галузей", nextCallback);
+        String nextCallback = buildCallback(SPECIALTY, RETURN, callback.get(KEY_TEXT), callback.get(KEY_PREVIOUS));
+        var row = getSingleButtonRow(RETURN + BACK_TO_BRANCH, nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -73,10 +76,10 @@ public class SpecialityButtonRegister {
 
     public static String getSubjectsText(Specialty specialty,String branchName){
         String branchOfKnowledge = "Галузь: " + branchName;
-        String spec = "Спеціальність: "+ specialty.getCode()+" "+ specialty.getName();
-        String first = "1) "+ specialty.getFirst().getName();
-        String second = "2) "+ subjectCollectionToString(specialty.getSecond());
-        String third = "3) "+ subjectCollectionToString(specialty.getThird());
+        String spec = "Спеціальність: "+ specialty.getCode() + " " + specialty.getName();
+        String first = "1) " + specialty.getFirst().getName();
+        String second = "2) " + subjectCollectionToString(specialty.getSecond());
+        String third = "3) " + subjectCollectionToString(specialty.getThird());
 
         return String.join("\n", branchOfKnowledge, spec, first, second, third);
     }
@@ -86,12 +89,12 @@ public class SpecialityButtonRegister {
         List<List<InlineKeyboardButton>> rows= new ArrayList<>();
 
         if(specialty.hasLinkSpec()) {
-            var row = getSingleUrlButtonRow("Дізнатися більше про спеціальність", specialty.getLinkSpec());
+            var row = getSingleUrlButtonRow(MORE_INFORMATION, specialty.getLinkSpec());
             rows.add(row);
         }
 
         if(specialty.hasLinkUniv()) {
-            var row = getSingleUrlButtonRow("Де навчають", specialty.getLinkUniv());
+            var row = getSingleUrlButtonRow(WHERE_TO_LEARN, specialty.getLinkUniv());
             rows.add(row);
         }
 
@@ -111,7 +114,7 @@ public class SpecialityButtonRegister {
             rows.add(row);
         }
         String nextCallback = buildCallback(BRANCH, RETURN, enumCode);
-        var row = getSingleButtonRow("Назад до вибору предметів \uD83D\uDD19", nextCallback);
+        var row = getSingleButtonRow(BACK_TO_SPECIALTY, nextCallback);
         rows.add(row);
 
         inlineKeyboardMarkup.setKeyboard(rows);
@@ -143,7 +146,7 @@ public class SpecialityButtonRegister {
     protected static String subjectCollectionToString(Collection<Subject> subjects) {
         return subjects
                 .stream()
-                .map(subject -> subject.getName())
+                .map(Subject::getName)
                 .collect(Collectors.joining(" або "));
     }
 
