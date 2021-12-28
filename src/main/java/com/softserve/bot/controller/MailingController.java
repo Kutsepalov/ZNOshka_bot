@@ -27,15 +27,15 @@ public class MailingController {
         RestTemplate restTemplate = new RestTemplate();
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl("https://api.telegram.org"
-                        +botMessages.getSeparator()
-                        +"bot"
+                        + botMessages.getSeparator()
+                        + "bot"
                         + botConfig.getToken()
                         + botMessages.getSeparator()
-                        +"sendMessage")
-                .queryParam("chat_id",chatId)
-                .queryParam("text",text);
+                        + "sendMessage")
+                .queryParam("chat_id", chatId)
+                .queryParam("text", text);
         try {
-            restTemplate.getForEntity(builder.build().encode().toUri(),String.class);
+            restTemplate.getForEntity(builder.build().encode().toUri(), String.class);
             log.debug("User[" + chatId + "] got message");
             amount.incrementAndGet();
         } catch (HttpClientErrorException ex) {
@@ -46,12 +46,16 @@ public class MailingController {
     public void mailingAllUsers(String text, List<User> users) {
         AtomicInteger goodSending = new AtomicInteger();
         ExecutorService ex = Executors.newFixedThreadPool(10);
-        users.stream()
-                .map(User::getId)
-                .forEach(user -> ex.submit(()->mailingUser(text,String.valueOf(user), goodSending)));
-        ex.shutdown();
         try {
-            if(!ex.awaitTermination(120, TimeUnit.SECONDS)) {
+            users.stream()
+                    .map(User::getId)
+                    .forEach(user -> ex.submit(() -> mailingUser(text, String.valueOf(user), goodSending)));
+
+        } finally {
+            ex.shutdown();
+        }
+        try {
+            if (!ex.awaitTermination(120, TimeUnit.SECONDS)) {
                 log.warn("Mailing has interrupted. Thread lifetime is 120 seconds.");
             } else {
                 log.info(goodSending.get() + " out of " + users.size() + " users received messages");

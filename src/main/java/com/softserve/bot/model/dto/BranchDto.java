@@ -11,6 +11,6 @@ public class BranchDto {
     }
 
     public BranchDto(Specialty specialty) {
-        this.nameAndCode = specialty.getCode()+"-"+specialty.getName();
+        this.nameAndCode = specialty.getCode() + "-" + specialty.getName();
     }
 }

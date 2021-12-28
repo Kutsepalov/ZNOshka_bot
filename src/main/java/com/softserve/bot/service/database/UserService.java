@@ -15,11 +15,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<User> list() {
-        return repo.findAll();
+        return userRepository.findAll();
     }
 
     @Transactional
@@ -28,13 +28,12 @@ public class UserService {
     }
 
     @Transactional
-    public User save(User x) {
-        repo.save(x);
-        return x;
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     public Optional<User> findById(long id) {
-        return repo.findById(id);
+        return userRepository.findById(id);
     }
 }

@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 
 /**
  * @author Maksym Bohachov
+ * @updated_by Roman Grabovetskiy
+ * @tested_by Roman Grabovetskiy,Igor Gladush
  * @see Specialty
  * @see BranchOfKnowledge
  * @see DataProcessor
- * @updated_by Roman Grabovetskiy
- * @tested_by Roman Grabovetskiy,Igor Gladush
  */
 @Component
 public class Filter {
@@ -24,16 +24,17 @@ public class Filter {
      * Basic list of branches
      */
     private List<BranchOfKnowledge> branches;
-    private DataProcessor dp;
+    private DataProcessor dataProcessor;
 
-    public Filter(DataProcessor dp) {
-        this.dp = dp;
+    public Filter(DataProcessor dataProcessor) {
+        this.dataProcessor = dataProcessor;
     }
 
     @PostConstruct
     private void fillBranches() {
-        branches = dp.createBranches();
+        branches = dataProcessor.createBranches();
     }
+
     /**
      * Filters branches and specialties in relation to input set of subjects
      *
@@ -102,49 +103,47 @@ public class Filter {
                                 .anyMatch(k -> v == k || v.getPriority() == 1 && k.getPriority() == 1));
     }
 
-    public List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType){
-        if(branchType.equalsIgnoreCase("Гуманітарні")){
-            return branches.stream()
-                    .filter(branchOfKnowledge -> branchOfKnowledge.getTypeOfBranch().equals(TypeOfBranch.HUMANITIES))
-                    .collect(Collectors.toList());
+    public List<BranchOfKnowledge> getBranchesOfKnowledgeByType(String branchType) {
+        final TypeOfBranch typeOfBranch;
+        if (branchType.equalsIgnoreCase(TypeOfBranch.HUMANITIES.getDescription())) {
+            typeOfBranch = TypeOfBranch.HUMANITIES;
+        } else {
+            typeOfBranch = TypeOfBranch.TECHNICAL;
         }
-        else{
-            return branches.stream()
-                    .filter(branchOfKnowledge -> branchOfKnowledge.getTypeOfBranch().equals(TypeOfBranch.TECHNICAL))
-                    .collect(Collectors.toList());
-        }
+        return branches.stream()
+                .filter(branchOfKnowledge -> branchOfKnowledge.getTypeOfBranch().equals(typeOfBranch))
+                .collect(Collectors.toList());
     }
 
-    public List<Specialty> getSpecialitiesByBranchCode(String branchCode){
-      return  branches.stream()
+    public List<Specialty> getSpecialitiesByBranchCode(String branchCode) {
+        return branches.stream()
                 .filter(branch -> branch.getCode().equals(branchCode))
                 .map(BranchOfKnowledge::getSpecialties)
-                .findAny().get();
+                .findAny().get();//TODO - it's not good to use get without isPresent()
     }
 
-    public Specialty getSpecialtyByName(String specialtyCode){
-        return  branches.stream()
+    public Specialty getSpecialtyByName(String specialtyCode) {
+        return branches.stream()
                 .flatMap(branch -> branch.getSpecialties().stream())
                 .filter(specialty -> specialty != null && specialty.getCode().equalsIgnoreCase(specialtyCode))
-                .findAny().get();
+                .findAny().get();//TODO - it's not good to use get without isPresent()
     }
 
-    public List<BranchOfKnowledge> getBranchesByName(Map<String,List<Specialty>> filteredSpecialty){
+    public List<BranchOfKnowledge> getBranchesByName(Map<String, List<Specialty>> filteredSpecialty) {
         return branches.stream()
                 .filter(branch -> filteredSpecialty.containsKey(branch.toString()))
                 .collect(Collectors.toList());
     }
 
-    public  String getBranchOfKnowledgeName(String branchName) {
+    public String getBranchOfKnowledgeName(String branchName) {
         return branches.stream()
                 .filter(branch -> branch.getCode().equals(branchName))
-                .map(branch -> branch.getTitle())
+                .map(BranchOfKnowledge::getTitle)
                 .findAny()
-                .get();
+                .get();//TODO - it's not good to use get without isPresent()
     }
 
-    public List<BranchOfKnowledge> getBranchesOfKnowledge(){
+    public List<BranchOfKnowledge> getBranchesOfKnowledge() {
         return branches;
     }
-
 }

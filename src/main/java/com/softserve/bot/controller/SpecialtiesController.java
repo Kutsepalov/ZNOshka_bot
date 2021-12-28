@@ -23,7 +23,7 @@ public class SpecialtiesController {
 
     @GetMapping
     public Map<String, List<Specialty>> findBySubjects(
-            @RequestParam(value = "q")
+            @RequestParam(value = "code")
             String[] subjects
     ) {
         Set<Subject> set = Stream.of(subjects)

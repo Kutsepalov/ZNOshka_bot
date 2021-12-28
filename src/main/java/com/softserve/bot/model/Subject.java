@@ -35,8 +35,9 @@ public enum Subject {
 
     public static boolean contains(String element) {
         for (Subject subject : Subject.values()) {
-            if (subject.name().equals(element))
+            if (subject.name().equals(element)) {
                 return true;
+            }
         }
         return false;
     }

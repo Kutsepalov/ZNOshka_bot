@@ -9,26 +9,26 @@ import java.util.List;
 public class AdminButtonRegister {
 
 
-    public static InlineKeyboardMarkup getAdminKeyboard(){
+    public static InlineKeyboardMarkup getAdminKeyboard() {
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        rows.add(getSingleButtonRow("Розіслати повідомлення усім користувачам",buildCallback("Send" ,"Розіслати")));
+        rows.add(getSingleButtonRow("Розіслати повідомлення усім користувачам", buildCallback("Send", "Розіслати")));
 
         keyboard.setKeyboard(rows);
         return keyboard;
     }
 
-    public static InlineKeyboardMarkup getConfirmationKeyboard(){
+    public static InlineKeyboardMarkup getConfirmationKeyboard() {
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        rows.add(getSingleButtonRow("Відправити всім",buildCallback("Confirmed" ,"Відправити всім")));
-        rows.add(getSingleButtonRow("Відмінити",buildCallback("Confirmed" ,"Відмінити")));
+        rows.add(getSingleButtonRow("Відправити всім", buildCallback("Confirmed", "Відправити всім")));
+        rows.add(getSingleButtonRow("Відмінити", buildCallback("Confirmed", "Відмінити")));
 
         keyboard.setKeyboard(rows);
         return keyboard;
     }
 
-    protected static List<InlineKeyboardButton> getSingleButtonRow(String text, String callback){
+    protected static List<InlineKeyboardButton> getSingleButtonRow(String text, String callback) {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText(text);
         button.setCallbackData(callback);
@@ -37,8 +37,8 @@ public class AdminButtonRegister {
         return row;
     }
 
-    protected static String buildCallback(String ... callback){
-        return String.join("/",callback);
+    protected static String buildCallback(String... callback) {
+        return String.join("/", callback);
     }
 
 }

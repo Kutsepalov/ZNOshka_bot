@@ -23,7 +23,7 @@ public class Request {
     private Timestamp datetime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    User user;
+    private User user;
 
     public void setUser(User user) {
         this.user = user;

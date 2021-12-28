@@ -1,5 +1,6 @@
 package com.softserve.bot.controller;
 
+import com.softserve.bot.model.TypeOfBranch;
 import com.softserve.bot.model.dto.BranchDto;
 import com.softserve.bot.model.dto.SpecialtyDto;
 import com.softserve.bot.exception.SpecialtyNotFoundException;
@@ -23,11 +24,11 @@ public class BranchController {
     private List<String> typeBranchList;
 
     @GetMapping("/{id}/specialties")
-    public ResponseEntity<List<BranchDto>> findSpecialtiesByBranchId(@PathVariable String id){
+    public ResponseEntity<List<BranchDto>> findSpecialtiesByBranchId(@PathVariable String id) {
         branchDto = filter.getSpecialitiesByBranchCode(id).stream()
                 .map(BranchDto::new)
                 .collect(Collectors.toList());
-                  return new ResponseEntity<List<BranchDto>>(branchDto, HttpStatus.OK);
+        return new ResponseEntity<>(branchDto, HttpStatus.OK);
     }
 
     @GetMapping("/{idBranch}/specialties/{idSpecialty}")
@@ -40,22 +41,21 @@ public class BranchController {
                 .orElseThrow(SpecialtyNotFoundException::new);
         return new ResponseEntity<SpecialtyDto>(specialtyDTO, HttpStatus.OK);
     }
+
     @GetMapping
-    public ResponseEntity<List<BranchOfKnowledge>> getBranches(){
+    public ResponseEntity<List<BranchOfKnowledge>> getBranches() {
         return new ResponseEntity<List<BranchOfKnowledge>>(filter.getBranchesOfKnowledge(), HttpStatus.OK);
     }
 
     @GetMapping("/{type}")
     public ResponseEntity<List<String>> getBranchesDividedOnType(@PathVariable String type) {
-        if (type.equalsIgnoreCase("hum")) {
-            typeBranchList = filter.getBranchesOfKnowledgeByType("Гуманітарні").stream()
+        try {
+            TypeOfBranch typeOfBranch = TypeOfBranch.valueOf(type);
+            typeBranchList = filter.getBranchesOfKnowledgeByType(typeOfBranch.getDescription())
+                    .stream()
                     .map(BranchOfKnowledge::toString)
                     .collect(Collectors.toList());
-        } else if (type.equalsIgnoreCase("tech")) {
-            typeBranchList = filter.getBranchesOfKnowledgeByType("Технічні").stream()
-                    .map(BranchOfKnowledge::toString)
-                    .collect(Collectors.toList());
-        } else {
+        } catch (Exception e) {
             throw new TypeBranchException();
         }
         return new ResponseEntity<>(typeBranchList, HttpStatus.OK);

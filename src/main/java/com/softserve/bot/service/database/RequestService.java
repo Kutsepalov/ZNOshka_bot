@@ -14,22 +14,22 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class RequestService {
-    private final RequestRepository requestRepo;
-    private final UserService userRepo;
+    private final RequestRepository requestRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<Request> list() {
-        return requestRepo.findAll();
+        return requestRepository.findAll();
     }
 
     @Transactional
     public Request save(long chatID, long subjectSet) {
-        User user = userRepo.save(chatID);
+        User user = userService.save(chatID);
         Request request = new Request();
         request.setUser(user);
         request.setDatetime(Timestamp.from(Instant.now()));
         request.setSetSubjects(subjectSet);
-        request = requestRepo.save(request);
+        request = requestRepository.save(request);
         return request;
     }
 

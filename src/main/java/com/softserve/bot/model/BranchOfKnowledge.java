@@ -8,14 +8,6 @@ public class BranchOfKnowledge {
     private List<Specialty> specialties;
     private TypeOfBranch typeOfBranch;
 
-    public TypeOfBranch getTypeOfBranch() {
-        return typeOfBranch;
-    }
-
-    public void setTypeOfBranch(TypeOfBranch typeOfBranch) {
-        this.typeOfBranch = typeOfBranch;
-    }
-
     public BranchOfKnowledge(String title, String code) {
         this.title = title;
         this.code = code;
@@ -24,6 +16,13 @@ public class BranchOfKnowledge {
     public BranchOfKnowledge() {
     }
 
+    public TypeOfBranch getTypeOfBranch() {
+        return typeOfBranch;
+    }
+
+    public void setTypeOfBranch(TypeOfBranch typeOfBranch) {
+        this.typeOfBranch = typeOfBranch;
+    }
 
     public String getTitle() {
         return title;
