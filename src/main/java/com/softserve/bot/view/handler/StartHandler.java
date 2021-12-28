@@ -26,4 +26,13 @@ public class StartHandler implements Handler {
         sendMessage.setReplyMarkup(mainMenuSender.getMenuReply());
         return sendMessage;
     }
+
+    public SendMessage handleAdmin(Update update){
+        cleanRequests();
+        message = update.getMessage();
+        sendMessage.setChatId(String.valueOf(message.getChatId()));
+        sendMessage.setText(botMessages.getStart());
+        sendMessage.setReplyMarkup(mainMenuSender.getAdminMenuReply());
+        return sendMessage;
+    }
 }

@@ -3,6 +3,7 @@ package com.softserve.bot.service.parser;
 import com.softserve.bot.model.Specialty;
 import com.softserve.bot.model.Subject;
 import com.softserve.bot.model.TypeOfBranch;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -16,6 +17,7 @@ import java.util.*;
 
 @Slf4j
 @Component
+@Setter
 public class Parser {
     private final SpecialtyToSubject specialtyToSubject;
 

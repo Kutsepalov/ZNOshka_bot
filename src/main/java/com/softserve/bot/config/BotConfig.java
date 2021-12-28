@@ -12,15 +12,15 @@ public class BotConfig {
     @Value("#{environment.APP_BOT_TOKEN}")
     private String token;
 
-    String getWebhookLink() {
+    public String getWebhookLink() {
         return webhookLink;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    String getToken() {
+    public String getToken() {
         return token;
     }
 
