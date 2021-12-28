@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
  * @see Specialty
  * @see BranchOfKnowledge
  * @see DataProcessor
+ * @updated_by Roman Grabovetskiy
+ * @tested_by Roman Grabovetskiy,Igor Gladush
  */
 @Component
 public class Filter {
@@ -139,6 +141,10 @@ public class Filter {
                 .map(branch -> branch.getTitle())
                 .findAny()
                 .get();
+    }
+
+    public List<BranchOfKnowledge> getBranchesOfKnowledge(){
+        return branches;
     }
 
 }

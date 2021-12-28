@@ -51,6 +51,12 @@ public class BotMessages {
     private String deleteData;
     @JsonProperty("menu")
     private String menuData;
+    @JsonProperty("branch-type")
+    private String branchType;
+    @JsonProperty("branch")
+    private String branch;
+    @JsonProperty("specialty")
+    private String specialty;
     @JsonProperty("choose-subject")
     private String chooseSubjectMenu;
     @JsonProperty("show-specialties")
